@@ -10,7 +10,7 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	v1alpha1 "github.com/aksel-allas-org/provider-spacelift/apis/null/v1alpha1"
+	v1alpha1 "github.com/aksel-allas-org/provider-spacelift/apis/module/v1alpha1"
 	v1alpha1apis "github.com/aksel-allas-org/provider-spacelift/apis/v1alpha1"
 	v1beta1 "github.com/aksel-allas-org/provider-spacelift/apis/v1beta1"
 )
