@@ -1,4 +1,4 @@
-module github.com/upbound/upjet-provider-template
+module github.com/aksel-allas-org/provider-spacelift
 
 go 1.21
 
