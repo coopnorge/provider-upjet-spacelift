@@ -10,7 +10,7 @@ import (
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 
-	"github.com/aksel-allas-org/provider-spacelift/config/null"
+	"github.com/aksel-allas-org/provider-spacelift/config/module"
 )
 
 const (
@@ -35,8 +35,7 @@ func GetProvider() *ujconfig.Provider {
 		))
 
 	for _, configure := range []func(provider *ujconfig.Provider){
-		// add custom config functions
-		null.Configure,
+		module.Configure,
 	} {
 		configure(pc)
 	}

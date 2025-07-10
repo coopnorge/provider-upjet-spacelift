@@ -27,6 +27,12 @@ const (
 	errUnmarshalCredentials = "cannot unmarshal spacelift credentials as JSON"
 )
 
+const (
+	keyBaseURL = "api_key_endpoint"
+	keyOwner   = "api_key_id"
+	keyToken   = "api_key_secret"
+)
+
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
 // returns Terraform provider setup configuration
 func TerraformSetupBuilder(version, providerSource, providerVersion string) terraform.SetupFn {
@@ -62,11 +68,16 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 			return ps, errors.Wrap(err, errUnmarshalCredentials)
 		}
 
-		// Set credentials in Terraform provider configuration.
-		/*ps.Configuration = map[string]any{
-			"username": creds["username"],
-			"password": creds["password"],
-		}*/
+		ps.Configuration = map[string]any{}
+		if v, ok := creds[keyBaseURL]; ok {
+			ps.Configuration[keyBaseURL] = v
+		}
+		if v, ok := creds[keyOwner]; ok {
+			ps.Configuration[keyOwner] = v
+		}
+		if v, ok := creds[keyToken]; ok {
+			ps.Configuration[keyToken] = v
+		}
 		return ps, nil
 	}
 }
