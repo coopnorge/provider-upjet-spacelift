@@ -1,0 +1,15 @@
+apiVersion: module.spacelift.upbound.io/v1alpha1
+kind: Module
+metadata:
+  annotations:
+    meta.upbound.io/example-id: module/v1alpha1/module
+  labels:
+    testing.upbound.io/example-name: example-module
+  name: example-module
+spec:
+  forProvider:
+    branch: main
+    description: Infra terraform module
+    name: k8s-module
+    repository: aksel-crossplane-spacelift-test
+    spaceId: aksel-crossplane-provider-test-01JZRNMY76328EPKMA5RGH7PHS
