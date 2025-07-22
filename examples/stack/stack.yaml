@@ -1,0 +1,14 @@
+apiVersion: stack.spacelift.upbound.io/v1alpha1
+kind: Stack 
+metadata:
+  annotations:
+    meta.upbound.io/example-id: stack/v1alpha1/stack
+  labels:
+    testing.upbound.io/example-name: example-stack
+  name: example-stack
+spec:
+  forProvider:
+    name: test-example-stack
+    repository: aksel-crossplane-spacelift-test
+    branch: main
+    spaceId: aksel-crossplane-provider-test-01JZRNMY76328EPKMA5RGH7PHS
