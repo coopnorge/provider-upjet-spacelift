@@ -1,0 +1,18 @@
+apiVersion: stack.spacelift.upbound.io/v1alpha1
+kind: Stack
+metadata:
+  annotations:
+    meta.upbound.io/example-id: stack/v1alpha1/stack
+  labels:
+    testing.upbound.io/example-name: k8s-cluster
+  name: k8s-cluster
+spec:
+  forProvider:
+    administrative: true
+    autodeploy: true
+    branch: master
+    description: Provisions a Kubernetes cluster
+    name: Kubernetes Cluster
+    projectRoot: cluster
+    repository: core-infra
+    terraformVersion: 1.3.0

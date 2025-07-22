@@ -11,6 +11,7 @@ import (
 
 	module "github.com/aksel-allas-org/provider-spacelift/internal/controller/module/module"
 	providerconfig "github.com/aksel-allas-org/provider-spacelift/internal/controller/providerconfig"
+	stack "github.com/aksel-allas-org/provider-spacelift/internal/controller/stack/stack"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
@@ -19,6 +20,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		module.Setup,
 		providerconfig.Setup,
+		stack.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
