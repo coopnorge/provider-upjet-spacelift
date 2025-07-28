@@ -11,6 +11,7 @@ import "github.com/crossplane/upjet/pkg/config"
 var ExternalNameConfigs = map[string]config.ExternalName{
 	"spacelift_module": config.IdentifierFromProvider,
 	"spacelift_stack":  config.IdentifierFromProvider,
+	"spacelift_space":  config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the
