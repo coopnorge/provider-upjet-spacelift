@@ -11,5 +11,5 @@ spec:
     name: test-example-stack
     repository: aksel-crossplane-spacelift-test
     branch: main
-    spaceRef:
+    spaceIdRef:
       name: example-space

@@ -600,7 +600,16 @@ type StackInitParameters struct {
 
 	// (String) ID (slug) of the space the stack is in. Defaults to legacy if it exists, otherwise root.
 	// ID (slug) of the space the stack is in. Defaults to `legacy` if it exists, otherwise `root`.
+	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1.Space
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
+
+	// Reference to a Space in space to populate spaceId.
+	// +kubebuilder:validation:Optional
+	SpaceIDRef *v1.Reference `json:"spaceIdRef,omitempty" tf:"-"`
+
+	// Selector for a Space in space to populate spaceId.
+	// +kubebuilder:validation:Optional
+	SpaceIDSelector *v1.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
 	// Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
@@ -1049,8 +1058,17 @@ type StackParameters struct {
 
 	// (String) ID (slug) of the space the stack is in. Defaults to legacy if it exists, otherwise root.
 	// ID (slug) of the space the stack is in. Defaults to `legacy` if it exists, otherwise `root`.
+	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1.Space
 	// +kubebuilder:validation:Optional
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
+
+	// Reference to a Space in space to populate spaceId.
+	// +kubebuilder:validation:Optional
+	SpaceIDRef *v1.Reference `json:"spaceIdRef,omitempty" tf:"-"`
+
+	// Selector for a Space in space to populate spaceId.
+	// +kubebuilder:validation:Optional
+	SpaceIDSelector *v1.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
 	// Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.

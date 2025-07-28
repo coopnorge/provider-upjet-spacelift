@@ -11,6 +11,7 @@ import (
 
 	module "github.com/aksel-allas-org/provider-spacelift/internal/controller/module/module"
 	providerconfig "github.com/aksel-allas-org/provider-spacelift/internal/controller/providerconfig"
+	space "github.com/aksel-allas-org/provider-spacelift/internal/controller/space/space"
 	stack "github.com/aksel-allas-org/provider-spacelift/internal/controller/stack/stack"
 )
 
@@ -20,6 +21,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		module.Setup,
 		providerconfig.Setup,
+		space.Setup,
 		stack.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {

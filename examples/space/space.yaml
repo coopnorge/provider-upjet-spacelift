@@ -1,4 +1,4 @@
-apiVersion: stack.spacelift.upbound.io/v1alpha1
+apiVersion: space.spacelift.upbound.io/v1alpha1
 kind: Space
 metadata:
   annotations:

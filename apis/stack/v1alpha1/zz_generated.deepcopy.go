@@ -1223,6 +1223,16 @@ func (in *StackInitParameters) DeepCopyInto(out *StackInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.SpaceIDRef != nil {
+		in, out := &in.SpaceIDRef, &out.SpaceIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.SpaceIDSelector != nil {
+		in, out := &in.SpaceIDSelector, &out.SpaceIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.TerraformExternalStateAccess != nil {
 		in, out := &in.TerraformExternalStateAccess, &out.TerraformExternalStateAccess
 		*out = new(bool)
@@ -1993,6 +2003,16 @@ func (in *StackParameters) DeepCopyInto(out *StackParameters) {
 		in, out := &in.SpaceID, &out.SpaceID
 		*out = new(string)
 		**out = **in
+	}
+	if in.SpaceIDRef != nil {
+		in, out := &in.SpaceIDRef, &out.SpaceIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.SpaceIDSelector != nil {
+		in, out := &in.SpaceIDSelector, &out.SpaceIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.TerraformExternalStateAccess != nil {
 		in, out := &in.TerraformExternalStateAccess, &out.TerraformExternalStateAccess

@@ -1,0 +1,14 @@
+apiVersion: space.spacelift.upbound.io/v1alpha1
+kind: Space
+metadata:
+  annotations:
+    meta.upbound.io/example-id: space/v1alpha1/space
+  labels:
+    testing.upbound.io/example-name: development
+  name: development
+spec:
+  forProvider:
+    description: This a child of the root space. It contains all the resources common
+      to the development infrastructure.
+    name: development
+    parentSpaceId: root
