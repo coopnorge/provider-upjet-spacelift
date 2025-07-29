@@ -1,7 +1,7 @@
 # ====================================================================================
 # Setup Project
 
-PROJECT_NAME ?= provider-spacelift
+PROJECT_NAME ?= provider-upjet-spacelift
 PROJECT_REPO ?= github.com/coopnorge/$(PROJECT_NAME)
 
 export TERRAFORM_VERSION ?= 1.5.7
@@ -63,17 +63,17 @@ UPTEST_VERSION = v0.5.0
 # ====================================================================================
 # Setup Images
 
-REGISTRY_ORGS ?= ghcr.io/crossplane-contrib
+REGISTRY_ORGS ?= xpkg.upbound.io/coopnorge
 IMAGES = $(PROJECT_NAME)
 -include build/makelib/imagelight.mk
 
 # ====================================================================================
 # Setup XPKG
 
-XPKG_REG_ORGS ?= ghcr.io/crossplane-contrib
+XPKG_REG_ORGS ?= xpkg.upbound.io/coopnorge
 # NOTE(hasheddan): skip promoting on xpkg.upbound.io as channel tags are
 # inferred.
-XPKG_REG_ORGS_NO_PROMOTE ?= ghcr.io/crossplane-contrib
+XPKG_REG_ORGS_NO_PROMOTE ?= xpkg.upbound.io/coopnorge
 XPKGS = $(PROJECT_NAME)
 -include build/makelib/xpkg.mk
 
@@ -93,7 +93,7 @@ fallthrough: submodules
 
 # NOTE(hasheddan): we force image building to happen prior to xpkg build so that
 # we ensure image is present in daemon.
-xpkg.build.provider-spacelift: do.build.images
+xpkg.build.provider-upjet-spacelift: do.build.images
 
 # NOTE(hasheddan): we ensure up is installed prior to running platform-specific
 # build steps in parallel to avoid encountering an installation race condition.

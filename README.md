@@ -1,6 +1,6 @@
 # Provider Spacelift
 
-`provider-spacelift` is a [Crossplane](https://crossplane.io/) provider that
+`provider-upjet-spacelift` is a [Crossplane](https://crossplane.io/) provider that
 is built using [Upjet](https://github.com/crossplane/upjet) code
 generation tools and exposes XRM-conformant managed resources for the
 Spacelift API.
@@ -19,7 +19,7 @@ cat <<EOF | kubectl apply -f -
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-spacelift
+  name: provider-upjet-spacelift
 spec:
   package: xpkg.crossplane.io/coopnorge/provider-upjet-spacelift:v0.1.0
 EOF
