@@ -31,12 +31,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/metrics"
 
-	"github.com/aksel-allas-org/provider-spacelift/apis"
-	"github.com/aksel-allas-org/provider-spacelift/apis/v1alpha1"
-	"github.com/aksel-allas-org/provider-spacelift/config"
-	"github.com/aksel-allas-org/provider-spacelift/internal/clients"
-	"github.com/aksel-allas-org/provider-spacelift/internal/controller"
-	"github.com/aksel-allas-org/provider-spacelift/internal/features"
+	"github.com/coopnorge/provider-upjet-spacelift/apis"
+	"github.com/coopnorge/provider-upjet-spacelift/apis/v1alpha1"
+	"github.com/coopnorge/provider-upjet-spacelift/config"
+	"github.com/coopnorge/provider-upjet-spacelift/internal/clients"
+	"github.com/coopnorge/provider-upjet-spacelift/internal/controller"
+	"github.com/coopnorge/provider-upjet-spacelift/internal/features"
 )
 
 func main() {
@@ -62,7 +62,7 @@ func main() {
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
 	zl := zap.New(zap.UseDevMode(*debug))
-	log := logging.NewLogrLogger(zl.WithName("provider-spacelift"))
+	log := logging.NewLogrLogger(zl.WithName("provider-upjet-spacelift"))
 	if *debug {
 		// The controller-runtime runs with a no-op logger by default. It is
 		// *very* verbose even at info level, so we only provide it a real
@@ -77,7 +77,7 @@ func main() {
 
 	mgr, err := ctrl.NewManager(cfg, ctrl.Options{
 		LeaderElection:   *leaderElection,
-		LeaderElectionID: "crossplane-leader-election-provider-spacelift",
+		LeaderElectionID: "crossplane-leader-election-provider-upjet-spacelift",
 		Cache: cache.Options{
 			SyncPeriod: syncPeriod,
 		},
