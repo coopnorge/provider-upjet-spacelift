@@ -17,7 +17,7 @@ type AttachmentInitParameters struct {
 
 	// (String) ID of the context to attach
 	// ID of the context to attach
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/context/v1alpha1.Context
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/context/v1alpha1.Context
 	ContextID *string `json:"contextId,omitempty" tf:"context_id,omitempty"`
 
 	// Reference to a Context in context to populate contextId.
@@ -38,7 +38,7 @@ type AttachmentInitParameters struct {
 
 	// (String) ID of the stack to attach the context to
 	// ID of the stack to attach the context to
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/stack/v1alpha1.Stack
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/stack/v1alpha1.Stack
 	StackID *string `json:"stackId,omitempty" tf:"stack_id,omitempty"`
 
 	// Reference to a Stack in stack to populate stackId.
@@ -76,7 +76,7 @@ type AttachmentParameters struct {
 
 	// (String) ID of the context to attach
 	// ID of the context to attach
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/context/v1alpha1.Context
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/context/v1alpha1.Context
 	// +kubebuilder:validation:Optional
 	ContextID *string `json:"contextId,omitempty" tf:"context_id,omitempty"`
 
@@ -100,7 +100,7 @@ type AttachmentParameters struct {
 
 	// (String) ID of the stack to attach the context to
 	// ID of the stack to attach the context to
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/stack/v1alpha1.Stack
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/stack/v1alpha1.Stack
 	// +kubebuilder:validation:Optional
 	StackID *string `json:"stackId,omitempty" tf:"stack_id,omitempty"`
 

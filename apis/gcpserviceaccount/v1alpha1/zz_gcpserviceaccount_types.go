@@ -21,7 +21,7 @@ type GcpServiceAccountInitParameters struct {
 
 	// (String) ID of the stack which uses GCP service account credentials
 	// ID of the stack which uses GCP service account credentials
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/stack/v1alpha1.Stack
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/stack/v1alpha1.Stack
 	StackID *string `json:"stackId,omitempty" tf:"stack_id,omitempty"`
 
 	// Reference to a Stack in stack to populate stackId.
@@ -70,7 +70,7 @@ type GcpServiceAccountParameters struct {
 
 	// (String) ID of the stack which uses GCP service account credentials
 	// ID of the stack which uses GCP service account credentials
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/stack/v1alpha1.Stack
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/stack/v1alpha1.Stack
 	// +kubebuilder:validation:Optional
 	StackID *string `json:"stackId,omitempty" tf:"stack_id,omitempty"`
 

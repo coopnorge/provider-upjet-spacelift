@@ -10,17 +10,17 @@ import (
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 
-	"github.com/aksel-allas-org/provider-spacelift/config/context"
-	"github.com/aksel-allas-org/provider-spacelift/config/environmentvariable"
-	"github.com/aksel-allas-org/provider-spacelift/config/gcpserviceaccount"
-	"github.com/aksel-allas-org/provider-spacelift/config/module"
-	"github.com/aksel-allas-org/provider-spacelift/config/space"
-	"github.com/aksel-allas-org/provider-spacelift/config/stack"
+	"github.com/coopnorge/provider-upjet-spacelift/config/context"
+	"github.com/coopnorge/provider-upjet-spacelift/config/environmentvariable"
+	"github.com/coopnorge/provider-upjet-spacelift/config/gcpserviceaccount"
+	"github.com/coopnorge/provider-upjet-spacelift/config/module"
+	"github.com/coopnorge/provider-upjet-spacelift/config/space"
+	"github.com/coopnorge/provider-upjet-spacelift/config/stack"
 )
 
 const (
 	resourcePrefix = "spacelift"
-	modulePath     = "github.com/aksel-allas-org/provider-spacelift"
+	modulePath     = "github.com/coopnorge/provider-upjet-spacelift"
 )
 
 //go:embed schema.json

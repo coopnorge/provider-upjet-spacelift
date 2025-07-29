@@ -74,7 +74,7 @@ type ContextInitParameters struct {
 
 	// (String) ID (slug) of the space the context is in
 	// ID (slug) of the space the context is in
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1.Space
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/space/v1alpha1.Space
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
 
 	// Reference to a Space in space to populate spaceId.
@@ -228,7 +228,7 @@ type ContextParameters struct {
 
 	// (String) ID (slug) of the space the context is in
 	// ID (slug) of the space the context is in
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1.Space
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/space/v1alpha1.Space
 	// +kubebuilder:validation:Optional
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
 
