@@ -3,4 +3,4 @@ kind: Provider
 metadata:
   name: provider-spacelift
 spec:
-  package: xpkg.crossplane.io/aksel-allas-org/provider-spacelift:v0.1.0
+  package: xpkg.crossplane.io/coopnorge/provider-upjet-spacelift:v0.1.0

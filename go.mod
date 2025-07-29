@@ -1,4 +1,4 @@
-module github.com/aksel-allas-org/provider-spacelift
+module github.com/coopnorge/provider-upjet-spacelift
 
 go 1.21
 

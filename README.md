@@ -8,9 +8,9 @@ Spacelift API.
 ## Getting Started
 
 Install the provider by using the following command after changing the image tag
-to the [latest release](https://marketplace.upbound.io/providers/aksel-allas-org/provider-spacelift):
+to the [latest release](https://marketplace.upbound.io/providers/coopnorge/provider-upjet-spacelift):
 ```
-crossplane xpkg install provider xpkg.crossplane.io/aksel-allas-org/provider-spacelift:v0.1.0
+crossplane xpkg install provider xpkg.crossplane.io/coopnorge/provider-upjet-spacelift:v0.1.0
 ```
 
 Alternatively, you can use declarative installation:
@@ -21,13 +21,13 @@ kind: Provider
 metadata:
   name: provider-spacelift
 spec:
-  package: xpkg.crossplane.io/aksel-allas-org/provider-spacelift:v0.1.0
+  package: xpkg.crossplane.io/coopnorge/provider-upjet-spacelift:v0.1.0
 EOF
 ```
 
 Notice that in this example Provider resource is referencing ControllerConfig with debug enabled.
 
-You can see the API reference [here](https://doc.crds.dev/github.com/aksel-allas-org/provider-spacelift).
+You can see the API reference [here](https://doc.crds.dev/github.com/coopnorge/provider-upjet-spacelift).
 
 ## Developing
 
@@ -57,4 +57,4 @@ make build
 ## Report a Bug
 
 For filing bugs, suggesting improvements, or requesting new features, please
-open an [issue](https://github.com/aksel-allas-org/provider-spacelift/issues).
+open an [issue](https://github.com/coopnorge/provider-upjet-spacelift/issues).

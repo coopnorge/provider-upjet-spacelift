@@ -2,7 +2,7 @@
 # Setup Project
 
 PROJECT_NAME ?= provider-spacelift
-PROJECT_REPO ?= github.com/aksel-allas-org/$(PROJECT_NAME)
+PROJECT_REPO ?= github.com/coopnorge/$(PROJECT_NAME)
 
 export TERRAFORM_VERSION ?= 1.5.7
 
