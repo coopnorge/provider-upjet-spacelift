@@ -11,6 +11,7 @@ import (
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 
 	"github.com/aksel-allas-org/provider-spacelift/config/context"
+	"github.com/aksel-allas-org/provider-spacelift/config/environmentvariable"
 	"github.com/aksel-allas-org/provider-spacelift/config/module"
 	"github.com/aksel-allas-org/provider-spacelift/config/space"
 	"github.com/aksel-allas-org/provider-spacelift/config/stack"
@@ -43,6 +44,7 @@ func GetProvider() *ujconfig.Provider {
 		stack.Configure,
 		space.Configure,
 		context.Configure,
+		environmentvariable.Configure,
 	} {
 		configure(pc)
 	}

@@ -1,0 +1,15 @@
+apiVersion: environmentvariable.spacelift.upbound.io/v1alpha1
+kind: EnvironmentVariable 
+metadata:
+  annotations:
+    meta.upbound.io/example-id: environmentvariable/v1alpha1/environmentvariable
+  labels:
+    testing.upbound.io/example-name: example-environmentvariable
+  name: example-environmentvariable
+spec:
+  forProvider:
+    name: example-environmentvariable
+    value: example-value
+    writeOnly: false
+    contextIdRef: 
+      name: example-context
