@@ -11,6 +11,7 @@ import (
 
 	attachment "github.com/aksel-allas-org/provider-spacelift/internal/controller/context/attachment"
 	context "github.com/aksel-allas-org/provider-spacelift/internal/controller/context/context"
+	environmentvariable "github.com/aksel-allas-org/provider-spacelift/internal/controller/environmentvariable/environmentvariable"
 	module "github.com/aksel-allas-org/provider-spacelift/internal/controller/module/module"
 	providerconfig "github.com/aksel-allas-org/provider-spacelift/internal/controller/providerconfig"
 	space "github.com/aksel-allas-org/provider-spacelift/internal/controller/space/space"
@@ -23,6 +24,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		attachment.Setup,
 		context.Setup,
+		environmentvariable.Setup,
 		module.Setup,
 		providerconfig.Setup,
 		space.Setup,

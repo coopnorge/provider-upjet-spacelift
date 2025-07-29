@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 
 	v1alpha1 "github.com/aksel-allas-org/provider-spacelift/apis/context/v1alpha1"
+	v1alpha1environmentvariable "github.com/aksel-allas-org/provider-spacelift/apis/environmentvariable/v1alpha1"
 	v1alpha1module "github.com/aksel-allas-org/provider-spacelift/apis/module/v1alpha1"
 	v1alpha1space "github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1"
 	v1alpha1stack "github.com/aksel-allas-org/provider-spacelift/apis/stack/v1alpha1"
@@ -22,6 +23,7 @@ func init() {
 	// Register the types with the Scheme so the components can map objects to GroupVersionKinds and back
 	AddToSchemes = append(AddToSchemes,
 		v1alpha1.SchemeBuilder.AddToScheme,
+		v1alpha1environmentvariable.SchemeBuilder.AddToScheme,
 		v1alpha1module.SchemeBuilder.AddToScheme,
 		v1alpha1space.SchemeBuilder.AddToScheme,
 		v1alpha1stack.SchemeBuilder.AddToScheme,

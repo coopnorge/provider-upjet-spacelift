@@ -4,12 +4,22 @@ metadata:
   annotations:
     meta.upbound.io/example-id: environmentvariable/v1alpha1/environmentvariable
   labels:
-    testing.upbound.io/example-name: example-environmentvariable
-  name: example-environmentvariable
+    testing.upbound.io/example-name: exampleenvironmentvariable
+  name: exampleenvironmentvariable
 spec:
   forProvider:
-    name: example-environmentvariable
-    value: example-value
+    name: exampleenvironmentvariable
+    valueSecretRef:
+      key: example
+      name: exampleenvsecret
+      namespace: default
     writeOnly: false
     contextIdRef: 
       name: example-context
+--- 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: exampleenvsecret
+stringData:
+  example: bababooey

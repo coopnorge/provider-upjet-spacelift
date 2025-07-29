@@ -1,0 +1,20 @@
+apiVersion: environmentvariable.spacelift.upbound.io/v1alpha1
+kind: EnvironmentVariable
+metadata:
+  annotations:
+    meta.upbound.io/example-id: environmentvariable/v1alpha1/environmentvariable
+  labels:
+    testing.upbound.io/example-name: ireland-kubeconfig
+  name: ireland-kubeconfig
+spec:
+  forProvider:
+    contextIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    description: Kubeconfig for Ireland Kubernetes cluster
+    name: KUBECONFIG
+    valueSecretRef:
+      key: example-key
+      name: example-secret
+      namespace: upbound-system
+    writeOnly: false
