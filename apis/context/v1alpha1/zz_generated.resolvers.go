@@ -8,8 +8,8 @@ package v1alpha1
 
 import (
 	"context"
-	v1alpha11 "github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1"
-	v1alpha1 "github.com/aksel-allas-org/provider-spacelift/apis/stack/v1alpha1"
+	v1alpha11 "github.com/coopnorge/provider-upjet-spacelift/apis/space/v1alpha1"
+	v1alpha1 "github.com/coopnorge/provider-upjet-spacelift/apis/stack/v1alpha1"
 	reference "github.com/crossplane/crossplane-runtime/pkg/reference"
 	errors "github.com/pkg/errors"
 	client "sigs.k8s.io/controller-runtime/pkg/client"

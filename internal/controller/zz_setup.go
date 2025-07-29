@@ -9,14 +9,14 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
-	attachment "github.com/aksel-allas-org/provider-spacelift/internal/controller/context/attachment"
-	context "github.com/aksel-allas-org/provider-spacelift/internal/controller/context/context"
-	environmentvariable "github.com/aksel-allas-org/provider-spacelift/internal/controller/environmentvariable/environmentvariable"
-	gcpserviceaccount "github.com/aksel-allas-org/provider-spacelift/internal/controller/gcpserviceaccount/gcpserviceaccount"
-	module "github.com/aksel-allas-org/provider-spacelift/internal/controller/module/module"
-	providerconfig "github.com/aksel-allas-org/provider-spacelift/internal/controller/providerconfig"
-	space "github.com/aksel-allas-org/provider-spacelift/internal/controller/space/space"
-	stack "github.com/aksel-allas-org/provider-spacelift/internal/controller/stack/stack"
+	attachment "github.com/coopnorge/provider-upjet-spacelift/internal/controller/context/attachment"
+	context "github.com/coopnorge/provider-upjet-spacelift/internal/controller/context/context"
+	environmentvariable "github.com/coopnorge/provider-upjet-spacelift/internal/controller/environmentvariable/environmentvariable"
+	gcpserviceaccount "github.com/coopnorge/provider-upjet-spacelift/internal/controller/gcpserviceaccount/gcpserviceaccount"
+	module "github.com/coopnorge/provider-upjet-spacelift/internal/controller/module/module"
+	providerconfig "github.com/coopnorge/provider-upjet-spacelift/internal/controller/providerconfig"
+	space "github.com/coopnorge/provider-upjet-spacelift/internal/controller/space/space"
+	stack "github.com/coopnorge/provider-upjet-spacelift/internal/controller/stack/stack"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to

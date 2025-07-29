@@ -280,7 +280,7 @@ type ModuleInitParameters struct {
 
 	// (String) ID (slug) of the space the module is in
 	// ID (slug) of the space the module is in
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1.Space
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/space/v1alpha1.Space
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
 
 	// Reference to a Space in space to populate spaceId.
@@ -485,7 +485,7 @@ type ModuleParameters struct {
 
 	// (String) ID (slug) of the space the module is in
 	// ID (slug) of the space the module is in
-	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1.Space
+	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/space/v1alpha1.Space
 	// +kubebuilder:validation:Optional
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
 

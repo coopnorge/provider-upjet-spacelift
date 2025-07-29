@@ -11,7 +11,7 @@ import (
 
 	"github.com/crossplane/upjet/pkg/pipeline"
 
-	"github.com/aksel-allas-org/provider-spacelift/config"
+	"github.com/coopnorge/provider-upjet-spacelift/config"
 )
 
 func main() {
