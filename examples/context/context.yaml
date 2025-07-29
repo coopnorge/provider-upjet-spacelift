@@ -1,0 +1,18 @@
+apiVersion: context.spacelift.upbound.io/v1alpha1
+kind: Context 
+metadata:
+  annotations:
+    meta.upbound.io/example-id: context/v1alpha1/context
+  labels:
+    testing.upbound.io/example-name: example-context
+  name: example-context
+spec:
+  forProvider:
+    name: test-example-context
+    spaceIdRef:
+      name: example-space
+
+# resource "spacelift_context" "example-context" {
+#   name     = "example-context"
+#   space_id = spacelift_space.example-space.id
+# }
