@@ -8,11 +8,6 @@ metadata:
   name: example-context
 spec:
   forProvider:
-    name: test-example-context
+    name: example-context
     spaceIdRef:
       name: example-space
-
-# resource "spacelift_context" "example-context" {
-#   name     = "example-context"
-#   space_id = spacelift_space.example-space.id
-# }

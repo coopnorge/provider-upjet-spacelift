@@ -280,7 +280,16 @@ type ModuleInitParameters struct {
 
 	// (String) ID (slug) of the space the module is in
 	// ID (slug) of the space the module is in
+	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1.Space
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
+
+	// Reference to a Space in space to populate spaceId.
+	// +kubebuilder:validation:Optional
+	SpaceIDRef *v1.Reference `json:"spaceIdRef,omitempty" tf:"-"`
+
+	// Selector for a Space in space to populate spaceId.
+	// +kubebuilder:validation:Optional
+	SpaceIDSelector *v1.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// provider-name naming convention. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here.
 	TerraformProvider *string `json:"terraformProvider,omitempty" tf:"terraform_provider,omitempty"`
@@ -476,8 +485,17 @@ type ModuleParameters struct {
 
 	// (String) ID (slug) of the space the module is in
 	// ID (slug) of the space the module is in
+	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1.Space
 	// +kubebuilder:validation:Optional
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
+
+	// Reference to a Space in space to populate spaceId.
+	// +kubebuilder:validation:Optional
+	SpaceIDRef *v1.Reference `json:"spaceIdRef,omitempty" tf:"-"`
+
+	// Selector for a Space in space to populate spaceId.
+	// +kubebuilder:validation:Optional
+	SpaceIDSelector *v1.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// provider-name naming convention. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here.
 	// +kubebuilder:validation:Optional

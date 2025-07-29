@@ -1,5 +1,5 @@
-apiVersion: contextattachment.spacelift.upbound.io/v1alpha1
-kind: ContextAttachment 
+apiVersion: context.spacelift.upbound.io/v1alpha1
+kind: Attachment 
 metadata:
   annotations:
     meta.upbound.io/example-id: contextattachment/v1alpha1/contextattachment
@@ -8,11 +8,7 @@ metadata:
   name: example-contextattachment
 spec:
   forProvider:
-    name: test-example-contextattachment
+    contextIdRef: 
+      name: example-context
     stackIdRef:
       name: example-stack
-
-# resource "spacelift_contextattachment_attachment" "example-attachment" {
-#   contextattachment_id = spacelift_contextattachment.example-contextattachment.id
-#   stack_id   = spacelift_stack.test-stack.id
-# }

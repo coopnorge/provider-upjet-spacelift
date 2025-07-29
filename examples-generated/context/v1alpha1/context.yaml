@@ -1,0 +1,12 @@
+apiVersion: context.spacelift.upbound.io/v1alpha1
+kind: Context
+metadata:
+  annotations:
+    meta.upbound.io/example-id: context/v1alpha1/context
+  labels:
+    testing.upbound.io/example-name: prod-k8s-ie
+  name: prod-k8s-ie
+spec:
+  forProvider:
+    description: "Configuration details for the compute cluster in \U0001F1EE\U0001F1EA"
+    name: Production cluster (Ireland)

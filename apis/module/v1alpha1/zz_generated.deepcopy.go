@@ -9,6 +9,7 @@
 package v1alpha1
 
 import (
+	"github.com/crossplane/crossplane-runtime/apis/common/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -556,6 +557,16 @@ func (in *ModuleInitParameters) DeepCopyInto(out *ModuleInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.SpaceIDRef != nil {
+		in, out := &in.SpaceIDRef, &out.SpaceIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.SpaceIDSelector != nil {
+		in, out := &in.SpaceIDSelector, &out.SpaceIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.TerraformProvider != nil {
 		in, out := &in.TerraformProvider, &out.TerraformProvider
 		*out = new(string)
@@ -885,6 +896,16 @@ func (in *ModuleParameters) DeepCopyInto(out *ModuleParameters) {
 		in, out := &in.SpaceID, &out.SpaceID
 		*out = new(string)
 		**out = **in
+	}
+	if in.SpaceIDRef != nil {
+		in, out := &in.SpaceIDRef, &out.SpaceIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.SpaceIDSelector != nil {
+		in, out := &in.SpaceIDSelector, &out.SpaceIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.TerraformProvider != nil {
 		in, out := &in.TerraformProvider, &out.TerraformProvider

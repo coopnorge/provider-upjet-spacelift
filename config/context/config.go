@@ -11,9 +11,12 @@ func Configure(p *config.Provider) {
 	})
 
 	p.AddResourceConfigurator("spacelift_context_attachment", func(r *config.Resource) {
-		r.ShortGroup = "contextattachment"
+		r.ShortGroup = "context"
 		r.References["stack_id"] = config.Reference{
 			TerraformName: "spacelift_stack",
+		}
+		r.References["context_id"] = config.Reference{
+			TerraformName: "spacelift_context",
 		}
 	})
 }

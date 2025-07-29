@@ -9,6 +9,8 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
+	attachment "github.com/aksel-allas-org/provider-spacelift/internal/controller/context/attachment"
+	context "github.com/aksel-allas-org/provider-spacelift/internal/controller/context/context"
 	module "github.com/aksel-allas-org/provider-spacelift/internal/controller/module/module"
 	providerconfig "github.com/aksel-allas-org/provider-spacelift/internal/controller/providerconfig"
 	space "github.com/aksel-allas-org/provider-spacelift/internal/controller/space/space"
@@ -19,6 +21,8 @@ import (
 // the supplied manager.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
+		attachment.Setup,
+		context.Setup,
 		module.Setup,
 		providerconfig.Setup,
 		space.Setup,
