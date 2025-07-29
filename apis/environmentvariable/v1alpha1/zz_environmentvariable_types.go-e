@@ -17,7 +17,7 @@ type EnvironmentVariableInitParameters struct {
 
 	// (String) ID of the context on which the environment variable is defined
 	// ID of the context on which the environment variable is defined
-	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/context/v1alpha1.Context
+	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/context/v1alpha1.Context
 	ContextID *string `json:"contextId,omitempty" tf:"context_id,omitempty"`
 
 	// Reference to a Context in context to populate contextId.
@@ -91,7 +91,7 @@ type EnvironmentVariableParameters struct {
 
 	// (String) ID of the context on which the environment variable is defined
 	// ID of the context on which the environment variable is defined
-	// +crossplane:generate:reference:type=github.com/coopnorge/provider-upjet-spacelift/apis/context/v1alpha1.Context
+	// +crossplane:generate:reference:type=github.com/aksel-allas-org/provider-spacelift/apis/context/v1alpha1.Context
 	// +kubebuilder:validation:Optional
 	ContextID *string `json:"contextId,omitempty" tf:"context_id,omitempty"`
 

@@ -21,8 +21,8 @@ import (
 	"github.com/pkg/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	v1alpha1 "github.com/aksel-allas-org/provider-spacelift/apis/environmentvariable/v1alpha1"
-	features "github.com/aksel-allas-org/provider-spacelift/internal/features"
+	v1alpha1 "github.com/coopnorge/provider-upjet-spacelift/apis/environmentvariable/v1alpha1"
+	features "github.com/coopnorge/provider-upjet-spacelift/internal/features"
 )
 
 // Setup adds a controller that reconciles EnvironmentVariable managed resources.

@@ -10,14 +10,14 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	v1alpha1 "github.com/coopnorge/provider-upjet-spacelift/apis/context/v1alpha1"
-	v1alpha1environmentvariable "github.com/coopnorge/provider-upjet-spacelift/apis/environmentvariable/v1alpha1"
-	v1alpha1gcpserviceaccount "github.com/coopnorge/provider-upjet-spacelift/apis/gcpserviceaccount/v1alpha1"
-	v1alpha1module "github.com/coopnorge/provider-upjet-spacelift/apis/module/v1alpha1"
-	v1alpha1space "github.com/coopnorge/provider-upjet-spacelift/apis/space/v1alpha1"
-	v1alpha1stack "github.com/coopnorge/provider-upjet-spacelift/apis/stack/v1alpha1"
-	v1alpha1apis "github.com/coopnorge/provider-upjet-spacelift/apis/v1alpha1"
-	v1beta1 "github.com/coopnorge/provider-upjet-spacelift/apis/v1beta1"
+	v1alpha1 "github.com/aksel-allas-org/provider-spacelift/apis/context/v1alpha1"
+	v1alpha1environmentvariable "github.com/aksel-allas-org/provider-spacelift/apis/environmentvariable/v1alpha1"
+	v1alpha1gcpserviceaccount "github.com/aksel-allas-org/provider-spacelift/apis/gcpserviceaccount/v1alpha1"
+	v1alpha1module "github.com/aksel-allas-org/provider-spacelift/apis/module/v1alpha1"
+	v1alpha1space "github.com/aksel-allas-org/provider-spacelift/apis/space/v1alpha1"
+	v1alpha1stack "github.com/aksel-allas-org/provider-spacelift/apis/stack/v1alpha1"
+	v1alpha1apis "github.com/aksel-allas-org/provider-spacelift/apis/v1alpha1"
+	v1beta1 "github.com/aksel-allas-org/provider-spacelift/apis/v1beta1"
 )
 
 func init() {
