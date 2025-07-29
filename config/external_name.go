@@ -15,6 +15,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"spacelift_context":              config.IdentifierFromProvider,
 	"spacelift_context_attachment":   config.IdentifierFromProvider,
 	"spacelift_environment_variable": config.IdentifierFromProvider,
+	"spacelift_gcp_service_account":  config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

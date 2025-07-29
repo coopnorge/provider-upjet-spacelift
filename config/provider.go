@@ -12,6 +12,7 @@ import (
 
 	"github.com/aksel-allas-org/provider-spacelift/config/context"
 	"github.com/aksel-allas-org/provider-spacelift/config/environmentvariable"
+	"github.com/aksel-allas-org/provider-spacelift/config/gcpserviceaccount"
 	"github.com/aksel-allas-org/provider-spacelift/config/module"
 	"github.com/aksel-allas-org/provider-spacelift/config/space"
 	"github.com/aksel-allas-org/provider-spacelift/config/stack"
@@ -45,6 +46,7 @@ func GetProvider() *ujconfig.Provider {
 		space.Configure,
 		context.Configure,
 		environmentvariable.Configure,
+		gcpserviceaccount.Configure,
 	} {
 		configure(pc)
 	}
