@@ -10,5 +10,7 @@ spec:
     protection:
       - id: main
         pattern: main
+        requiredStatusChecks:
+        - "policy-bot: main"
   pullRequests:
     deleteBranchOnMerge: true # delete regular branches after PR merge
