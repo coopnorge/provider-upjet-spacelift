@@ -232,3 +232,16 @@ jobs:
           path: _output/**
       - name: Publish Artifacts
         run: make publish BRANCH_NAME=${GITHUB_REF##*/}
+
+  validate-ci-results:
+    needs:
+      - lint
+      - unit-tests
+      - local-deploy
+      - publish-artifacts
+    if: failure() || cancelled()
+    runs-on: ubuntu-slim
+    permissions: {}
+    steps:
+      - run: exit 1
+        name: "Catch errors"
