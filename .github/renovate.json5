@@ -8,15 +8,15 @@
       "customType": "regex",
       "managerFilePatterns": ["/^\\.github\\/workflows\\/[^/]+\\.ya?ml$/"],
       "matchStrings": ["GO_VERSION: '(?<currentValue>.*?)'\\n"],
-      "datasourceSpacelift": "golang-version",
-      "depNameSpacelift": "golang"
+      "datasourceTemplate": "golang-version",
+      "depNameTemplate": "golang"
     },
     {
       "customType": "regex",
       "managerFilePatterns": ["/^\\.github\\/workflows\\/[^/]+\\.ya?ml$/"],
       "matchStrings": ["GOLANGCI_VERSION: '(?<currentValue>.*?)'\\n"],
-      "datasourceSpacelift": "github-tags",
-      "depNameSpacelift": "golangci/golangci-lint"
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "golangci/golangci-lint"
     }
   ],
   "packageRules": [
