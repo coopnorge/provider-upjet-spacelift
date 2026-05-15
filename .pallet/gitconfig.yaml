@@ -14,5 +14,3 @@ spec:
           checks:
             - "policy-bot: main"
             - "validate-ci-results"
-  pullRequests:
-    deleteBranchOnMerge: true # delete regular branches after PR merge
