@@ -11,8 +11,8 @@
       "matchStrings": [
         "GO_VERSION: '(?<currentValue>.*?)'\\n"
       ],
-      "datasourceSpacelift": "golang-version",
-      "depNameSpacelift": "golang"
+      "datasourceTemplate": "golang-version",
+      "depNameTemplate": "golang"
     }, {
 // We want a PR to bump golangci-lint versions used through env variables in
 // any Github Actions, taking it from the official Github repository tags.
@@ -20,8 +20,8 @@
       "matchStrings": [
         "GOLANGCI_VERSION: '(?<currentValue>.*?)'\\n"
       ],
-      "datasourceSpacelift": "github-tags",
-      "depNameSpacelift": "golangci/golangci-lint"
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "golangci/golangci-lint"
     }
   ],
   "packageRules": [
