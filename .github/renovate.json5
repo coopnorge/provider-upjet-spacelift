@@ -1,19 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "github>coopnorge/github-workflow-renovate",
   ],
-// The maximum number of PRs to be created in parallel
-  "prConcurrentLimit": 5,
-// The branches renovate should target
-  "baseBranches": ["main"],
-  "ignorePaths": ["design/**"],
-  "postUpdateOptions": ["gomodTidy"],
-// By default renovate will auto detect whether semantic commits have been used
-// in the recent history and comply with that, we explicitly disable it
-  "semanticCommits": "disabled",
-// All PRs should have a label
-  "labels": ["automated"],
   "regexManagers": [
     {
 // We want a PR to bump Go versions used through env variables in any Github
@@ -35,10 +24,6 @@
       "depNameSpacelift": "golangci/golangci-lint"
     }
   ],
-// PackageRules disabled below should be enabled in case of vulnerabilities
-  "vulnerabilityAlerts": {
-    "enabled": true
-  },
   "packageRules": [
     {
 // We need to ignore k8s.io/client-go older versions as they switched to
@@ -117,23 +102,6 @@
         "digest"
       ],
       "groupName": "all non-major go dependencies"
-    }, {
-// We want a single PR for all minor and patch bumps of Github Actions
-      "matchDepTypes": [
-        "action"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "groupName": "all non-major github action",
-      "pinDigests": true
-    },{
-// We want dedicated PRs for each major bump to Github Actions
-      "matchDepTypes": [
-        "action"
-      ],
-      "pinDigests": true
-    }
+    },
   ]
 }
