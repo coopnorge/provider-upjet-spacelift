@@ -17,7 +17,14 @@
       "matchStrings": ["GOLANGCI_VERSION: '(?<currentValue>.*?)'\\n"],
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "golangci/golangci-lint"
-    }
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.github\\/workflows\\/[^/]+\\.ya?ml$/"],
+      "matchStrings": ["DOCKER_BUILDX_VERSION: '(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "docker/buildx"
+    },
   ],
   "packageRules": [
     {
@@ -82,6 +89,6 @@
         "!k8s.io{/,}**",
         "!sigs.k8s.io{/,}**",
       ]
-    }
+    },
   ]
 }
