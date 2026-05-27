@@ -17,7 +17,7 @@ env:
   UPBOUND_MARKETPLACE_PUSH_ROBOT_USR: ${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR }}
 jobs:
   detect-noop:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     outputs:
       noop: ${{ steps.noop.outputs.should_skip }}
     steps:
