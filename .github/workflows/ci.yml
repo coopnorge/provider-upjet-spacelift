@@ -10,14 +10,14 @@ env:
   # Common versions
   GO_VERSION: '1.26'
   GOLANGCI_VERSION: 'v2.12.2'
-  DOCKER_BUILDX_VERSION: 'v0.33.0'
+  DOCKER_BUILDX_VERSION: 'v0.34.0'
   # Common users. We can't run a step 'if secrets.XXX != ""' but we can run a
   # step 'if env.XXX != ""', so we copy these to succinctly test whether
   # credentials have been provided before trying to run steps that need them.
   UPBOUND_MARKETPLACE_PUSH_ROBOT_USR: ${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR }}
 jobs:
   detect-noop:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     outputs:
       noop: ${{ steps.noop.outputs.should_skip }}
     steps:
@@ -61,7 +61,7 @@ jobs:
       # We could run 'make lint' but we prefer this action because it leaves
       # 'annotations' (i.e. it comments on PRs to point out linter violations).
       - name: Lint
-        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9
+        uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v9
         with:
           version: ${{ env.GOLANGCI_VERSION }}
   check-diff:
@@ -177,7 +177,7 @@ jobs:
     if: needs.detect-noop.outputs.noop != 'true'
     steps:
       - name: Setup QEMU
-        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4
+        uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4
         with:
           platforms: all
       - name: Setup Docker Buildx
@@ -186,7 +186,7 @@ jobs:
           version: ${{ env.DOCKER_BUILDX_VERSION }}
           install: true
       - name: Login to Upbound
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
         if: env.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR != ''
         with:
           registry: xpkg.upbound.io
