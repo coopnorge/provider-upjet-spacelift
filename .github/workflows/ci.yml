@@ -261,6 +261,14 @@ jobs:
         with:
           version: ${{ env.DOCKER_BUILDX_VERSION }}
           install: true
+          
+      - name: Login to Upbound
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
+        if: env.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR != ''
+        with:
+          registry: xpkg.upbound.io
+          username: ${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR }}
+          password: ${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_PSW }}
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -308,3 +316,16 @@ jobs:
         with:
           name: output
           path: _output/**
+
+      - name: Publish Artifacts
+        run: make publish BRANCH_NAME=${GITHUB_REF##*/}
+
+  validate-ci-results:
+    needs:
+      - publish-artifacts
+    if: failure() || cancelled()
+    runs-on: ubuntu-slim
+    permissions: {}
+    steps:
+      - run: exit 1
+        name: "Catch errors"
