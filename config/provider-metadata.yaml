@@ -576,15 +576,15 @@ resources:
             - terraform import spacelift_gitlab_integration.example spacelift_gitlab_integration_id
     spacelift_idp_group_mapping:
         subCategory: ""
-        description: spacelift_idp_group_mapping represents a mapping (binding) between a user group (as provided by IdP) and a Spacelift User Management Policy. If you assign permissions (a Policy) to a user group, all users in the group will have those permissions unless the user's permissions are higher than the group's permissions.
+        description: spacelift_idp_group_mapping represents a mapping between a group in an IdP and Spacelift. Define the policy attribute to give permissions to user groups in a certain space.When the policy attribute is left empty, you can use the spacelift_role_attachment resource to bind roles to an IdP group.
         name: spacelift_idp_group_mapping
         title: spacelift_idp_group_mapping Resource - terraform-provider-spacelift
         examples:
-            - name: test
+            - name: devops
               manifest: |-
                 {
-                  "description": "test description",
-                  "name": "test",
+                  "description": "Maps the devops IdP group to the root space with admin role",
+                  "name": "devops",
                   "policy": [
                     {
                       "role": "ADMIN",
@@ -592,14 +592,51 @@ resources:
                     }
                   ]
                 }
+              dependencies:
+                spacelift_role.devops: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "description": "A role that provides full admin access to a space",
+                      "name": "SpaceAdmin"
+                    }
+                spacelift_role_attachment.devops: |-
+                    {
+                      "idp_group_mapping": "${spacelift_idp_group_mapping.devops.id}",
+                      "role_id": "${spacelift_role.devops.id}",
+                      "space_id": "root"
+                    }
+            - name: devops
+              manifest: |-
+                {
+                  "description": "Creates a mapping for the devops IdP group",
+                  "name": "devops"
+                }
+              dependencies:
+                spacelift_role.devops: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "description": "A role that provides full admin access to a space",
+                      "name": "SpaceAdmin"
+                    }
+                spacelift_role_attachment.devops: |-
+                    {
+                      "idp_group_mapping": "${spacelift_idp_group_mapping.devops.id}",
+                      "role_id": "${spacelift_role.devops.id}",
+                      "space_id": "root"
+                    }
         argumentDocs:
-            description: (String) Description of the user group
+            description: (String) Description of the IdP group mapping
             id: (String) The ID of this resource.
-            name: (String) Name of the user group - should be unique in one account
-            policy: '(Block Set, Min: 1) (see below for nested schema)'
+            name: (String) Name of the IdP group as defined in the SSO provider - should be unique per account
+            policy: attribute to give permissions to user groups in a certain space.
             role: '(String) Type of access to the space. Possible values are: READ, WRITE, ADMIN'
-            space_id: (String) ID (slug) of the space the user group has access to
-        importStatements: []
+            space_id: (String) ID (slug) of the space the IdP group mapping has access to
+        importStatements:
+            - terraform import spacelift_idp_group_mapping.devops $IDP_GROUP_MAPPING_ID
     spacelift_module:
         subCategory: ""
         description: spacelift_module is a special type of a stack used to test and version Terraform modules.
@@ -794,6 +831,148 @@ resources:
             stack_id: (String) ID of the stack to attach the policy to
         importStatements:
             - terraform import spacelift_policy_attachment.no-weekend-deploys $POLICY_ID/$STACK_ID
+    spacelift_role:
+        subCategory: ""
+        description: 'spacelift_role represents a Spacelift role - a collection of permissions that can be assigned to IdP groups or API keys to control access to Spacelift resources and operations. Note: you must have admin access to the root Space in order to create or mutate roles.'
+        name: spacelift_role
+        title: spacelift_role Resource - terraform-provider-spacelift
+        examples:
+            - name: readonly
+              manifest: |-
+                {
+                  "actions": [
+                    "SPACE_READ",
+                    "RUN_CONFIRM"
+                  ],
+                  "description": "A role that can read Space resources and confirm runs",
+                  "name": "ReadOnly Role"
+                }
+        argumentDocs:
+            actions: '(Set of String) List of actions (permissions) associated with the role. For example: SPACE_READ, SPACE_WRITE, SPACE_ADMIN, RUN_TRIGGER. All possible actions can be listed using the spacelift_role_actions data source.'
+            description: (String) Human-readable, free-form description of the role
+            id: '(String) Unique identifier (ULID) of the role. Example: 01K07523Q8B4TBF0YHQRF6J5MW.'
+            name: (String) Human-readable, free-form name of the role
+            slug: '(String) URL-friendly unique identifier of the role, generated from the name. Example: space-admin.'
+        importStatements:
+            - terraform import spacelift_role.readonly $ROLE_ID
+    spacelift_role_attachment:
+        subCategory: ""
+        description: 'spacelift_role_attachment represents a Spacelift role attachment between: an API key and a rolean IdP Group Mapping and a roleor a user and a role Exactly one of api_key_id, idp_group_mapping_id, or user_id must be set.'
+        name: spacelift_role_attachment
+        title: spacelift_role_attachment Resource - terraform-provider-spacelift
+        examples:
+            - name: api_key_attachment
+              manifest: |-
+                {
+                  "api_key_id": "01K09KERE33P95V40YRWWRVAZT",
+                  "role_id": "${spacelift_role.devops.id}",
+                  "space_id": "${spacelift_space.devops.id}"
+                }
+              references:
+                role_id: spacelift_role.devops.id
+                space_id: spacelift_space.devops.id
+              dependencies:
+                spacelift_idp_group_mapping.devops: |-
+                    {
+                      "name": "devops-group"
+                    }
+                spacelift_role.devops: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "A role for DevOps team"
+                    }
+                spacelift_space.devops: |-
+                    {
+                      "name": "DevOps",
+                      "parent_space_id": "root"
+                    }
+                spacelift_user.devops: |-
+                    {
+                      "invitation_email": "devops@example.com",
+                      "username": "devops-user"
+                    }
+            - name: idp_group_attachment
+              manifest: |-
+                {
+                  "idp_group_mapping_id": "${spacelift_idp_group_mapping.devops.id}",
+                  "role_id": "${spacelift_role.devops.id}",
+                  "space_id": "${spacelift_space.devops.id}"
+                }
+              references:
+                idp_group_mapping_id: spacelift_idp_group_mapping.devops.id
+                role_id: spacelift_role.devops.id
+                space_id: spacelift_space.devops.id
+              dependencies:
+                spacelift_idp_group_mapping.devops: |-
+                    {
+                      "name": "devops-group"
+                    }
+                spacelift_role.devops: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "A role for DevOps team"
+                    }
+                spacelift_space.devops: |-
+                    {
+                      "name": "DevOps",
+                      "parent_space_id": "root"
+                    }
+                spacelift_user.devops: |-
+                    {
+                      "invitation_email": "devops@example.com",
+                      "username": "devops-user"
+                    }
+            - name: user_attachment
+              manifest: |-
+                {
+                  "role_id": "${spacelift_role.devops.id}",
+                  "space_id": "${spacelift_space.devops.id}",
+                  "user_id": "${spacelift_user.devops.id}"
+                }
+              references:
+                role_id: spacelift_role.devops.id
+                space_id: spacelift_space.devops.id
+                user_id: spacelift_user.devops.id
+              dependencies:
+                spacelift_idp_group_mapping.devops: |-
+                    {
+                      "name": "devops-group"
+                    }
+                spacelift_role.devops: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "A role for DevOps team"
+                    }
+                spacelift_space.devops: |-
+                    {
+                      "name": "DevOps",
+                      "parent_space_id": "root"
+                    }
+                spacelift_user.devops: |-
+                    {
+                      "invitation_email": "devops@example.com",
+                      "username": "devops-user"
+                    }
+        argumentDocs:
+            api_key_id: ', idp_group_mapping_id, or user_id must be set.'
+            id: (String) The ID of this resource.
+            idp_group_mapping_id: '(String) ID of the IdP Group Mapping (ULID format) to attach to the role. For example: 01F8Z5K4Y3D1G2H3J4K5L6M7N8.'
+            role_id: '(String) ID of the role (ULID format) to attach to the API key, IdP Group or to the user. For example: 01F8Z5K4Y3D1G2H3J4K5L6M7N8.'
+            space_id: (String) ID of the space where the role attachment should be created
+            user_id: '(String) ID of the user (ULID format) to attach to the role. For example: 01F8Z5K4Y3D1G2H3J4K5L6M7N8.'
+        importStatements:
+            - |-
+              terraform import spacelift_role_attachment.api_key_attachment API/$ROLE_ATTACHMENT_ID
+
+              terraform import spacelift_role_attachment.idp_group_attachment IDP/$ROLE_ATTACHMENT_ID
+
+              terraform import spacelift_role_attachment.user_attachment USER/$ROLE_ATTACHMENT_ID
     spacelift_run:
         subCategory: ""
         description: spacelift_run allows programmatically triggering runs in response to arbitrary changes in the keepers section.
@@ -1537,6 +1716,7 @@ resources:
         argumentDocs:
             deactivated: (Boolean) If set to true, destruction won't delete the stack
             delete: (String)
+            discard_runs: (Boolean) If set to true, destruction will also discard all runs on the stack that are eligible for discarding (e.g. not in progress runs)
             id: (String) The ID of this resource.
             stack_id: (String) ID of the stack to delete and destroy on destruction
             timeouts: (Block, Optional) (see below for nested schema)
@@ -1628,19 +1808,73 @@ resources:
             space_id: (String) ID (slug) of the space the provider is in
             type: (String) Type of the provider - should be unique in one account
         importStatements: []
-    spacelift_user Resource - terraform-provider-spacelift:
+    spacelift_user:
         subCategory: ""
-        description: spacelift_user represents a mapping between a Spacelift user (managed using an Identity Provider) and a Policy. A Policy defines what access rights the user has to a given Space.
-        name: spacelift_user Resource - terraform-provider-spacelift
+        description: spacelift_user represents a mapping between a Spacelift user (managed using an Identity Provider) and a Policy. A Policy defines what access rights the user has to a given Space. When the policy attribute is left empty, you can use the spacelift_role_attachment resource to bind roles to a user.
+        name: spacelift_user
         title: spacelift_user Resource - terraform-provider-spacelift
+        examples:
+            - name: devops
+              manifest: |-
+                {
+                  "invitation_email": "devops@example.com",
+                  "policy": [
+                    {
+                      "role": "READ",
+                      "space_id": "legacy"
+                    },
+                    {
+                      "role": "ADMIN",
+                      "space_id": "root"
+                    }
+                  ],
+                  "username": "devops"
+                }
+              dependencies:
+                spacelift_role.devops: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "description": "A role that provides full admin access to a space",
+                      "name": "SpaceAdmin"
+                    }
+                spacelift_role_attachment.user_attachment: |-
+                    {
+                      "role_id": "${spacelift_role.devops.id}",
+                      "space_id": "root",
+                      "user_id": "${spacelift_user.devops.id}"
+                    }
+            - name: devops
+              manifest: |-
+                {
+                  "invitation_email": "devops@example.com",
+                  "username": "devops"
+                }
+              dependencies:
+                spacelift_role.devops: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "description": "A role that provides full admin access to a space",
+                      "name": "SpaceAdmin"
+                    }
+                spacelift_role_attachment.user_attachment: |-
+                    {
+                      "role_id": "${spacelift_role.devops.id}",
+                      "space_id": "root",
+                      "user_id": "${spacelift_user.devops.id}"
+                    }
         argumentDocs:
             id: (String) The ID of this resource.
             invitation_email: (String) invitation_email will be used to send an invitation to the specified email address. This property is required when creating a new user. This property is optional when importing an existing user.
-            policy: '(Block Set, Min: 1) (see below for nested schema)'
+            policy: (Block Set) (see below for nested schema)
             role: '(String) Type of access to the space. Possible values are: READ, WRITE, ADMIN'
             space_id: (String) ID (slug) of the space the user has access to
             username: (String) Username of the user
-        importStatements: []
+        importStatements:
+            - terraform import spacelift_user.devops $USER_ID
     spacelift_vcs_agent_pool:
         subCategory: ""
         description: spacelift_vcs_agent_pool represents a Spacelift VCS agent pool - a logical group of proxies allowing Spacelift to access private VCS installations
@@ -1660,11 +1894,34 @@ resources:
             name: (String) Name of the VCS agent pool, must be unique within an account
         importStatements:
             - terraform import spacelift_vcs_agent_pool.ghe $VCS_AGENT_POOL_ID
-    spacelift_version Resource - terraform-provider-spacelift:
+    spacelift_version:
         subCategory: ""
         description: spacelift_version allows to programmatically trigger a module version creation in response to arbitrary changes in the keepers section.
-        name: spacelift_version Resource - terraform-provider-spacelift
+        name: spacelift_version
         title: spacelift_version Resource - terraform-provider-spacelift
+        examples:
+            - name: k8s-module
+              manifest: |-
+                {
+                  "commit_sha": "abc123def456789",
+                  "keepers": {
+                    "vpc_config": "${data.aws_eks_cluster.k8s-module.vpc_config[0].security_group_ids}"
+                  },
+                  "module_id": "${spacelift_module.k8s-module.id}",
+                  "version_number": "1.2.3"
+                }
+              references:
+                module_id: spacelift_module.k8s-module.id
+              dependencies:
+                spacelift_module.k8s-module: |-
+                    {
+                      "administrative": true,
+                      "branch": "master",
+                      "description": "Infra terraform module",
+                      "name": "k8s-module",
+                      "repository": "terraform-super-module",
+                      "terraform_provider": "aws"
+                    }
         argumentDocs:
             commit_sha: (String) The commit SHA for which to trigger a version.
             id: (String) The ID of the triggered version.
