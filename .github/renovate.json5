@@ -103,7 +103,7 @@
       "customType": "regex",
       "description": "Bump Spacelift provider version in the Makefile",
       "managerFilePatterns": ["/^Makefile$/"],
-      "matchStrings": ["TERRAFORM_PROVIDER_VERSION ??= (?<currentValue>.*?)\\n"],
+      "matchStrings": ["TERRAFORM_PROVIDER_VERSION \\??= (?<currentValue>.*?)\\n"],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "spacelift-io/terraform-provider-spacelift"
     },
