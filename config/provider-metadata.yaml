@@ -576,7 +576,7 @@ resources:
             - terraform import spacelift_gitlab_integration.example spacelift_gitlab_integration_id
     spacelift_idp_group_mapping:
         subCategory: ""
-        description: spacelift_idp_group_mapping represents a mapping between a group in an IdP and Spacelift. Define the policy attribute to give permissions to user groups in a certain space.When the policy attribute is left empty, you can use the spacelift_role_attachment resource to bind roles to an IdP group.
+        description: 'spacelift_idp_group_mapping represents a mapping between a group in an IdP and Spacelift. Note: The policy attribute, previously used to assign roles to the group, is deprecated. Use the spacelift_role_attachment resource to manage group roles instead.'
         name: spacelift_idp_group_mapping
         title: spacelift_idp_group_mapping Resource - terraform-provider-spacelift
         examples:
@@ -632,7 +632,7 @@ resources:
             description: (String) Description of the IdP group mapping
             id: (String) The ID of this resource.
             name: (String) Name of the IdP group as defined in the SSO provider - should be unique per account
-            policy: attribute to give permissions to user groups in a certain space.
+            policy: (Block Set, Deprecated) List of access rules for the IdP group. (see below for nested schema)
             role: '(String) Type of access to the space. Possible values are: READ, WRITE, ADMIN'
             space_id: (String) ID (slug) of the space the IdP group mapping has access to
         importStatements:
@@ -671,6 +671,7 @@ resources:
             branch: (String) GitHub branch to apply changes to
             description: (String) Free-form module description for users
             enable_local_preview: (Boolean) Indicates whether local preview versions can be triggered on this Module. Defaults to false.
+            git_sparse_checkout_paths: (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
             github_enterprise: '(Block List, Max: 1) GitHub Enterprise (self-hosted) VCS settings (see below for nested schema)'
             gitlab: '(Block List, Max: 1) GitLab VCS settings (see below for nested schema)'
             id: (String) The ID of this resource.
@@ -1462,6 +1463,7 @@ resources:
             enable_sensitive_outputs_upload: (Boolean) Indicates whether sensitive outputs created by this stack can be uploaded to Spacelift to be used by Stack Dependency references. Triggered only when corresponding option is enabled on the Worker Pool used by the Stack as well. Defaults to true.
             enable_well_known_secret_masking: (Boolean) Indicates whether well-known secret masking is enabled.
             entry_template_file: (String) Template file cloudformation package will be called on
+            git_sparse_checkout_paths: (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
             github_action_deploy: (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
             github_enterprise: '(Block List, Max: 1) VCS settings for GitHub custom application (see below for nested schema)'
             gitlab: '(Block List, Max: 1) GitLab VCS settings (see below for nested schema)'
@@ -1810,7 +1812,7 @@ resources:
         importStatements: []
     spacelift_user:
         subCategory: ""
-        description: spacelift_user represents a mapping between a Spacelift user (managed using an Identity Provider) and a Policy. A Policy defines what access rights the user has to a given Space. When the policy attribute is left empty, you can use the spacelift_role_attachment resource to bind roles to a user.
+        description: 'spacelift_user represents a mapping between a Spacelift user (managed using an Identity Provider) and a Policy. A Policy defines what access rights the user has to a given Space. Note: The policy attribute, previously used to assign roles to the user, is deprecated. Use the spacelift_role_attachment resource to manage user roles instead.'
         name: spacelift_user
         title: spacelift_user Resource - terraform-provider-spacelift
         examples:
@@ -1869,7 +1871,7 @@ resources:
         argumentDocs:
             id: (String) The ID of this resource.
             invitation_email: (String) invitation_email will be used to send an invitation to the specified email address. This property is required when creating a new user. This property is optional when importing an existing user.
-            policy: (Block Set) (see below for nested schema)
+            policy: (Block Set, Deprecated) (see below for nested schema)
             role: '(String) Type of access to the space. Possible values are: READ, WRITE, ADMIN'
             space_id: (String) ID (slug) of the space the user has access to
             username: (String) Username of the user

@@ -238,6 +238,11 @@ type ModuleInitParameters struct {
 	// Indicates whether local preview versions can be triggered on this Module. Defaults to `false`.
 	EnableLocalPreview *bool `json:"enableLocalPreview,omitempty" tf:"enable_local_preview,omitempty"`
 
+	// (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// +listType=set
+	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
+
 	// hosted) VCS settings (see below for nested schema)
 	// GitHub Enterprise (self-hosted) VCS settings
 	GithubEnterprise []GithubEnterpriseInitParameters `json:"githubEnterprise,omitempty" tf:"github_enterprise,omitempty"`
@@ -337,6 +342,11 @@ type ModuleObservation struct {
 	// Indicates whether local preview versions can be triggered on this Module. Defaults to `false`.
 	EnableLocalPreview *bool `json:"enableLocalPreview,omitempty" tf:"enable_local_preview,omitempty"`
 
+	// (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// +listType=set
+	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
+
 	// hosted) VCS settings (see below for nested schema)
 	// GitHub Enterprise (self-hosted) VCS settings
 	GithubEnterprise []GithubEnterpriseObservation `json:"githubEnterprise,omitempty" tf:"github_enterprise,omitempty"`
@@ -432,6 +442,12 @@ type ModuleParameters struct {
 	// Indicates whether local preview versions can be triggered on this Module. Defaults to `false`.
 	// +kubebuilder:validation:Optional
 	EnableLocalPreview *bool `json:"enableLocalPreview,omitempty" tf:"enable_local_preview,omitempty"`
+
+	// (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// +kubebuilder:validation:Optional
+	// +listType=set
+	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
 
 	// hosted) VCS settings (see below for nested schema)
 	// GitHub Enterprise (self-hosted) VCS settings
