@@ -295,6 +295,14 @@ spec:
                       known secret masking is enabled.
                       Indicates whether well-known secret masking is enabled.
                     type: boolean
+                  gitSparseCheckoutPaths:
+                    description: |-
+                      (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+                      Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
                   githubActionDeploy:
                     description: |-
                       (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
@@ -840,6 +848,14 @@ spec:
                       known secret masking is enabled.
                       Indicates whether well-known secret masking is enabled.
                     type: boolean
+                  gitSparseCheckoutPaths:
+                    description: |-
+                      (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+                      Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
                   githubActionDeploy:
                     description: |-
                       (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
@@ -1577,6 +1593,14 @@ spec:
                       known secret masking is enabled.
                       Indicates whether well-known secret masking is enabled.
                     type: boolean
+                  gitSparseCheckoutPaths:
+                    description: |-
+                      (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+                      Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
                   githubActionDeploy:
                     description: |-
                       (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.

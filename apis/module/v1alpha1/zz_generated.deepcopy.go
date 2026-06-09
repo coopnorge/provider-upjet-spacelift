@@ -484,6 +484,17 @@ func (in *ModuleInitParameters) DeepCopyInto(out *ModuleInitParameters) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.GitSparseCheckoutPaths != nil {
+		in, out := &in.GitSparseCheckoutPaths, &out.GitSparseCheckoutPaths
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.GithubEnterprise != nil {
 		in, out := &in.GithubEnterprise, &out.GithubEnterprise
 		*out = make([]GithubEnterpriseInitParameters, len(*in))
@@ -675,6 +686,17 @@ func (in *ModuleObservation) DeepCopyInto(out *ModuleObservation) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.GitSparseCheckoutPaths != nil {
+		in, out := &in.GitSparseCheckoutPaths, &out.GitSparseCheckoutPaths
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.GithubEnterprise != nil {
 		in, out := &in.GithubEnterprise, &out.GithubEnterprise
 		*out = make([]GithubEnterpriseObservation, len(*in))
@@ -823,6 +845,17 @@ func (in *ModuleParameters) DeepCopyInto(out *ModuleParameters) {
 		in, out := &in.EnableLocalPreview, &out.EnableLocalPreview
 		*out = new(bool)
 		**out = **in
+	}
+	if in.GitSparseCheckoutPaths != nil {
+		in, out := &in.GitSparseCheckoutPaths, &out.GitSparseCheckoutPaths
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.GithubEnterprise != nil {
 		in, out := &in.GithubEnterprise, &out.GithubEnterprise

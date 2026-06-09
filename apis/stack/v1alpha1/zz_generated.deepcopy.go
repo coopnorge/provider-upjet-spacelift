@@ -1115,6 +1115,17 @@ func (in *StackInitParameters) DeepCopyInto(out *StackInitParameters) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.GitSparseCheckoutPaths != nil {
+		in, out := &in.GitSparseCheckoutPaths, &out.GitSparseCheckoutPaths
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.GithubActionDeploy != nil {
 		in, out := &in.GithubActionDeploy, &out.GithubActionDeploy
 		*out = new(bool)
@@ -1529,6 +1540,17 @@ func (in *StackObservation) DeepCopyInto(out *StackObservation) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.GitSparseCheckoutPaths != nil {
+		in, out := &in.GitSparseCheckoutPaths, &out.GitSparseCheckoutPaths
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.GithubActionDeploy != nil {
 		in, out := &in.GithubActionDeploy, &out.GithubActionDeploy
 		*out = new(bool)
@@ -1895,6 +1917,17 @@ func (in *StackParameters) DeepCopyInto(out *StackParameters) {
 		in, out := &in.EnableWellKnownSecretMasking, &out.EnableWellKnownSecretMasking
 		*out = new(bool)
 		**out = **in
+	}
+	if in.GitSparseCheckoutPaths != nil {
+		in, out := &in.GitSparseCheckoutPaths, &out.GitSparseCheckoutPaths
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.GithubActionDeploy != nil {
 		in, out := &in.GithubActionDeploy, &out.GithubActionDeploy

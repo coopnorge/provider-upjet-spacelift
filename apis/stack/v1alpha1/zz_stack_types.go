@@ -531,6 +531,11 @@ type StackInitParameters struct {
 	// Indicates whether well-known secret masking is enabled.
 	EnableWellKnownSecretMasking *bool `json:"enableWellKnownSecretMasking,omitempty" tf:"enable_well_known_secret_masking,omitempty"`
 
+	// (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// +listType=set
+	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
+
 	// (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
 	// Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
 	GithubActionDeploy *bool `json:"githubActionDeploy,omitempty" tf:"github_action_deploy,omitempty"`
@@ -745,6 +750,11 @@ type StackObservation struct {
 	// known secret masking is enabled.
 	// Indicates whether well-known secret masking is enabled.
 	EnableWellKnownSecretMasking *bool `json:"enableWellKnownSecretMasking,omitempty" tf:"enable_well_known_secret_masking,omitempty"`
+
+	// (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// +listType=set
+	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
 
 	// (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
 	// Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
@@ -971,6 +981,12 @@ type StackParameters struct {
 	// Indicates whether well-known secret masking is enabled.
 	// +kubebuilder:validation:Optional
 	EnableWellKnownSecretMasking *bool `json:"enableWellKnownSecretMasking,omitempty" tf:"enable_well_known_secret_masking,omitempty"`
+
+	// (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
+	// +kubebuilder:validation:Optional
+	// +listType=set
+	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
 
 	// (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
 	// Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
