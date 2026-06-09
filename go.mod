@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	dario.cat/mergo v1.0.2
-	github.com/crossplane/crossplane-runtime v1.20.8
+	github.com/crossplane/crossplane-runtime v1.20.9
 	github.com/crossplane/crossplane-tools v0.0.0-20251017183449-dd4517244339
 	github.com/crossplane/upjet v1.11.0
 	github.com/pkg/errors v0.9.1

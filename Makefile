@@ -54,7 +54,7 @@ GO_SUBDIRS += cmd internal apis
 # ====================================================================================
 # Setup Kubernetes tools
 
-KIND_VERSION = v0.31.0
+KIND_VERSION = v0.32.0
 UP_VERSION = v0.41.0
 UP_CHANNEL = stable
 UPTEST_VERSION = v2.2.0
@@ -175,7 +175,7 @@ run: go.build
 
 # ====================================================================================
 # End to End Testing
-CROSSPLANE_VERSION = 1.20.8
+CROSSPLANE_VERSION = 1.20.9
 CROSSPLANE_NAMESPACE = upbound-system
 -include build/makelib/local.xpkg.mk
 -include build/makelib/controlplane.mk
