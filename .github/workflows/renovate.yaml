@@ -21,5 +21,3 @@ jobs:
     secrets: inherit
     with:
       log-level: ${{ inputs.log-level }}
-      post-upgrade-command: |
-        make generate

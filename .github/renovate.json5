@@ -168,5 +168,16 @@
       "groupName": "golangci-lint versions in CI",
       "groupSlug": "golangci-lint-in-ci"
     },
+      // to run after go package updates
+    {
+      "matchFileNames": ["go.**", "**/Makefile", "**/Dockerfile"],
+      "postUpgradeTasks": {
+        "commands": [
+            "make generate"
+        ],
+        "fileFilters": ["/.*/"],
+        "executionMode": "update"
+      }
+    }
   ]
 }
