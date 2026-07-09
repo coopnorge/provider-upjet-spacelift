@@ -174,10 +174,10 @@
       "postUpgradeTasks": {
         "commands": [
             "make submodules",
-            "make build",
+            "make vendor vendor.check",
             "make generate",
         ],
-        "fileFilters": ["/.*/"],
+        "fileFilters": ["**"],
         "executionMode": "update"
       }
     }
