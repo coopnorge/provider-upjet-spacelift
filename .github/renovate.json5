@@ -173,7 +173,8 @@
       "matchFileNames": ["go.**", "**/Makefile", "**/Dockerfile"],
       "postUpgradeTasks": {
         "commands": [
-            "make generate"
+            "make submodules",
+            "make generate",
         ],
         "fileFilters": ["/.*/"],
         "executionMode": "update"
