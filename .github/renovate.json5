@@ -168,9 +168,9 @@
       "groupName": "golangci-lint versions in CI",
       "groupSlug": "golangci-lint-in-ci"
     },
-      // to run after go package updates
+      // to run after go package updates and Makefile updates (e.g. TERRAFORM_PROVIDER_VERSION)
     {
-      "matchFileNames": ["go.**", "**/Makefile", "**/Dockerfile"],
+      "matchFileNames": ["go.**", "**/Makefile"],
       "postUpgradeTasks": {
         "commands": [
             "make submodules",
