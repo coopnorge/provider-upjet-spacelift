@@ -241,6 +241,11 @@ spec:
                       (String) Name of the repository, without the owner part
                       Name of the repository, without the owner part
                     type: string
+                  runnerImage:
+                    description: |-
+                      (String) Name of the Docker image used to process Runs
+                      Name of the Docker image used to process Runs
+                    type: string
                   sharedAccounts:
                     description: |-
                       (Set of String) List of the accounts (subdomains) which should have access to the Module
@@ -328,6 +333,14 @@ spec:
                             type: string
                         type: object
                     type: object
+                  spaceShares:
+                    description: |-
+                      (Set of String) List of the space IDs which should have access to the Module
+                      List of the space IDs which should have access to the Module
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
                   terraformProvider:
                     description: provider-name naming convention. However, if the
                       repository doesn't follow this convention, or you gave the module
@@ -529,6 +542,11 @@ spec:
                       (String) Name of the repository, without the owner part
                       Name of the repository, without the owner part
                     type: string
+                  runnerImage:
+                    description: |-
+                      (String) Name of the Docker image used to process Runs
+                      Name of the Docker image used to process Runs
+                    type: string
                   sharedAccounts:
                     description: |-
                       (Set of String) List of the accounts (subdomains) which should have access to the Module
@@ -616,6 +634,14 @@ spec:
                             type: string
                         type: object
                     type: object
+                  spaceShares:
+                    description: |-
+                      (Set of String) List of the space IDs which should have access to the Module
+                      List of the space IDs which should have access to the Module
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
                   terraformProvider:
                     description: provider-name naming convention. However, if the
                       repository doesn't follow this convention, or you gave the module
@@ -1018,6 +1044,11 @@ spec:
                       (String) Name of the repository, without the owner part
                       Name of the repository, without the owner part
                     type: string
+                  runnerImage:
+                    description: |-
+                      (String) Name of the Docker image used to process Runs
+                      Name of the Docker image used to process Runs
+                    type: string
                   sharedAccounts:
                     description: |-
                       (Set of String) List of the accounts (subdomains) which should have access to the Module
@@ -1031,6 +1062,14 @@ spec:
                       (String) ID (slug) of the space the module is in
                       ID (slug) of the space the module is in
                     type: string
+                  spaceShares:
+                    description: |-
+                      (Set of String) List of the space IDs which should have access to the Module
+                      List of the space IDs which should have access to the Module
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
                   terraformProvider:
                     description: provider-name naming convention. However, if the
                       repository doesn't follow this convention, or you gave the module

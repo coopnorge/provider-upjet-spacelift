@@ -435,8 +435,8 @@ type StackInitParameters struct {
 	// +listType=set
 	AdditionalProjectGlobs []*string `json:"additionalProjectGlobs,omitempty" tf:"additional_project_globs,omitempty"`
 
-	// (Boolean) Indicates whether this stack can manage others. Defaults to false.
-	// Indicates whether this stack can manage others. Defaults to `false`.
+	// (Boolean, Deprecated) Indicates whether this stack can manage others. Defaults to false. This field will be removed in a future version. Use spacelift_role_attachment resource to manage stack permissions.
+	// Indicates whether this stack can manage others. Defaults to `false`. This field will be removed in a future version. Use `spacelift_role_attachment` resource to manage stack permissions.
 	Administrative *bool `json:"administrative,omitempty" tf:"administrative,omitempty"`
 
 	// apply scripts
@@ -462,6 +462,10 @@ type StackInitParameters struct {
 	// run scripts
 	// List of after-run scripts
 	AfterRun []*string `json:"afterRun,omitempty" tf:"after_run,omitempty"`
+
+	// (Boolean) Indicates whether a proposed run can be promoted to a tracked run. Defaults to true.
+	// Indicates whether a proposed run can be promoted to a tracked run. Defaults to `true`.
+	AllowRunPromotion *bool `json:"allowRunPromotion,omitempty" tf:"allow_run_promotion,omitempty"`
 
 	// specific configuration. Presence means this Stack is an Ansible Stack. (see below for nested schema)
 	// Ansible-specific configuration. Presence means this Stack is an Ansible Stack.
@@ -536,8 +540,8 @@ type StackInitParameters struct {
 	// +listType=set
 	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
 
-	// (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
-	// Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
+	// (Boolean, Deprecated) Use allow_run_promotion instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to true.
+	// Use `allow_run_promotion` instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to `true`.
 	GithubActionDeploy *bool `json:"githubActionDeploy,omitempty" tf:"github_action_deploy,omitempty"`
 
 	// (Block List, Max: 1) VCS settings for GitHub custom application (see below for nested schema)
@@ -651,8 +655,8 @@ type StackObservation struct {
 	// +listType=set
 	AdditionalProjectGlobs []*string `json:"additionalProjectGlobs,omitempty" tf:"additional_project_globs,omitempty"`
 
-	// (Boolean) Indicates whether this stack can manage others. Defaults to false.
-	// Indicates whether this stack can manage others. Defaults to `false`.
+	// (Boolean, Deprecated) Indicates whether this stack can manage others. Defaults to false. This field will be removed in a future version. Use spacelift_role_attachment resource to manage stack permissions.
+	// Indicates whether this stack can manage others. Defaults to `false`. This field will be removed in a future version. Use `spacelift_role_attachment` resource to manage stack permissions.
 	Administrative *bool `json:"administrative,omitempty" tf:"administrative,omitempty"`
 
 	// apply scripts
@@ -678,6 +682,10 @@ type StackObservation struct {
 	// run scripts
 	// List of after-run scripts
 	AfterRun []*string `json:"afterRun,omitempty" tf:"after_run,omitempty"`
+
+	// (Boolean) Indicates whether a proposed run can be promoted to a tracked run. Defaults to true.
+	// Indicates whether a proposed run can be promoted to a tracked run. Defaults to `true`.
+	AllowRunPromotion *bool `json:"allowRunPromotion,omitempty" tf:"allow_run_promotion,omitempty"`
 
 	// specific configuration. Presence means this Stack is an Ansible Stack. (see below for nested schema)
 	// Ansible-specific configuration. Presence means this Stack is an Ansible Stack.
@@ -756,8 +764,8 @@ type StackObservation struct {
 	// +listType=set
 	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
 
-	// (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
-	// Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
+	// (Boolean, Deprecated) Use allow_run_promotion instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to true.
+	// Use `allow_run_promotion` instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to `true`.
 	GithubActionDeploy *bool `json:"githubActionDeploy,omitempty" tf:"github_action_deploy,omitempty"`
 
 	// (Block List, Max: 1) VCS settings for GitHub custom application (see below for nested schema)
@@ -862,8 +870,8 @@ type StackParameters struct {
 	// +listType=set
 	AdditionalProjectGlobs []*string `json:"additionalProjectGlobs,omitempty" tf:"additional_project_globs,omitempty"`
 
-	// (Boolean) Indicates whether this stack can manage others. Defaults to false.
-	// Indicates whether this stack can manage others. Defaults to `false`.
+	// (Boolean, Deprecated) Indicates whether this stack can manage others. Defaults to false. This field will be removed in a future version. Use spacelift_role_attachment resource to manage stack permissions.
+	// Indicates whether this stack can manage others. Defaults to `false`. This field will be removed in a future version. Use `spacelift_role_attachment` resource to manage stack permissions.
 	// +kubebuilder:validation:Optional
 	Administrative *bool `json:"administrative,omitempty" tf:"administrative,omitempty"`
 
@@ -896,6 +904,11 @@ type StackParameters struct {
 	// List of after-run scripts
 	// +kubebuilder:validation:Optional
 	AfterRun []*string `json:"afterRun,omitempty" tf:"after_run,omitempty"`
+
+	// (Boolean) Indicates whether a proposed run can be promoted to a tracked run. Defaults to true.
+	// Indicates whether a proposed run can be promoted to a tracked run. Defaults to `true`.
+	// +kubebuilder:validation:Optional
+	AllowRunPromotion *bool `json:"allowRunPromotion,omitempty" tf:"allow_run_promotion,omitempty"`
 
 	// specific configuration. Presence means this Stack is an Ansible Stack. (see below for nested schema)
 	// Ansible-specific configuration. Presence means this Stack is an Ansible Stack.
@@ -988,8 +1001,8 @@ type StackParameters struct {
 	// +listType=set
 	GitSparseCheckoutPaths []*string `json:"gitSparseCheckoutPaths,omitempty" tf:"git_sparse_checkout_paths,omitempty"`
 
-	// (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
-	// Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
+	// (Boolean, Deprecated) Use allow_run_promotion instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to true.
+	// Use `allow_run_promotion` instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to `true`.
 	// +kubebuilder:validation:Optional
 	GithubActionDeploy *bool `json:"githubActionDeploy,omitempty" tf:"github_action_deploy,omitempty"`
 
@@ -1123,6 +1136,18 @@ type StackParameters struct {
 
 type TerragruntInitParameters struct {
 
+	// (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+	// Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+	PrefixResourceNamesWithModuleName *bool `json:"prefixResourceNamesWithModuleName,omitempty" tf:"prefix_resource_names_with_module_name,omitempty"`
+
+	// planning. Applies to both run-all and non-run-all stacks. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	// If set to true, the apply phase will reuse the plan from the planning phase instead of re-planning. Applies to both run-all and non-run-all stacks. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	SkipReplan *bool `json:"skipReplan,omitempty" tf:"skip_replan,omitempty"`
+
+	// is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	// When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	SkipReplanWhenRunAll *bool `json:"skipReplanWhenRunAll,omitempty" tf:"skip_replan_when_run_all,omitempty"`
+
 	// Must not be provided when tool is set to MANUALLY_PROVISIONED.
 	TerraformVersion *string `json:"terraformVersion,omitempty" tf:"terraform_version,omitempty"`
 
@@ -1139,10 +1164,26 @@ type TerragruntInitParameters struct {
 	UseRunAll *bool `json:"useRunAll,omitempty" tf:"use_run_all,omitempty"`
 
 	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
+
+	// (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
+	// Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over `manage_state`. Defaults to `false`.
+	UseStateManagement *bool `json:"useStateManagement,omitempty" tf:"use_state_management,omitempty"`
 }
 
 type TerragruntObservation struct {
 
+	// (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+	// Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+	PrefixResourceNamesWithModuleName *bool `json:"prefixResourceNamesWithModuleName,omitempty" tf:"prefix_resource_names_with_module_name,omitempty"`
+
+	// planning. Applies to both run-all and non-run-all stacks. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	// If set to true, the apply phase will reuse the plan from the planning phase instead of re-planning. Applies to both run-all and non-run-all stacks. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	SkipReplan *bool `json:"skipReplan,omitempty" tf:"skip_replan,omitempty"`
+
+	// is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	// When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	SkipReplanWhenRunAll *bool `json:"skipReplanWhenRunAll,omitempty" tf:"skip_replan_when_run_all,omitempty"`
+
 	// Must not be provided when tool is set to MANUALLY_PROVISIONED.
 	TerraformVersion *string `json:"terraformVersion,omitempty" tf:"terraform_version,omitempty"`
 
@@ -1159,10 +1200,29 @@ type TerragruntObservation struct {
 	UseRunAll *bool `json:"useRunAll,omitempty" tf:"use_run_all,omitempty"`
 
 	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
+
+	// (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
+	// Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over `manage_state`. Defaults to `false`.
+	UseStateManagement *bool `json:"useStateManagement,omitempty" tf:"use_state_management,omitempty"`
 }
 
 type TerragruntParameters struct {
 
+	// (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+	// Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+	// +kubebuilder:validation:Optional
+	PrefixResourceNamesWithModuleName *bool `json:"prefixResourceNamesWithModuleName,omitempty" tf:"prefix_resource_names_with_module_name,omitempty"`
+
+	// planning. Applies to both run-all and non-run-all stacks. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	// If set to true, the apply phase will reuse the plan from the planning phase instead of re-planning. Applies to both run-all and non-run-all stacks. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	// +kubebuilder:validation:Optional
+	SkipReplan *bool `json:"skipReplan,omitempty" tf:"skip_replan,omitempty"`
+
+	// is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	// When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+	// +kubebuilder:validation:Optional
+	SkipReplanWhenRunAll *bool `json:"skipReplanWhenRunAll,omitempty" tf:"skip_replan_when_run_all,omitempty"`
+
 	// Must not be provided when tool is set to MANUALLY_PROVISIONED.
 	// +kubebuilder:validation:Optional
 	TerraformVersion *string `json:"terraformVersion,omitempty" tf:"terraform_version,omitempty"`
@@ -1184,6 +1244,11 @@ type TerragruntParameters struct {
 
 	// +kubebuilder:validation:Optional
 	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
+
+	// (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
+	// Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over `manage_state`. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	UseStateManagement *bool `json:"useStateManagement,omitempty" tf:"use_state_management,omitempty"`
 }
 
 // StackSpec defines the desired state of Stack

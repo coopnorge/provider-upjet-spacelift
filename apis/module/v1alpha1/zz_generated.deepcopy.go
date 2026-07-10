@@ -552,6 +552,11 @@ func (in *ModuleInitParameters) DeepCopyInto(out *ModuleInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.RunnerImage != nil {
+		in, out := &in.RunnerImage, &out.RunnerImage
+		*out = new(string)
+		**out = **in
+	}
 	if in.SharedAccounts != nil {
 		in, out := &in.SharedAccounts, &out.SharedAccounts
 		*out = make([]*string, len(*in))
@@ -577,6 +582,17 @@ func (in *ModuleInitParameters) DeepCopyInto(out *ModuleInitParameters) {
 		in, out := &in.SpaceIDSelector, &out.SpaceIDSelector
 		*out = new(v1.Selector)
 		(*in).DeepCopyInto(*out)
+	}
+	if in.SpaceShares != nil {
+		in, out := &in.SpaceShares, &out.SpaceShares
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.TerraformProvider != nil {
 		in, out := &in.TerraformProvider, &out.TerraformProvider
@@ -759,6 +775,11 @@ func (in *ModuleObservation) DeepCopyInto(out *ModuleObservation) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.RunnerImage != nil {
+		in, out := &in.RunnerImage, &out.RunnerImage
+		*out = new(string)
+		**out = **in
+	}
 	if in.SharedAccounts != nil {
 		in, out := &in.SharedAccounts, &out.SharedAccounts
 		*out = make([]*string, len(*in))
@@ -774,6 +795,17 @@ func (in *ModuleObservation) DeepCopyInto(out *ModuleObservation) {
 		in, out := &in.SpaceID, &out.SpaceID
 		*out = new(string)
 		**out = **in
+	}
+	if in.SpaceShares != nil {
+		in, out := &in.SpaceShares, &out.SpaceShares
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.TerraformProvider != nil {
 		in, out := &in.TerraformProvider, &out.TerraformProvider
@@ -914,6 +946,11 @@ func (in *ModuleParameters) DeepCopyInto(out *ModuleParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.RunnerImage != nil {
+		in, out := &in.RunnerImage, &out.RunnerImage
+		*out = new(string)
+		**out = **in
+	}
 	if in.SharedAccounts != nil {
 		in, out := &in.SharedAccounts, &out.SharedAccounts
 		*out = make([]*string, len(*in))
@@ -939,6 +976,17 @@ func (in *ModuleParameters) DeepCopyInto(out *ModuleParameters) {
 		in, out := &in.SpaceIDSelector, &out.SpaceIDSelector
 		*out = new(v1.Selector)
 		(*in).DeepCopyInto(*out)
+	}
+	if in.SpaceShares != nil {
+		in, out := &in.SpaceShares, &out.SpaceShares
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.TerraformProvider != nil {
 		in, out := &in.TerraformProvider, &out.TerraformProvider

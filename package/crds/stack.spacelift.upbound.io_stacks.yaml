@@ -85,8 +85,8 @@ spec:
                     x-kubernetes-list-type: set
                   administrative:
                     description: |-
-                      (Boolean) Indicates whether this stack can manage others. Defaults to false.
-                      Indicates whether this stack can manage others. Defaults to `false`.
+                      (Boolean, Deprecated) Indicates whether this stack can manage others. Defaults to false. This field will be removed in a future version. Use spacelift_role_attachment resource to manage stack permissions.
+                      Indicates whether this stack can manage others. Defaults to `false`. This field will be removed in a future version. Use `spacelift_role_attachment` resource to manage stack permissions.
                     type: boolean
                   afterApply:
                     description: |-
@@ -130,6 +130,11 @@ spec:
                     items:
                       type: string
                     type: array
+                  allowRunPromotion:
+                    description: |-
+                      (Boolean) Indicates whether a proposed run can be promoted to a tracked run. Defaults to true.
+                      Indicates whether a proposed run can be promoted to a tracked run. Defaults to `true`.
+                    type: boolean
                   ansible:
                     description: |-
                       specific configuration. Presence means this Stack is an Ansible Stack. (see below for nested schema)
@@ -305,8 +310,8 @@ spec:
                     x-kubernetes-list-type: set
                   githubActionDeploy:
                     description: |-
-                      (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
-                      Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
+                      (Boolean, Deprecated) Use allow_run_promotion instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to true.
+                      Use `allow_run_promotion` instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to `true`.
                     type: boolean
                   githubEnterprise:
                     description: |-
@@ -587,6 +592,21 @@ spec:
                       Terragrunt-specific configuration. Presence means this Stack is an Terragrunt Stack.
                     items:
                       properties:
+                        prefixResourceNamesWithModuleName:
+                          description: |-
+                            (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+                            Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+                          type: boolean
+                        skipReplan:
+                          description: |-
+                            planning. Applies to both run-all and non-run-all stacks. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                            If set to true, the apply phase will reuse the plan from the planning phase instead of re-planning. Applies to both run-all and non-run-all stacks. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                          type: boolean
+                        skipReplanWhenRunAll:
+                          description: |-
+                            is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                            When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                          type: boolean
                         terraformVersion:
                           description: Must not be provided when tool is set to MANUALLY_PROVISIONED.
                           type: string
@@ -606,6 +626,11 @@ spec:
                             Whether to use `terragrunt run-all` instead of `terragrunt`.
                           type: boolean
                         useSmartSanitization:
+                          type: boolean
+                        useStateManagement:
+                          description: |-
+                            (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
+                            Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over `manage_state`. Defaults to `false`.
                           type: boolean
                       type: object
                     type: array
@@ -638,8 +663,8 @@ spec:
                     x-kubernetes-list-type: set
                   administrative:
                     description: |-
-                      (Boolean) Indicates whether this stack can manage others. Defaults to false.
-                      Indicates whether this stack can manage others. Defaults to `false`.
+                      (Boolean, Deprecated) Indicates whether this stack can manage others. Defaults to false. This field will be removed in a future version. Use spacelift_role_attachment resource to manage stack permissions.
+                      Indicates whether this stack can manage others. Defaults to `false`. This field will be removed in a future version. Use `spacelift_role_attachment` resource to manage stack permissions.
                     type: boolean
                   afterApply:
                     description: |-
@@ -683,6 +708,11 @@ spec:
                     items:
                       type: string
                     type: array
+                  allowRunPromotion:
+                    description: |-
+                      (Boolean) Indicates whether a proposed run can be promoted to a tracked run. Defaults to true.
+                      Indicates whether a proposed run can be promoted to a tracked run. Defaults to `true`.
+                    type: boolean
                   ansible:
                     description: |-
                       specific configuration. Presence means this Stack is an Ansible Stack. (see below for nested schema)
@@ -858,8 +888,8 @@ spec:
                     x-kubernetes-list-type: set
                   githubActionDeploy:
                     description: |-
-                      (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
-                      Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
+                      (Boolean, Deprecated) Use allow_run_promotion instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to true.
+                      Use `allow_run_promotion` instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to `true`.
                     type: boolean
                   githubEnterprise:
                     description: |-
@@ -1140,6 +1170,21 @@ spec:
                       Terragrunt-specific configuration. Presence means this Stack is an Terragrunt Stack.
                     items:
                       properties:
+                        prefixResourceNamesWithModuleName:
+                          description: |-
+                            (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+                            Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+                          type: boolean
+                        skipReplan:
+                          description: |-
+                            planning. Applies to both run-all and non-run-all stacks. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                            If set to true, the apply phase will reuse the plan from the planning phase instead of re-planning. Applies to both run-all and non-run-all stacks. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                          type: boolean
+                        skipReplanWhenRunAll:
+                          description: |-
+                            is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                            When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                          type: boolean
                         terraformVersion:
                           description: Must not be provided when tool is set to MANUALLY_PROVISIONED.
                           type: string
@@ -1159,6 +1204,11 @@ spec:
                             Whether to use `terragrunt run-all` instead of `terragrunt`.
                           type: boolean
                         useSmartSanitization:
+                          type: boolean
+                        useStateManagement:
+                          description: |-
+                            (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
+                            Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over `manage_state`. Defaults to `false`.
                           type: boolean
                       type: object
                     type: array
@@ -1363,8 +1413,8 @@ spec:
                     x-kubernetes-list-type: set
                   administrative:
                     description: |-
-                      (Boolean) Indicates whether this stack can manage others. Defaults to false.
-                      Indicates whether this stack can manage others. Defaults to `false`.
+                      (Boolean, Deprecated) Indicates whether this stack can manage others. Defaults to false. This field will be removed in a future version. Use spacelift_role_attachment resource to manage stack permissions.
+                      Indicates whether this stack can manage others. Defaults to `false`. This field will be removed in a future version. Use `spacelift_role_attachment` resource to manage stack permissions.
                     type: boolean
                   afterApply:
                     description: |-
@@ -1408,6 +1458,11 @@ spec:
                     items:
                       type: string
                     type: array
+                  allowRunPromotion:
+                    description: |-
+                      (Boolean) Indicates whether a proposed run can be promoted to a tracked run. Defaults to true.
+                      Indicates whether a proposed run can be promoted to a tracked run. Defaults to `true`.
+                    type: boolean
                   ansible:
                     description: |-
                       specific configuration. Presence means this Stack is an Ansible Stack. (see below for nested schema)
@@ -1603,8 +1658,8 @@ spec:
                     x-kubernetes-list-type: set
                   githubActionDeploy:
                     description: |-
-                      (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
-                      Indicates whether GitHub users can deploy from the Checks API. Defaults to `true`. This is called allow run promotion in the UI.
+                      (Boolean, Deprecated) Use allow_run_promotion instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to true.
+                      Use `allow_run_promotion` instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to `true`.
                     type: boolean
                   githubEnterprise:
                     description: |-
@@ -1805,6 +1860,21 @@ spec:
                       Terragrunt-specific configuration. Presence means this Stack is an Terragrunt Stack.
                     items:
                       properties:
+                        prefixResourceNamesWithModuleName:
+                          description: |-
+                            (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+                            Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+                          type: boolean
+                        skipReplan:
+                          description: |-
+                            planning. Applies to both run-all and non-run-all stacks. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                            If set to true, the apply phase will reuse the plan from the planning phase instead of re-planning. Applies to both run-all and non-run-all stacks. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                          type: boolean
+                        skipReplanWhenRunAll:
+                          description: |-
+                            is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                            When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any `mocked_outputs` referenced during planning will be applied as-is — do not enable this together with `mocked_outputs` unless you fully understand the implications, your apply may execute against mocked values rather than real ones.
+                          type: boolean
                         terraformVersion:
                           description: Must not be provided when tool is set to MANUALLY_PROVISIONED.
                           type: string
@@ -1824,6 +1894,11 @@ spec:
                             Whether to use `terragrunt run-all` instead of `terragrunt`.
                           type: boolean
                         useSmartSanitization:
+                          type: boolean
+                        useStateManagement:
+                          description: |-
+                            (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
+                            Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over `manage_state`. Defaults to `false`.
                           type: boolean
                       type: object
                     type: array

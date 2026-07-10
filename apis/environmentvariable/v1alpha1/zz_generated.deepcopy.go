@@ -83,6 +83,16 @@ func (in *EnvironmentVariableInitParameters) DeepCopyInto(out *EnvironmentVariab
 		*out = new(v1.SecretKeySelector)
 		**out = **in
 	}
+	if in.ValueWoSecretRef != nil {
+		in, out := &in.ValueWoSecretRef, &out.ValueWoSecretRef
+		*out = new(v1.SecretKeySelector)
+		**out = **in
+	}
+	if in.ValueWoVersion != nil {
+		in, out := &in.ValueWoVersion, &out.ValueWoVersion
+		*out = new(string)
+		**out = **in
+	}
 	if in.WriteOnly != nil {
 		in, out := &in.WriteOnly, &out.WriteOnly
 		*out = new(bool)
@@ -170,6 +180,11 @@ func (in *EnvironmentVariableObservation) DeepCopyInto(out *EnvironmentVariableO
 		*out = new(string)
 		**out = **in
 	}
+	if in.ValueWoVersion != nil {
+		in, out := &in.ValueWoVersion, &out.ValueWoVersion
+		*out = new(string)
+		**out = **in
+	}
 	if in.WriteOnly != nil {
 		in, out := &in.WriteOnly, &out.WriteOnly
 		*out = new(bool)
@@ -228,6 +243,16 @@ func (in *EnvironmentVariableParameters) DeepCopyInto(out *EnvironmentVariablePa
 	if in.ValueSecretRef != nil {
 		in, out := &in.ValueSecretRef, &out.ValueSecretRef
 		*out = new(v1.SecretKeySelector)
+		**out = **in
+	}
+	if in.ValueWoSecretRef != nil {
+		in, out := &in.ValueWoSecretRef, &out.ValueWoSecretRef
+		*out = new(v1.SecretKeySelector)
+		**out = **in
+	}
+	if in.ValueWoVersion != nil {
+		in, out := &in.ValueWoVersion, &out.ValueWoVersion
+		*out = new(string)
 		**out = **in
 	}
 	if in.WriteOnly != nil {

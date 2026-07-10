@@ -48,6 +48,14 @@ type EnvironmentVariableInitParameters struct {
 	// Value of the environment variable. Defaults to an empty string.
 	ValueSecretRef *v1.SecretKeySelector `json:"valueSecretRef,omitempty" tf:"-"`
 
+	// only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+	// Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+	ValueWoSecretRef *v1.SecretKeySelector `json:"valueWoSecretRef,omitempty" tf:"-"`
+
+	// (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+	// Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+	ValueWoVersion *string `json:"valueWoVersion,omitempty" tf:"value_wo_version,omitempty"`
+
 	// (Boolean) Indicates whether the value is secret or not. Defaults to true.
 	// Indicates whether the value is secret or not. Defaults to `true`.
 	WriteOnly *bool `json:"writeOnly,omitempty" tf:"write_only,omitempty"`
@@ -81,6 +89,10 @@ type EnvironmentVariableObservation struct {
 	// (String) ID of the stack on which the environment variable is defined
 	// ID of the stack on which the environment variable is defined
 	StackID *string `json:"stackId,omitempty" tf:"stack_id,omitempty"`
+
+	// (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+	// Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+	ValueWoVersion *string `json:"valueWoVersion,omitempty" tf:"value_wo_version,omitempty"`
 
 	// (Boolean) Indicates whether the value is secret or not. Defaults to true.
 	// Indicates whether the value is secret or not. Defaults to `true`.
@@ -128,6 +140,16 @@ type EnvironmentVariableParameters struct {
 	// +kubebuilder:validation:Optional
 	ValueSecretRef *v1.SecretKeySelector `json:"valueSecretRef,omitempty" tf:"-"`
 
+	// only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+	// Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+	// +kubebuilder:validation:Optional
+	ValueWoSecretRef *v1.SecretKeySelector `json:"valueWoSecretRef,omitempty" tf:"-"`
+
+	// (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+	// Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+	// +kubebuilder:validation:Optional
+	ValueWoVersion *string `json:"valueWoVersion,omitempty" tf:"value_wo_version,omitempty"`
+
 	// (Boolean) Indicates whether the value is secret or not. Defaults to true.
 	// Indicates whether the value is secret or not. Defaults to `true`.
 	// +kubebuilder:validation:Optional
@@ -161,7 +183,7 @@ type EnvironmentVariableStatus struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:storageversion
 
-// EnvironmentVariable is the Schema for the EnvironmentVariables API. spacelift_environment_variable defines an environment variable on the context (spacelift_context), stack (spacelift_stack) or a module (spacelift_module), thereby allowing to pass and share various secrets and configuration with Spacelift stacks.
+// EnvironmentVariable is the Schema for the EnvironmentVariables API. spacelift_environment_variable defines an environment variable on the context (spacelift_context), stack (spacelift_stack) or a module (spacelift_module), thereby allowing to pass and share various secrets and configuration with Spacelift stacks. For secret variables (write_only), prefer using value_wo and value_wo_version instead of value. value_wo is a write-only attribute that never gets stored in state. Note that the checksum will still be present in state for drift detection.
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
