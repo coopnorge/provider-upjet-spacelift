@@ -1,5 +1,62 @@
 name: spacelift-io/spacelift
 resources:
+    spacelift_api_key:
+        subCategory: ""
+        description: spacelift_api_key represents a Spacelift API Key - a credential that can be used to authenticate with the Spacelift API from outside of Spacelift, typically for automation purposes. WARNING This resource manages API keys which are sensitive credentials. These keys will be saved to your state file. Ensure that you handle your state file securely.
+        name: spacelift_api_key
+        title: spacelift_api_key Resource - terraform-provider-spacelift
+        examples:
+            - name: ci
+              manifest: |-
+                {
+                  "idp_groups": [
+                    "developers"
+                  ],
+                  "name": "CI Pipeline Key"
+                }
+            - name: github_actions
+              manifest: |-
+                {
+                  "idp_groups": [
+                    "ci-runners"
+                  ],
+                  "name": "GitHub Actions",
+                  "oidc": [
+                    {
+                      "client_id": "spacelift",
+                      "issuer": "https://token.actions.githubusercontent.com",
+                      "subject_expression": "repo:my-org/*:ref:refs/heads/main"
+                    }
+                  ]
+                }
+            - name: backstage
+              manifest: |-
+                {
+                  "name": "Backstage Integration",
+                  "oidc": [
+                    {
+                      "claim_mappings": {
+                        "teams": "groups"
+                      },
+                      "client_id": "backstage-client-id",
+                      "issuer": "https://accounts.google.com",
+                      "subject_expression": "service-account:backstage@my-project.iam.gserviceaccount.com"
+                    }
+                  ]
+                }
+        argumentDocs:
+            claim_mappings: (Map of String) Mapping of IdP JWT claim names to Spacelift claim names. Currently only the groups Spacelift claim is supported, so the value should always be groups (e.g. teams = "groups" maps the IdP teams claim to Spacelift groups). When configured, the mapped claims are extracted from the OIDC token at authentication time, enabling dynamic team membership based on the authenticating user's actual IdP groups.
+            client_id: (String) OIDC client ID
+            id: (String) The ID of this resource.
+            idp_groups: (Set of String) List of idp groups associated with the API key
+            issuer: (String) OIDC issuer URL
+            name: (String) Name of the API key
+            oidc: '(Block List, Max: 1) OIDC configuration for the API key. When provided, creates an OIDC API key instead of a SECRET API key. (see below for nested schema)'
+            secret: (String, Sensitive) The secret value of the API key
+            subject_expression: (String) OIDC subject expression
+            type: (String) Type of the API key (SECRET or OIDC)
+        importStatements:
+            - terraform import spacelift_api_key.ci $API_KEY_ID
     spacelift_audit_trail_webhook:
         subCategory: ""
         description: spacelift_audit_trail_webhook represents a webhook endpoint to which Spacelift sends POST requests about audit events.
@@ -13,13 +70,24 @@ resources:
                   "endpoint": "https://example.com",
                   "secret": "mysecretkey"
                 }
+            - name: write_only_example
+              manifest: |-
+                {
+                  "enabled": true,
+                  "endpoint": "https://example.com",
+                  "secret_wo": "somesupersecretkey",
+                  "secret_wo_version": 1
+                }
         argumentDocs:
             custom_headers: (Map of String) custom_headers is a Map of key-value strings, that will be passed as headers with audit trail requests.
             enabled: (Boolean) enabled determines whether the webhook is enabled. If it is not, Spacelift will not send any requests to the endpoint.
             endpoint: (String) endpoint is the URL to which Spacelift will send POST requests about audit events.
             id: (String) The ID of this resource.
             include_runs: (Boolean) include_runs determines whether the webhook should include information about the run that triggered the event.
-            secret: (String, Sensitive) secret is a secret that Spacelift will send with the request. Note that once it's created, it will be just an empty string in the state due to security reasons.
+            retry_on_failure: (Boolean) whether to retry the webhook in case of failure. Defaults to false.
+            secret: (String, Sensitive, Deprecated) secret is a secret that Spacelift will send with the request. Note that once it's created, it will be just an empty string in the state due to security reasons.
+            secret_wo: (String, Sensitive, Write-only) secret_wo is a secret that Spacelift will send with the request. The secret_wo is not stored in the state. Modify secret_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            secret_wo_version: (String) Used together with secret_wo to trigger an update to the secret. Increment this value when an update to secret_wo is required. This field requires Terraform/OpenTofu 1.11+.
         importStatements: []
     spacelift_aws_integration:
         subCategory: ""
@@ -69,6 +137,7 @@ resources:
                       "write": true
                     }
         argumentDocs:
+            autoattach_enabled: '(Boolean) Enables autoattach: labels functionality for this integration.'
             duration_seconds: (Number) Duration in seconds for which the assumed role credentials should be valid. Defaults to 900.
             external_id: (String) Custom external ID (works only for private workers).
             generate_credentials_in_worker: (Boolean) Generate AWS credentials in the private worker. Defaults to false.
@@ -78,6 +147,7 @@ resources:
             region: (String) AWS region to select a regional AWS STS endpoint.
             role_arn: (String) ARN of the AWS IAM role to attach
             space_id: (String) ID (slug) of the space the integration is in
+            tag_assume_role: (Boolean) When enabled, Spacelift will tag the assume role action with run and stack metadata. Defaults to false.
         importStatements:
             - terraform import spacelift_aws_integration.read_write_integration $INTEGRATION_ID
     spacelift_aws_integration_attachment:
@@ -216,6 +286,61 @@ resources:
               terraform import spacelift_aws_role.k8s-core stack/$STACK_ID
 
               terraform import spacelift_aws_role.k8s-core module/$MODULE_ID
+    spacelift_azure_devops_integration:
+        subCategory: ""
+        description: spacelift_azure_devops_integration represents an integration with an Azure DevOps organization
+        name: spacelift_azure_devops_integration
+        title: spacelift_azure_devops_integration Resource - terraform-provider-spacelift
+        examples:
+            - name: example
+              manifest: |-
+                {
+                  "name": "Azure DevOps integration (public)",
+                  "organization_url": "https://dev.azure.com/my-organization",
+                  "personal_access_token": "azure-devops-token",
+                  "space_id": "root"
+                }
+            - name: private-example
+              manifest: |-
+                {
+                  "accessible_projects": [
+                    "Project One",
+                    "Project Two"
+                  ],
+                  "is_default": true,
+                  "name": "Azure DevOps integration (private)",
+                  "organization_url": "https://dev.azure.com/my-organization",
+                  "personal_access_token": "azure-devops-token",
+                  "user_facing_host": "private://my-vcs-agent-pool/my-organization"
+                }
+            - name: example-write-only
+              manifest: |-
+                {
+                  "name": "Azure DevOps integration (public)",
+                  "organization_url": "https://dev.azure.com/my-organization",
+                  "personal_access_token_wo": "azure-devops-token",
+                  "personal_access_token_wo_version": 1,
+                  "space_id": "root"
+                }
+        argumentDocs:
+            accessible_projects: (Set of String) Restrict the integration to specific Azure DevOps projects. Leave empty to allow all projects in the organization.
+            description: (String) Description of the integration
+            id: (String) Azure DevOps integration id.
+            is_default: (Boolean) Is the Azure DevOps integration the default for all spaces? If set to true the space must be set to root in space_id or left empty which uses the default
+            labels: (Set of String) Labels to set on the integration
+            name: (String) The friendly name of the integration
+            organization_url: (String) Organization URL where API requests will be sent
+            personal_access_token: (String, Sensitive, Deprecated) The Azure DevOps personal access token
+            personal_access_token_wo: (String, Sensitive, Write-only) personal_access_token_wo the Azure DevOps personal access token. The personal_access_token_wo is not stored in the state. Modify personal_access_token_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            personal_access_token_wo_version: (Number) Used together with personal_access_token_wo to trigger an update to the personal access token. Increment this value when an update to personal_access_token_wo is required. This field requires Terraform/OpenTofu 1.11+.
+            space_id: '(String) ID (slug) of the space the integration is in; Default: root'
+            use_git_checkout: (Boolean) Indicates whether the integration should use git checkout. If false source code will be downloaded using the VCS API. Defaults to true.
+            user_facing_host: (String) User facing host URL. Defaults to the organization URL if not set. Set this when using VCS agents.
+            vcs_checks: '(String) VCS checks configured for Azure DevOps repositories. Possible values: INDIVIDUAL, AGGREGATED, ALL. Defaults to INDIVIDUAL.'
+            webhook_password: (String, Sensitive) Password for webhooks originating from Azure DevOps repositories
+            webhook_url: (String) URL for webhooks originating from Azure DevOps repositories
+        importStatements:
+            - terraform import spacelift_azure_devops_integration.example spacelift_azure_devops_integration_id
     spacelift_azure_integration:
         subCategory: ""
         description: spacelift_azure_integration represents an integration with an Azure AD tenant. This integration is account-level and needs to be explicitly attached to individual stacks in order to take effect. Note that you will need to provide admin consent manually for the integration to work
@@ -237,11 +362,14 @@ resources:
             admin_consent_provided: (Boolean) Indicates whether admin consent has been performed for the AAD Application.
             admin_consent_url: (String) The URL to use to provide admin consent to the application in the customer's tenant
             application_id: (String) The applicationId of the Azure AD application used by the integration.
+            autoattach_enabled: '(Boolean) Enables autoattach: labels functionality for this integration.'
             default_subscription_id: (String) The default subscription ID to use, if one isn't specified at the stack/module level
             display_name: (String) The display name for the application in Azure. This is automatically generated when the integration is created, and cannot be changed without deleting and recreating the integration.
             id: (String) The ID of this resource.
             labels: (Set of String) Labels to set on the integration
             name: (String) The friendly name of the integration
+            object_id: (String, Deprecated) The objectId of the Azure AD application used by the integration.
+            service_principal_object_id: (String) This is the unique ID of the service principal object associated with this application. This ID can be useful when performing management operations against this application using programmatic interfaces.
             space_id: (String) ID (slug) of the space the integration is in
             tenant_id: (String) The Azure AD tenant ID
         importStatements:
@@ -316,8 +444,22 @@ resources:
                   "user_facing_host": "https://mybitbucket.myorg.com",
                   "username": "bitbucket_user_name"
                 }
+            - name: private-write-only
+              manifest: |-
+                {
+                  "access_token_wo": "ABCD-EFGhiJKlMNoPQrSTuVWxYz0123456789abCDefGhiJkL",
+                  "access_token_wo_version": 1,
+                  "api_host": "https://mybitbucket.myorg.com",
+                  "is_default": false,
+                  "name": "Bitbucket integration",
+                  "space_id": "root",
+                  "user_facing_host": "https://mybitbucket.myorg.com",
+                  "username": "bitbucket_user_name"
+                }
         argumentDocs:
-            access_token: (String, Sensitive) User access token from Bitbucket
+            access_token: (String, Sensitive, Deprecated) User access token from Bitbucket
+            access_token_wo: (String, Sensitive, Write-only) access_token_wo user acces token from Bitbucket. The access_token_wo is not stored in the state. Modify access_token_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            access_token_wo_version: (String) Used together with access_token_wo to trigger an update to the access token. Increment this value when an update to access_token_wo is required. This field requires Terraform/OpenTofu 1.11+.
             api_host: (String) The API host where requests will be sent
             description: (String) Bitbucket Datacenter integration description
             id: (String) Bitbucket Datacenter integration id.
@@ -325,6 +467,7 @@ resources:
             labels: (Set of String) Bitbucket Datacenter integration labels
             name: (String) Bitbucket Datacenter integration name
             space_id: (String) Bitbucket Datacenter integration space id. Defaults to root.
+            use_git_checkout: (Boolean) Indicates whether the integration should use git checkout. If false source code will be downloaded using the VCS API. Defaults to false.
             user_facing_host: (String) User Facing Host which will be used for all user-facing URLs displayed in the Spacelift UI
             username: (String) Username which will be used to authenticate requests for cloning repositories
             vcs_checks: '(String) VCS checks configured for Bitbucket Datacenter repositories. Possible values: INDIVIDUAL, AGGREGATED, ALL. Defaults to INDIVIDUAL.'
@@ -401,6 +544,23 @@ resources:
             stack_id: (String) ID of the stack to attach the context to
         importStatements:
             - terraform import spacelift_context_attachment.test_stack $CONTEXT_ID/$STACK_ID
+    spacelift_default_runner_image:
+        subCategory: ""
+        description: spacelift_default_runner_image represents the default runner images that will be used for public and private worker pools.
+        name: spacelift_default_runner_image
+        title: spacelift_default_runner_image Resource - terraform-provider-spacelift
+        examples:
+            - name: example
+              manifest: |-
+                {
+                  "private": "registry.example.com/my-private-image:latest",
+                  "public": "registry.example.com/my-public-image:latest"
+                }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            private: (String) Runner image to be used for private worker pools
+            public: (String) Runner image to be used for public worker pools
+        importStatements: []
     spacelift_drift_detection:
         subCategory: ""
         description: spacelift_drift_detection represents a Drift Detection configuration for a Stack. It will trigger a proposed run on the given schedule, which you can listen for using run state webhooks. If reconcile is true, then a tracked run will be triggered when drift is detected.
@@ -439,7 +599,7 @@ resources:
               terraform import spacelift_drift_detection.core-infra-production-drift-detection module/$MODULE_ID
     spacelift_environment_variable:
         subCategory: ""
-        description: spacelift_environment_variable defines an environment variable on the context (spacelift_context), stack (spacelift_stack) or a module (spacelift_module), thereby allowing to pass and share various secrets and configuration with Spacelift stacks.
+        description: spacelift_environment_variable defines an environment variable on the context (spacelift_context), stack (spacelift_stack) or a module (spacelift_module), thereby allowing to pass and share various secrets and configuration with Spacelift stacks. For secret variables (write_only), prefer using value_wo and value_wo_version instead of value. value_wo is a write-only attribute that never gets stored in state. Note that the checksum will still be present in state for drift detection.
         name: spacelift_environment_variable
         title: spacelift_environment_variable Resource - terraform-provider-spacelift
         examples:
@@ -470,6 +630,18 @@ resources:
                   "value": "/project/spacelift/kubeconfig",
                   "write_only": false
                 }
+            - name: api-token
+              manifest: |-
+                {
+                  "context_id": "prod-k8s-ie",
+                  "description": "API token for external service",
+                  "name": "API_TOKEN",
+                  "value_wo": "${var.api_token}",
+                  "value_wo_version": 1,
+                  "write_only": true
+                }
+              references:
+                value_wo: var.api_token
         argumentDocs:
             checksum: (String) SHA-256 checksum of the value
             context_id: (String) ID of the context on which the environment variable is defined
@@ -479,6 +651,8 @@ resources:
             name: (String) Name of the environment variable
             stack_id: (String) ID of the stack on which the environment variable is defined
             value: (String, Sensitive) Value of the environment variable. Defaults to an empty string.
+            value_wo: (String, Sensitive, Write-only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            value_wo_version: (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required. This field requires Terraform/OpenTofu 1.11+.
             write_only: (Boolean) Indicates whether the value is secret or not. Defaults to true.
         importStatements:
             - |-
@@ -559,6 +733,16 @@ resources:
                   "private_token": "gitlab-token",
                   "user_facing_host": "https://mygitlab.myorg.com"
                 }
+            - name: example-write-only
+              manifest: |-
+                {
+                  "api_host": "https://mygitlab.myorg.com",
+                  "name": "GitLab integration (public)",
+                  "private_token_wo": "gitlab-token",
+                  "private_token_wo_version": "gitlab-token",
+                  "space_id": "root",
+                  "user_facing_host": "https://mygitlab.myorg.com"
+                }
         argumentDocs:
             api_host: (String) API host URL
             description: (String) Description of the integration
@@ -566,8 +750,11 @@ resources:
             is_default: (Boolean) Is the GitLab integration the default for all spaces? If set to true the space must be set to root in space_id or left empty which uses the default
             labels: (Set of String) Labels to set on the integration
             name: (String) The friendly name of the integration
-            private_token: (String, Sensitive) The GitLab API Token
+            private_token: (String, Sensitive, Deprecated) The GitLab API Token
+            private_token_wo: (String, Sensitive, Write-only) private_token_wo the GitLab API Token .The private_token_wo is not stored in the state. Modify private_token_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            private_token_wo_version: (String) Used together with private_token_wo to trigger an update to the private_token. Increment this value when an update to private_token_wo is required. This field requires Terraform/OpenTofu 1.11+.
             space_id: '(String) ID (slug) of the space the integration is in; Default: root'
+            use_git_checkout: (Boolean) Indicates whether the integration should use git checkout. If false source code will be downloaded using the VCS API. Defaults to true.
             user_facing_host: (String) User facing host URL.
             vcs_checks: '(String) VCS checks configured for GitLab repositories. Possible values: INDIVIDUAL, AGGREGATED, ALL. Defaults to INDIVIDUAL.'
             webhook_secret: (String, Sensitive) Secret for webhooks originating from GitLab repositories
@@ -603,7 +790,7 @@ resources:
                     }
                 spacelift_role_attachment.devops: |-
                     {
-                      "idp_group_mapping": "${spacelift_idp_group_mapping.devops.id}",
+                      "idp_group_mapping_id": "${spacelift_idp_group_mapping.devops.id}",
                       "role_id": "${spacelift_role.devops.id}",
                       "space_id": "root"
                     }
@@ -624,7 +811,7 @@ resources:
                     }
                 spacelift_role_attachment.devops: |-
                     {
-                      "idp_group_mapping": "${spacelift_idp_group_mapping.devops.id}",
+                      "idp_group_mapping_id": "${spacelift_idp_group_mapping.devops.id}",
                       "role_id": "${spacelift_role.devops.id}",
                       "space_id": "root"
                     }
@@ -646,7 +833,6 @@ resources:
             - name: k8s-module
               manifest: |-
                 {
-                  "administrative": true,
                   "branch": "master",
                   "description": "Infra terraform module",
                   "name": "k8s-module",
@@ -656,7 +842,6 @@ resources:
             - name: example-module
               manifest: |-
                 {
-                  "administrative": true,
                   "branch": "master",
                   "description": "Example terraform module",
                   "project_root": "example",
@@ -685,8 +870,10 @@ resources:
             public: (Boolean) Make this module publicly accessible. Can only be set at creation time. Defaults to false.
             raw_git: '(Block List, Max: 1) One-way VCS integration using a raw Git repository link (see below for nested schema)'
             repository: (String) Name of the repository, without the owner part
+            runner_image: (String) Name of the Docker image used to process Runs
             shared_accounts: (Set of String) List of the accounts (subdomains) which should have access to the Module
             space_id: (String) ID (slug) of the space the module is in
+            space_shares: (Set of String) List of the space IDs which should have access to the Module
             terraform_provider: (String) The module provider will by default be inferred from the repository name if it follows the terraform-provider-name naming convention. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here.
             url: (String) HTTPS URL of the Git repository
             worker_pool_id: '(String) ID of the worker pool to use. NOTE: worker_pool_id is required when using a self-hosted instance of Spacelift.'
@@ -723,6 +910,8 @@ resources:
         argumentDocs:
             checksum: (String) SHA-256 checksum of the value
             content: (String, Sensitive) Content of the mounted file encoded using Base-64
+            content_wo: (String, Sensitive, Write-only) Content of the mounted file encoded using Base-64. The content is not stored in the state. Modify content_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            content_wo_version: (String) Used together with content_wo to trigger an update to the content. Increment this value when an update to content_wo is required. This field requires Terraform/OpenTofu 1.11+.
             context_id: (String) ID of the context on which the mounted file is defined
             description: (String) Free-form description of the mounted file
             id: (String) The ID of this resource.
@@ -748,7 +937,10 @@ resources:
             id: (String) The ID of this resource.
             labels: (Set of String) labels for the webhook to use when referring in policies or filtering them
             name: (String) the name for the webhook which will also be used to generate the id
-            secret: (String, Sensitive) secret used to sign each request so you're able to verify that the request comes from us. Defaults to an empty value. Note that once it's created, it will be just an empty string in the state due to security reasons.
+            retry_on_failure: (Boolean) whether to retry the webhook in case of failure. Defaults to false.
+            secret: (String, Sensitive, Deprecated) secret used to sign each request so you're able to verify that the request comes from us. Defaults to an empty value. Note that once it's created, it will be just an empty string in the state due to security reasons.
+            secret_wo: (String, Sensitive, Write-only) secret used to sign each request so you're able to verify that the request comes from us. Defaults to an empty value. The secret is not stored in the state. Modify secret_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            secret_wo_version: (String) Used together with secret_wo to trigger an update to the secret. Increment this value when an update to secret_wo is required. This field requires Terraform/OpenTofu 1.11+.
             space_id: (String) ID of the space the webhook is in
         importStatements: []
     spacelift_named_webhook_secret_header Resource - terraform-provider-spacelift:
@@ -759,9 +951,71 @@ resources:
         argumentDocs:
             id: (String) The ID of this resource.
             key: (String) key for the header
-            value: (String, Sensitive) value for the header
+            value: (String, Sensitive, Deprecated) value for the header
+            value_wo: (String, Sensitive, Write-only) Value for the header. The value is not stored in the state. Modify value_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            value_wo_version: (String) Used together with value_wo to trigger an update to the value of for the header. Increment this value when an update to value_wo is required. This field requires Terraform/OpenTofu 1.11+.
             webhook_id: (String) ID of the stack on which the environment variable is defined
         importStatements: []
+    spacelift_plugin:
+        subCategory: ""
+        description: spacelift_plugin represents a Spacelift plugin - an instance of a plugin template that can be used to extend Spacelift functionality.
+        name: spacelift_plugin
+        title: spacelift_plugin Resource - terraform-provider-spacelift
+        examples:
+            - name: opentofu_tracing
+              manifest: |-
+                {
+                  "name": "OpenTofu Tracing Plugin",
+                  "parameters": {
+                    "output_file": "tracing_output.md"
+                  },
+                  "plugin_template_id": "${data.spacelift_plugin_template.opentofu_tracing.id}",
+                  "stack_label": "tracing"
+                }
+              references:
+                plugin_template_id: data.spacelift_plugin_template.opentofu_tracing.id
+        argumentDocs:
+            id: (String) Immutable ID of the plugin
+            labels: (Set of String) Labels to apply to the plugin
+            name: (String) Name of the plugin
+            parameters: (Map of String, Sensitive) Map of parameter ids to values.
+            plugin_template_id: (String) ID of the plugin template to use
+            space_id: (String) ID of the space the plugin is in
+            stack_label: (String) Label to use when attaching the plugin to stacks
+        importStatements:
+            - |-
+              # Note: Importing plugins with parameters will cause the plugin to be recreated.
+              # We recommend using a lifecycle rule to ignore parameters if imported.
+
+              tofu import spacelift_plugin.opentofu_tracing $PLUGIN_ID
+    spacelift_plugin_template:
+        subCategory: ""
+        description: spacelift_plugin_template represents a Spacelift plugin template - a reusable template that defines a plugin's behavior and can be instantiated multiple times as plugins.
+        name: spacelift_plugin_template
+        title: spacelift_plugin_template Resource - terraform-provider-spacelift
+        examples:
+            - name: example
+              manifest: |-
+                {
+                  "manifest": "${file(\"./opentofu-testing-manifest.yaml\")}",
+                  "name": "opentofu-testing"
+                }
+        argumentDocs:
+            created_at: (Number) Timestamp when the plugin template was created
+            default: (String)
+            description: (String) Free-form plugin template description
+            id: (String) Immutable ID of the plugin template
+            is_global: (Boolean) Whether this is a global (Spacelift-provided) plugin template
+            labels: (Set of String) Labels to apply to the plugin template
+            manifest: (String) The plugin manifest defining the plugin's behavior
+            name: (String) Name of the plugin template
+            parameters: (List of Object) Parameters extracted from the manifest (see below for nested schema)
+            required: (Boolean)
+            sensitive: (Boolean)
+            type: (String)
+            updated_at: (Number) Timestamp when the plugin template was last updated
+        importStatements:
+            - tofu import spacelift_plugin_template.example $PLUGIN_TEMPLATE_ID
     spacelift_policy:
         subCategory: ""
         description: spacelift_policy represents a Spacelift policy - a collection of customer-defined rules that are applied by Spacelift at one of the decision points within the application.
@@ -790,11 +1044,12 @@ resources:
         argumentDocs:
             body: (String) Body of the policy
             description: (String) Description of the policy
+            engine_type: (String) Type of engine used to evaluate the policy. Possible values are REGO_V0 and REGO_V1. Defaults to REGO_V0.
             id: (String) The ID of this resource.
             labels: (Set of String)
             name: (String) Name of the policy - should be unique in one account
             space_id: (String) ID (slug) of the space the policy is in
-            type: (String) Type of the policy. Possible values are ACCESS, APPROVAL, GIT_PUSH, INITIALIZATION, LOGIN, PLAN, TASK, TRIGGER and NOTIFICATION. Deprecated values are STACK_ACCESS (use ACCESS instead), TASK_RUN (use TASK instead), and TERRAFORM_PLAN (use PLAN instead).
+            type: (String) Type of the policy. Possible values are ACCESS, APPROVAL, GIT_PUSH, INITIALIZATION, INTENT, LOGIN, PLAN, TASK, TRIGGER and NOTIFICATION. Deprecated values are STACK_ACCESS (use ACCESS instead), TASK_RUN (use TASK instead), and TERRAFORM_PLAN (use PLAN instead).
         importStatements:
             - terraform import spacelift_policy.no-weekend-deploys $POLICY_ID
     spacelift_policy_attachment:
@@ -858,7 +1113,7 @@ resources:
             - terraform import spacelift_role.readonly $ROLE_ID
     spacelift_role_attachment:
         subCategory: ""
-        description: 'spacelift_role_attachment represents a Spacelift role attachment between: an API key and a rolean IdP Group Mapping and a roleor a user and a role Exactly one of api_key_id, idp_group_mapping_id, or user_id must be set.'
+        description: spacelift_role_attachment represents a Spacelift role attachment between an API key and a role within a specific space, an IdP Group Mapping and a role within a specific space, a stack and a role within a specific space, or a user and a role within a specific space. Exactly one of api_key_id, idp_group_mapping_id, stack_id, or user_id must be set.
         name: spacelift_role_attachment
         title: spacelift_role_attachment Resource - terraform-provider-spacelift
         examples:
@@ -888,6 +1143,12 @@ resources:
                     {
                       "name": "DevOps",
                       "parent_space_id": "root"
+                    }
+                spacelift_stack.application: |-
+                    {
+                      "branch": "main",
+                      "name": "Application Stack",
+                      "repository": "app-infrastructure"
                     }
                 spacelift_user.devops: |-
                     {
@@ -922,6 +1183,51 @@ resources:
                       "name": "DevOps",
                       "parent_space_id": "root"
                     }
+                spacelift_stack.application: |-
+                    {
+                      "branch": "main",
+                      "name": "Application Stack",
+                      "repository": "app-infrastructure"
+                    }
+                spacelift_user.devops: |-
+                    {
+                      "invitation_email": "devops@example.com",
+                      "username": "devops-user"
+                    }
+            - name: stack_attachment
+              manifest: |-
+                {
+                  "role_id": "${spacelift_role.devops.id}",
+                  "space_id": "${spacelift_space.devops.id}",
+                  "stack_id": "${spacelift_stack.application.id}"
+                }
+              references:
+                role_id: spacelift_role.devops.id
+                space_id: spacelift_space.devops.id
+                stack_id: spacelift_stack.application.id
+              dependencies:
+                spacelift_idp_group_mapping.devops: |-
+                    {
+                      "name": "devops-group"
+                    }
+                spacelift_role.devops: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "A role for DevOps team"
+                    }
+                spacelift_space.devops: |-
+                    {
+                      "name": "DevOps",
+                      "parent_space_id": "root"
+                    }
+                spacelift_stack.application: |-
+                    {
+                      "branch": "main",
+                      "name": "Application Stack",
+                      "repository": "app-infrastructure"
+                    }
                 spacelift_user.devops: |-
                     {
                       "invitation_email": "devops@example.com",
@@ -955,23 +1261,32 @@ resources:
                       "name": "DevOps",
                       "parent_space_id": "root"
                     }
+                spacelift_stack.application: |-
+                    {
+                      "branch": "main",
+                      "name": "Application Stack",
+                      "repository": "app-infrastructure"
+                    }
                 spacelift_user.devops: |-
                     {
                       "invitation_email": "devops@example.com",
                       "username": "devops-user"
                     }
         argumentDocs:
-            api_key_id: ', idp_group_mapping_id, or user_id must be set.'
+            api_key_id: '(String) ID of the API key (ULID format) to attach to the role. For example: 01F8Z5K4Y3D1G2H3J4K5L6M7N8.'
             id: (String) The ID of this resource.
             idp_group_mapping_id: '(String) ID of the IdP Group Mapping (ULID format) to attach to the role. For example: 01F8Z5K4Y3D1G2H3J4K5L6M7N8.'
-            role_id: '(String) ID of the role (ULID format) to attach to the API key, IdP Group or to the user. For example: 01F8Z5K4Y3D1G2H3J4K5L6M7N8.'
+            role_id: '(String) ID of the role (ULID format) to attach to the API key, IdP Group, stack, or user. For example: 01F8Z5K4Y3D1G2H3J4K5L6M7N8.'
             space_id: (String) ID of the space where the role attachment should be created
+            stack_id: '(String) Slug of the Stack to attach to the role. For example: my-stack.'
             user_id: '(String) ID of the user (ULID format) to attach to the role. For example: 01F8Z5K4Y3D1G2H3J4K5L6M7N8.'
         importStatements:
             - |-
               terraform import spacelift_role_attachment.api_key_attachment API/$ROLE_ATTACHMENT_ID
 
               terraform import spacelift_role_attachment.idp_group_attachment IDP/$ROLE_ATTACHMENT_ID
+
+              terraform import spacelift_role_attachment.stack_attachment STACK/$ROLE_ATTACHMENT_ID
 
               terraform import spacelift_role_attachment.user_attachment USER/$ROLE_ATTACHMENT_ID
     spacelift_run:
@@ -998,16 +1313,33 @@ resources:
                       "repository": "test"
                     }
         argumentDocs:
+            after_apply: (List of String) List of after-apply scripts
+            after_destroy: (List of String) List of after-destroy scripts
+            after_init: (List of String) List of after-init scripts
+            after_perform: (List of String) List of after-perform scripts
+            after_plan: (List of String) List of after-plan scripts
+            after_run: (List of String) List of after-run scripts
+            before_apply: (List of String) List of before-apply scripts
+            before_destroy: (List of String) List of before-destroy scripts
+            before_init: (List of String) List of before-init scripts
+            before_perform: (List of String) List of before-perform scripts
+            before_plan: (List of String) List of before-plan scripts
             commit_sha: (String) The commit SHA for which to trigger a run.
             continue_on_state: '(Set of String) Continue on the specified states of a finished run. If not specified, the default is [ ''finished'' ]. You can use following states: applying, canceled, confirmed, destroying, discarded, failed, finished, initializing, pending_review, performing, planning, preparing_apply, preparing_replan, preparing, queued, ready, replan_requested, skipped, stopped, unconfirmed.'
             continue_on_timeout: '(Boolean) Continue if run timed out, i.e. did not reach any defined end state in time. Default: false'
             create: (String)
             disabled: '(Boolean) Whether waiting for a job is disabled or not. Default: false'
+            environment: (Block Set) Environment variables for the run (see below for nested schema)
             id: (String) The ID of the triggered run.
             keepers: (Map of String) Arbitrary map of values that, when changed, will trigger recreation of the resource.
+            key: (String) Environment variable key
+            project_root: (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
             proposed: (Boolean) Whether the run is a proposed run. Defaults to false.
+            runner_image: (String) Name of the Docker image used to process Runs
+            runtime_config: '(Block List, Max: 1) Custom runtime configuration to apply to this run, overriding the stack''s defaults. (see below for nested schema)'
             stack_id: (String) ID of the stack on which the run is to be triggered.
             timeouts: (Block, Optional) (see below for nested schema)
+            value: (String) Environment variable value
             wait: '(Block List, Max: 1) Wait for the run to finish (see below for nested schema)'
         importStatements: []
     spacelift_saved_filter:
@@ -1028,9 +1360,9 @@ resources:
             created_by: (String) Login of the user who created the saved filter
             data: (String) Data is the JSON representation of the filter data
             id: (String) Globally unique ID of the saved filter
-            is_public: (Boolean) Toggle whether the filter is public or not
+            is_public: (Boolean) Toggle whether the filter is public or not. If set to true, everyone can use it in the account.
             name: (String) Name of the saved filter
-            type: (String) Type describes the type of the filter. It is used to determine which view the filter is for. Possible values are stacks, blueprints, contexts, webhooks.
+            type: (String) Type describes the type of the filter. It is used to determine which view the filter is for. Possible values are stacks, modules, auditTrailEntries, vcsIntegrations, blueprints, contexts, workerPools, webhooks, notifications, resources, policies.
         importStatements:
             - terraform import spacelift_saved_filter.my_filter $FILTER_ID
     spacelift_scheduled_delete_stack:
@@ -1096,7 +1428,26 @@ resources:
                     "0 21 * * 1-5"
                   ],
                   "name": "custom-terraform-apply",
-                  "runtime_config": "terraform_version: \"1.5.7\"",
+                  "runtime_config": [
+                    {
+                      "after_apply": [
+                        "echo 'Apply complete'",
+                        "notify-team"
+                      ],
+                      "environment": [
+                        {
+                          "key": "TF_VAR_region",
+                          "value": "us-east-1"
+                        },
+                        {
+                          "key": "TF_VAR_env",
+                          "value": "production"
+                        }
+                      ],
+                      "project_root": "custom/path",
+                      "runner_image": "custom-runner:latest"
+                    }
+                  ],
                   "stack_id": "${spacelift_stack.k8s-core.id}",
                   "timezone": "CET"
                 }
@@ -1244,7 +1595,6 @@ resources:
             - name: k8s-cluster
               manifest: |-
                 {
-                  "administrative": true,
                   "autodeploy": true,
                   "branch": "master",
                   "description": "Provisions a Kubernetes cluster",
@@ -1253,10 +1603,23 @@ resources:
                   "repository": "core-infra",
                   "terraform_version": "1.3.0"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster-bitbucket-cloud
               manifest: |-
                 {
-                  "administrative": true,
                   "autodeploy": true,
                   "bitbucket_cloud": [
                     {
@@ -1270,10 +1633,23 @@ resources:
                   "repository": "core-infra",
                   "terraform_version": "1.3.0"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster-bitbucket-datacenter
               manifest: |-
                 {
-                  "administrative": true,
                   "autodeploy": true,
                   "bitbucket_datacenter": [
                     {
@@ -1287,10 +1663,23 @@ resources:
                   "repository": "core-infra",
                   "terraform_version": "1.3.0"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster-github-enterprise
               manifest: |-
                 {
-                  "administrative": true,
                   "autodeploy": true,
                   "branch": "master",
                   "description": "Provisions a Kubernetes cluster",
@@ -1304,10 +1693,23 @@ resources:
                   "repository": "core-infra",
                   "terraform_version": "1.3.0"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster-gitlab
               manifest: |-
                 {
-                  "administrative": true,
                   "autodeploy": true,
                   "branch": "master",
                   "description": "Provisions a Kubernetes cluster",
@@ -1321,10 +1723,23 @@ resources:
                   "repository": "core-infra",
                   "terraform_version": "1.3.0"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster
               manifest: |-
                 {
-                  "administrative": true,
                   "autodeploy": true,
                   "branch": "master",
                   "description": "Provisions a Kubernetes cluster",
@@ -1334,10 +1749,23 @@ resources:
                   "terraform_smart_sanitization": true,
                   "terraform_version": "1.3.0"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster
               manifest: |-
                 {
-                  "administrative": true,
                   "autodeploy": true,
                   "branch": "master",
                   "description": "Provisions a Kubernetes cluster",
@@ -1347,6 +1775,20 @@ resources:
                   "terraform_external_state_access": true,
                   "terraform_version": "1.3.0"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster-cloudformation
               manifest: |-
                 {
@@ -1365,6 +1807,20 @@ resources:
                   "project_root": "cluster",
                   "repository": "core-infra"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster-pulumi
               manifest: |-
                 {
@@ -1382,6 +1838,20 @@ resources:
                   "repository": "core-infra",
                   "runner_image": "public.ecr.aws/t0p9w2l5/runner-pulumi-javascript:latest"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-core-kubernetes
               manifest: |-
                 {
@@ -1401,6 +1871,20 @@ resources:
                   "project_root": "core-services",
                   "repository": "core-infra"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: ansible-stack
               manifest: |-
                 {
@@ -1416,6 +1900,20 @@ resources:
                   "repository": "ansible-playbooks",
                   "runner_image": "public.ecr.aws/spacelift/runner-ansible:latest"
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: terragrunt-stack
               manifest: |-
                 {
@@ -1435,15 +1933,55 @@ resources:
                     }
                   ]
                 }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
+            - name: spacelift-admin
+              manifest: |-
+                {
+                  "administrative": true,
+                  "autodeploy": true,
+                  "branch": "main",
+                  "description": "Manages Spacelift roles, spaces and access",
+                  "name": "Spacelift Administration",
+                  "repository": "spacelift-config",
+                  "terraform_version": "1.3.0"
+                }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
         argumentDocs:
             additional_project_globs: (Set of String) Project globs is an optional list of paths to track changes of in addition to the project root.
-            administrative: (Boolean) Indicates whether this stack can manage others. Defaults to false.
+            administrative: (Boolean, Deprecated) Indicates whether this stack can manage others. Defaults to false. This field will be removed in a future version. Use spacelift_role_attachment resource to manage stack permissions.
             after_apply: (List of String) List of after-apply scripts
             after_destroy: (List of String) List of after-destroy scripts
             after_init: (List of String) List of after-init scripts
             after_perform: (List of String) List of after-perform scripts
             after_plan: (List of String) List of after-plan scripts
             after_run: (List of String) List of after-run scripts
+            allow_run_promotion: (Boolean) Indicates whether a proposed run can be promoted to a tracked run. Defaults to true.
             ansible: '(Block List, Max: 1) Ansible-specific configuration. Presence means this Stack is an Ansible Stack. (see below for nested schema)'
             autodeploy: (Boolean) Indicates whether changes to this stack can be automatically deployed. Defaults to false.
             autoretry: (Boolean) Indicates whether obsolete proposed changes should automatically be retried. Defaults to false.
@@ -1464,7 +2002,7 @@ resources:
             enable_well_known_secret_masking: (Boolean) Indicates whether well-known secret masking is enabled.
             entry_template_file: (String) Template file cloudformation package will be called on
             git_sparse_checkout_paths: (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
-            github_action_deploy: (Boolean) Indicates whether GitHub users can deploy from the Checks API. Defaults to true. This is called allow run promotion in the UI.
+            github_action_deploy: (Boolean, Deprecated) Use allow_run_promotion instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to true.
             github_enterprise: '(Block List, Max: 1) VCS settings for GitHub custom application (see below for nested schema)'
             gitlab: '(Block List, Max: 1) GitLab VCS settings (see below for nested schema)'
             id: (String) The ID of this resource.
@@ -1480,6 +2018,7 @@ resources:
             name: (String) Name of the stack - should be unique in one account
             namespace: (String) The Bitbucket project containing the repository
             playbook: (String) The playbook Ansible should run.
+            prefix_resource_names_with_module_name: (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
             project: (String) The name of the Azure DevOps project
             project_root: (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
             protect_from_deletion: (Boolean) Protect this stack from accidental deletion. If set, attempts to delete this stack will fail. Defaults to false.
@@ -1489,6 +2028,8 @@ resources:
             repository: (String) Name of the repository, without the owner part
             runner_image: (String) Name of the Docker image used to process Runs
             showcase: '(Block List, Max: 1) (see below for nested schema)'
+            skip_replan: '(Boolean) If set to true, the apply phase will reuse the plan from the planning phase instead of re-planning. Applies to both run-all and non-run-all stacks. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.'
+            skip_replan_when_run_all: '(Boolean, Deprecated) When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.'
             slug: (String) Allows setting the custom ID (slug) for the stack
             space_id: (String) ID (slug) of the space the stack is in. Defaults to legacy if it exists, otherwise root.
             stack_name: (String) CloudFormation stack name
@@ -1504,6 +2045,7 @@ resources:
             url: (String) HTTPS URL of the Git repository
             use_run_all: (Boolean) Whether to use terragrunt run-all instead of terragrunt.
             use_smart_sanitization: (Boolean) Indicates whether runs on this will use Terraform's sensitive value system to sanitize the outputs of Terraform state and plans in spacelift instead of sanitizing all fields.
+            use_state_management: (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
             worker_pool_id: '(String) ID of the worker pool to use. NOTE: worker_pool_id is required when using a self-hosted instance of Spacelift.'
         importStatements:
             - terraform import spacelift_stack.k8s_core $STACK_ID
@@ -1655,7 +2197,8 @@ resources:
             depends_on_stack_id: (String) immutable ID (slug) of stack to depend on.
             id: (String) The ID of this resource.
             stack_id: (String) immutable ID (slug) of stack which has a dependency.
-        importStatements: []
+        importStatements:
+            - terraform import spacelift_stack_dependency.example stack-id/depends-on-stack-id
     spacelift_stack_dependency_reference:
         subCategory: ""
         description: spacelift_stack_dependency_reference represents a Spacelift stack dependency reference - a reference matches a stack's output to another stack's input. It is similar to an environment variable (spacelift_environment_variable), except that value is provided by another stack's output.
@@ -1695,7 +2238,8 @@ resources:
             output_name: (String) Name of the output of stack to depend on
             stack_dependency_id: (String) Immutable ID of stack dependency
             trigger_always: (Boolean) Whether the dependents should be triggered even if the value of the reference did not change.
-        importStatements: []
+        importStatements:
+            - terraform import spacelift_stack_dependency_reference.example stack-id/depends-on-stack-id/input-name
     spacelift_stack_destructor:
         subCategory: ""
         description: 'spacelift_stack_destructor is used to destroy the resources of a Stack before deleting it. depends_on should be used to make sure that all necessary resources (environment variables, roles, integrations, etc.) are still in place when the destruction run is executed. Note: Destroying this resource will delete the resources in the stack. If this resource needs to be deleted and the resources in the stacks are to be preserved, ensure that the deactivated attribute is set to true.'
@@ -1716,7 +2260,7 @@ resources:
                 spacelift_environment_variable.credentials: '{}'
                 spacelift_stack.k8s-core: '{}'
         argumentDocs:
-            deactivated: (Boolean) If set to true, destruction won't delete the stack
+            deactivated: (Boolean) If set to true, destruction won't delete the resources (e.g. AWS/Azure/GCP infrastructure) managed by the stack
             delete: (String)
             discard_runs: (Boolean) If set to true, destruction will also discard all runs on the stack that are eligible for discarding (e.g. not in progress runs)
             id: (String) The ID of this resource.
@@ -1784,6 +2328,94 @@ resources:
             stack_id: (String) ID of the stack for which to run the task
             timeouts: (Block, Optional) (see below for nested schema)
             wait: '(Block List, Max: 1) Wait for the run to finish (see below for nested schema)'
+        importStatements: []
+    spacelift_template Resource - terraform-provider-spacelift:
+        subCategory: ""
+        description: spacelift_template represents a Spacelift template (versioned blueprint), which is a collection of blueprint versions that can be used to create stacks.
+        name: spacelift_template Resource - terraform-provider-spacelift
+        title: spacelift_template Resource - terraform-provider-spacelift
+        argumentDocs:
+            created_at: (Number) Unix timestamp when the template was created
+            description: (String) Description of the template
+            id: (String) The ID of this resource.
+            labels: (Set of String) Labels of the template
+            name: (String) Name of the template
+            space: (String) ID of the space the template is in
+            ulid: (String) Unique ULID of the template
+            updated_at: (Number) Unix timestamp when the template was last updated
+        importStatements: []
+    spacelift_template_deployment:
+        subCategory: ""
+        description: spacelift_template_deployment deploys a Spacelift template, creating and managing the stacks defined in the template.
+        name: spacelift_template_deployment
+        title: spacelift_template_deployment Resource - terraform-provider-spacelift
+        examples:
+            - name: test
+              manifest: |-
+                {
+                  "description": "description",
+                  "input": [
+                    {
+                      "id": "env_name",
+                      "sensitive": false,
+                      "value": "production"
+                    }
+                  ],
+                  "name": "test",
+                  "space": "root",
+                  "template_version_id": "${spacelift_template_version.first_version.id}"
+                }
+              references:
+                template_version_id: spacelift_template_version.first_version.id
+              dependencies:
+                spacelift_template.test: |-
+                    {
+                      "name": "test-template",
+                      "space": "root"
+                    }
+                spacelift_template_version.first_version: |-
+                    {
+                      "state": "PUBLISHED",
+                      "template": "stacks:\n- name: \"test-stack-${{ inputs.env_name }}\"\n  key: test\n  autodeploy: true\n  vcs:\n    reference:\n      value: main\n      type: branch\n    repository: demo\n    provider: GITHUB\n  vendor:\n    terraform:\n      manage_state: true\n      version: \"1.5.0\"\ninputs:\n- id: env_name\n  name: Environment Name\n  default: dev\n",
+                      "template_id": "${spacelift_template.test.id}",
+                      "version_number": "1.0.0"
+                    }
+        argumentDocs:
+            checksum: (String) SHA-256 checksum of the input value
+            create: (String)
+            created_at: (Number) Unix timestamp when the deployment was created
+            delete: (String)
+            deployment_id: (String) ID (slug) of the deployment
+            description: (String) Description of the deployment
+            id: (String) The ID of this resource.
+            input: (Block List) Input values for the template (see below for nested schema)
+            name: (String) Name of the deployment
+            secret: (Boolean) True if the input value is a secret
+            space: (String) Space where the stacks created by this deployment will be placed
+            stacks: (List of Object) List of stacks IDs created by the deployment (see below for nested schema)
+            state: (String) Current state of the deployment
+            template_id: (String) ID of the template this deployment belongs to
+            template_version_id: (String) ID of the template version to deploy. Changing this will upgrade the deployment to the new version.
+            timeouts: (Block, Optional) (see below for nested schema)
+            update: (String)
+            value: (String, Sensitive) Input value
+        importStatements: []
+    spacelift_template_version Resource - terraform-provider-spacelift:
+        subCategory: ""
+        description: spacelift_template_version represents a version of a Spacelift template. Each template can have multiple versions, each with its own state (DRAFT or PUBLISHED) and template body.
+        name: spacelift_template_version Resource - terraform-provider-spacelift
+        title: spacelift_template_version Resource - terraform-provider-spacelift
+        argumentDocs:
+            created_at: (Number) Unix timestamp when the template version was created
+            id: (String) The ID of this resource.
+            instructions: (String) Instructions for the template version
+            published_at: (Number) Unix timestamp when the template version was published
+            state: (String) State of the template version. Value can be DRAFT or PUBLISHED.
+            template: (String) Body of the template. Required if state is set to PUBLISHED.
+            template_id: (String) ID of the template this version belongs to
+            ulid: (String) Unique ULID of the template version
+            updated_at: (Number) Unix timestamp when the template version was last updated
+            version_number: (String) Version number (e.g., "1.0.0")
         importStatements: []
     spacelift_terraform_provider:
         subCategory: ""
@@ -1917,7 +2549,6 @@ resources:
               dependencies:
                 spacelift_module.k8s-module: |-
                     {
-                      "administrative": true,
                       "branch": "master",
                       "description": "Infra terraform module",
                       "name": "k8s-module",
@@ -1948,7 +2579,10 @@ resources:
             endpoint: (String) endpoint to send the POST request to
             id: (String) The ID of this resource.
             module_id: (String) ID of the module which triggers the webhooks
-            secret: (String, Sensitive) secret used to sign each POST request so you're able to verify that the request comes from us. Defaults to an empty value. Note that once it's created, it will be just an empty string in the state due to security reasons.
+            retry_on_failure: (Boolean) whether to retry the webhook in case of failure. Defaults to false.
+            secret: (String, Sensitive, Deprecated) secret used to sign each POST request so you're able to verify that the request comes from us. Defaults to an empty value. Note that once it's created, it will be just an empty string in the state due to security reasons.
+            secret_wo: (String, Sensitive, Write-only) secret_wo used to sign each POST request so you're able to verify that the request comes from us. Defaults to an empty value. The secret_wo is not stored in the state. Modify secret_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            secret_wo_version: (String) Used together with secret_wo to trigger an update to the secret. Increment this value when an update to secret_wo is required. This field requires Terraform/OpenTofu 1.11+.
             stack_id: (String) ID of the stack which triggers the webhooks
         importStatements:
             - terraform import spacelift_webhook.webhook stack/$STACK_ID/$WEBHOOK_ID
@@ -1963,12 +2597,14 @@ resources:
                 {
                   "csr": "${filebase64(\"/path/to/csr\")}",
                   "description": "Used for all type jobs",
+                  "drift_detection_run_limit": 10,
                   "name": "Main worker"
                 }
         argumentDocs:
             config: (String, Sensitive) credentials necessary to connect WorkerPool's workers to the control plane
             csr: (String, Sensitive) certificate signing request in base64. Changing this value will trigger a token reset.
             description: (String) description of the worker pool
+            drift_detection_run_limit: (Number) Limit of how many concurrent drift detection runs are allowed per worker pool
             id: (String) The ID of this resource.
             labels: (Set of String)
             name: (String) name of the worker pool
@@ -1976,3 +2612,32 @@ resources:
             space_id: (String) ID (slug) of the space the worker pool is in
         importStatements:
             - terraform import spacelift_worker_pool.k8s-core $WORKER_POOL_ID
+    spacelift_worker_pool_recycle:
+        subCategory: ""
+        description: spacelift_worker_pool_recycle represents a worker pool recycle operation in Spacelift. This resource triggers a recycle of all workers in the specified worker pool, causing them to be replaced with fresh instances.
+        name: spacelift_worker_pool_recycle
+        title: spacelift_worker_pool_recycle Resource - terraform-provider-spacelift
+        examples:
+            - name: monthly_refresh
+              manifest: |-
+                {
+                  "keepers": {
+                    "manual_trigger": "initial",
+                    "month": "${formatdate(\"YYYY-MM\", timestamp())}",
+                    "self_hosted_version": "${var.self_hosted_version}"
+                  },
+                  "worker_pool_id": "${spacelift_worker_pool.production.id}"
+                }
+              references:
+                worker_pool_id: spacelift_worker_pool.production.id
+              dependencies:
+                spacelift_worker_pool.production: |-
+                    {
+                      "csr": "${filebase64(\"/path/to/csr\")}",
+                      "name": "production-workers"
+                    }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            keepers: (Map of String) Arbitrary map of values that, when changed, will trigger recreation of the resource and thus a new worker pool recycle operation. This allows you to control when the worker pool recycle should happen.
+            worker_pool_id: (String) ID of the worker pool to recycle
+        importStatements: []

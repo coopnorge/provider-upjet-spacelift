@@ -38,7 +38,10 @@ spec:
           API. spacelift_environment_variable defines an environment variable on the
           context (spacelift_context), stack (spacelift_stack) or a module (spacelift_module),
           thereby allowing to pass and share various secrets and configuration with
-          Spacelift stacks.
+          Spacelift stacks. For secret variables (write_only), prefer using value_wo
+          and value_wo_version instead of value. value_wo is a write-only attribute
+          that never gets stored in state. Note that the checksum will still be present
+          in state for drift detection.
         properties:
           apiVersion:
             description: |-
@@ -194,6 +197,30 @@ spec:
                     - name
                     - namespace
                     type: object
+                  valueWoSecretRef:
+                    description: |-
+                      only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                      Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  valueWoVersion:
+                    description: |-
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                    type: string
                   writeOnly:
                     description: |-
                       (Boolean) Indicates whether the value is secret or not. Defaults to true.
@@ -331,6 +358,30 @@ spec:
                     - name
                     - namespace
                     type: object
+                  valueWoSecretRef:
+                    description: |-
+                      only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                      Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  valueWoVersion:
+                    description: |-
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                    type: string
                   writeOnly:
                     description: |-
                       (Boolean) Indicates whether the value is secret or not. Defaults to true.
@@ -546,6 +597,11 @@ spec:
                     description: |-
                       (String) ID of the stack on which the environment variable is defined
                       ID of the stack on which the environment variable is defined
+                    type: string
+                  valueWoVersion:
+                    description: |-
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
                     type: string
                   writeOnly:
                     description: |-

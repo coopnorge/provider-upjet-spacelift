@@ -21,7 +21,7 @@ func (mg *EnvironmentVariable) GetTerraformResourceType() string {
 
 // GetConnectionDetailsMapping for this EnvironmentVariable
 func (tr *EnvironmentVariable) GetConnectionDetailsMapping() map[string]string {
-	return map[string]string{"value": "valueSecretRef"}
+	return map[string]string{"value": "valueSecretRef", "value_wo": "valueWoSecretRef"}
 }
 
 // GetObservation of this EnvironmentVariable

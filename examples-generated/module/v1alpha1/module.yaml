@@ -8,7 +8,6 @@ metadata:
   name: k8s-module
 spec:
   forProvider:
-    administrative: true
     branch: master
     description: Infra terraform module
     name: k8s-module

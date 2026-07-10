@@ -8,7 +8,6 @@ metadata:
   name: k8s-cluster
 spec:
   forProvider:
-    administrative: true
     autodeploy: true
     branch: master
     description: Provisions a Kubernetes cluster

@@ -278,6 +278,10 @@ type ModuleInitParameters struct {
 	// Name of the repository, without the owner part
 	Repository *string `json:"repository,omitempty" tf:"repository,omitempty"`
 
+	// (String) Name of the Docker image used to process Runs
+	// Name of the Docker image used to process Runs
+	RunnerImage *string `json:"runnerImage,omitempty" tf:"runner_image,omitempty"`
+
 	// (Set of String) List of the accounts (subdomains) which should have access to the Module
 	// List of the accounts (subdomains) which should have access to the Module
 	// +listType=set
@@ -295,6 +299,11 @@ type ModuleInitParameters struct {
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
 	SpaceIDSelector *v1.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
+
+	// (Set of String) List of the space IDs which should have access to the Module
+	// List of the space IDs which should have access to the Module
+	// +listType=set
+	SpaceShares []*string `json:"spaceShares,omitempty" tf:"space_shares,omitempty"`
 
 	// provider-name naming convention. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here.
 	TerraformProvider *string `json:"terraformProvider,omitempty" tf:"terraform_provider,omitempty"`
@@ -385,6 +394,10 @@ type ModuleObservation struct {
 	// Name of the repository, without the owner part
 	Repository *string `json:"repository,omitempty" tf:"repository,omitempty"`
 
+	// (String) Name of the Docker image used to process Runs
+	// Name of the Docker image used to process Runs
+	RunnerImage *string `json:"runnerImage,omitempty" tf:"runner_image,omitempty"`
+
 	// (Set of String) List of the accounts (subdomains) which should have access to the Module
 	// List of the accounts (subdomains) which should have access to the Module
 	// +listType=set
@@ -393,6 +406,11 @@ type ModuleObservation struct {
 	// (String) ID (slug) of the space the module is in
 	// ID (slug) of the space the module is in
 	SpaceID *string `json:"spaceId,omitempty" tf:"space_id,omitempty"`
+
+	// (Set of String) List of the space IDs which should have access to the Module
+	// List of the space IDs which should have access to the Module
+	// +listType=set
+	SpaceShares []*string `json:"spaceShares,omitempty" tf:"space_shares,omitempty"`
 
 	// provider-name naming convention. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here.
 	TerraformProvider *string `json:"terraformProvider,omitempty" tf:"terraform_provider,omitempty"`
@@ -493,6 +511,11 @@ type ModuleParameters struct {
 	// +kubebuilder:validation:Optional
 	Repository *string `json:"repository,omitempty" tf:"repository,omitempty"`
 
+	// (String) Name of the Docker image used to process Runs
+	// Name of the Docker image used to process Runs
+	// +kubebuilder:validation:Optional
+	RunnerImage *string `json:"runnerImage,omitempty" tf:"runner_image,omitempty"`
+
 	// (Set of String) List of the accounts (subdomains) which should have access to the Module
 	// List of the accounts (subdomains) which should have access to the Module
 	// +kubebuilder:validation:Optional
@@ -512,6 +535,12 @@ type ModuleParameters struct {
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
 	SpaceIDSelector *v1.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
+
+	// (Set of String) List of the space IDs which should have access to the Module
+	// List of the space IDs which should have access to the Module
+	// +kubebuilder:validation:Optional
+	// +listType=set
+	SpaceShares []*string `json:"spaceShares,omitempty" tf:"space_shares,omitempty"`
 
 	// provider-name naming convention. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here.
 	// +kubebuilder:validation:Optional
