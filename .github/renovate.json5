@@ -97,6 +97,16 @@
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "crossplane/crossplane"
     },
+    {
+      // We want a PR to bump Spacelift provider versions used through make variables in
+      // the Makefile, taking it from the official Github repository releases.
+      "customType": "regex",
+      "description": "Bump Spacelift provider version in the Makefile",
+      "managerFilePatterns": ["/^Makefile$/"],
+      "matchStrings": ["TERRAFORM_PROVIDER_VERSION \\??= (?<currentValue>.*?)\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "spacelift-io/terraform-provider-spacelift"
+    },
   ],
   "packageRules": [
     {
@@ -158,5 +168,18 @@
       "groupName": "golangci-lint versions in CI",
       "groupSlug": "golangci-lint-in-ci"
     },
+      // to run after go package updates and Makefile updates (e.g. TERRAFORM_PROVIDER_VERSION)
+    {
+      "matchFileNames": ["go.**", "**/Makefile"],
+      "postUpgradeTasks": {
+        "commands": [
+            "make submodules",
+            "make vendor vendor.check",
+            "make generate",
+        ],
+        "fileFilters": ["**"],
+        "executionMode": "update"
+      }
+    }
   ]
 }
