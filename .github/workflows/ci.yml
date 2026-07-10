@@ -29,7 +29,7 @@ jobs:
         uses: fkirc/skip-duplicate-actions@f75f66ce1886f00957d99748a42c724f4330bdcf # v5.3.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          paths_ignore: '["**.md", "**.png", "**.jpg"]'
+          paths_ignore: '["**.md", "**.png", "**.jpg", ".github/renovate.json5", ".github/workflows/renovate.yaml"]'
           do_not_skip: '["workflow_dispatch", "schedule", "push"]'
 
   report-breaking-changes:
