@@ -72,7 +72,7 @@ IMAGES = $(PROJECT_NAME)
 # Setup XPKG
 
 XPKG_REG_ORGS ?= ghcr.io/crossplane-contrib
-# NOTE(hasheddan): skip promoting on xpkg.upbound.io as channel tags are
+# NOTE(hasheddan): skip promoting on xpkg.crossplane.io as channel tags are
 # inferred.
 XPKG_REG_ORGS_NO_PROMOTE ?= ghcr.io/crossplane-contrib
 XPKGS = $(PROJECT_NAME)

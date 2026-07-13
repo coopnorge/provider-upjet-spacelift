@@ -1,10 +1,10 @@
-apiVersion: context.spacelift.upbound.io/v1alpha1
+apiVersion: context.spacelift.crossplane.io/v1alpha1
 kind: Attachment 
 metadata:
   annotations:
-    meta.upbound.io/example-id: contextattachment/v1alpha1/contextattachment
+    meta.crossplane.io/example-id: contextattachment/v1alpha1/contextattachment
   labels:
-    testing.upbound.io/example-name: example-contextattachment
+    testing.crossplane.io/example-name: example-contextattachment
   name: example-contextattachment
 spec:
   forProvider:

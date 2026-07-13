@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: gcpserviceaccounts.gcpserviceaccount.spacelift.upbound.io
+  name: environmentvariables.environmentvariable.spacelift.crossplane.io
 spec:
-  group: gcpserviceaccount.spacelift.upbound.io
+  group: environmentvariable.spacelift.crossplane.io
   names:
     categories:
     - crossplane
     - managed
     - spacelift
-    kind: GcpServiceAccount
-    listKind: GcpServiceAccountList
-    plural: gcpserviceaccounts
-    singular: gcpserviceaccount
+    kind: EnvironmentVariable
+    listKind: EnvironmentVariableList
+    plural: environmentvariables
+    singular: environmentvariable
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,11 +34,14 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: GcpServiceAccount is the Schema for the GcpServiceAccounts API.
-          spacelift_gcp_service_account represents a Google Cloud Platform service
-          account that's linked to a particular Stack or Module. These accounts are
-          created by Spacelift on per-stack basis, and can be added as members to
-          as many organizations and projects as needed.
+        description: EnvironmentVariable is the Schema for the EnvironmentVariables
+          API. spacelift_environment_variable defines an environment variable on the
+          context (spacelift_context), stack (spacelift_stack) or a module (spacelift_module),
+          thereby allowing to pass and share various secrets and configuration with
+          Spacelift stacks. For secret variables (write_only), prefer using value_wo
+          and value_wo_version instead of value. value_wo is a write-only attribute
+          that never gets stored in state. Note that the checksum will still be present
+          in state for drift detection.
         properties:
           apiVersion:
             description: |-
@@ -58,7 +61,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: GcpServiceAccountSpec defines the desired state of GcpServiceAccount
+            description: EnvironmentVariableSpec defines the desired state of EnvironmentVariable
             properties:
               deletionPolicy:
                 default: Delete
@@ -76,18 +79,13 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  moduleId:
+                  contextId:
                     description: |-
-                      (String) ID of the module which uses GCP service account credentials
-                      ID of the module which uses GCP service account credentials
+                      (String) ID of the context on which the environment variable is defined
+                      ID of the context on which the environment variable is defined
                     type: string
-                  stackId:
-                    description: |-
-                      (String) ID of the stack which uses GCP service account credentials
-                      ID of the stack which uses GCP service account credentials
-                    type: string
-                  stackIdRef:
-                    description: Reference to a Stack in stack to populate stackId.
+                  contextIdRef:
+                    description: Reference to a Context in context to populate contextId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -120,8 +118,8 @@ spec:
                     required:
                     - name
                     type: object
-                  stackIdSelector:
-                    description: Selector for a Stack in stack to populate stackId.
+                  contextIdSelector:
+                    description: Selector for a Context in context to populate contextId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -160,14 +158,74 @@ spec:
                             type: string
                         type: object
                     type: object
-                  tokenScopes:
+                  description:
                     description: |-
-                      (Set of String) List of scopes that will be requested when generating temporary GCP service account credentials
-                      List of scopes that will be requested when generating temporary GCP service account credentials
-                    items:
-                      type: string
-                    type: array
-                    x-kubernetes-list-type: set
+                      (String) Description of the environment variable
+                      Description of the environment variable
+                    type: string
+                  moduleId:
+                    description: |-
+                      (String) ID of the module on which the environment variable is defined
+                      ID of the module on which the environment variable is defined
+                    type: string
+                  name:
+                    description: |-
+                      (String) Name of the environment variable
+                      Name of the environment variable
+                    type: string
+                  stackId:
+                    description: |-
+                      (String) ID of the stack on which the environment variable is defined
+                      ID of the stack on which the environment variable is defined
+                    type: string
+                  valueSecretRef:
+                    description: |-
+                      (String, Sensitive) Value of the environment variable. Defaults to an empty string.
+                      Value of the environment variable. Defaults to an empty string.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  valueWoSecretRef:
+                    description: |-
+                      only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                      Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  valueWoVersion:
+                    description: |-
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                    type: string
+                  writeOnly:
+                    description: |-
+                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
+                      Indicates whether the value is secret or not. Defaults to `true`.
+                    type: boolean
                 type: object
               initProvider:
                 description: |-
@@ -182,18 +240,13 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  moduleId:
+                  contextId:
                     description: |-
-                      (String) ID of the module which uses GCP service account credentials
-                      ID of the module which uses GCP service account credentials
+                      (String) ID of the context on which the environment variable is defined
+                      ID of the context on which the environment variable is defined
                     type: string
-                  stackId:
-                    description: |-
-                      (String) ID of the stack which uses GCP service account credentials
-                      ID of the stack which uses GCP service account credentials
-                    type: string
-                  stackIdRef:
-                    description: Reference to a Stack in stack to populate stackId.
+                  contextIdRef:
+                    description: Reference to a Context in context to populate contextId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -226,8 +279,8 @@ spec:
                     required:
                     - name
                     type: object
-                  stackIdSelector:
-                    description: Selector for a Stack in stack to populate stackId.
+                  contextIdSelector:
+                    description: Selector for a Context in context to populate contextId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -266,14 +319,74 @@ spec:
                             type: string
                         type: object
                     type: object
-                  tokenScopes:
+                  description:
                     description: |-
-                      (Set of String) List of scopes that will be requested when generating temporary GCP service account credentials
-                      List of scopes that will be requested when generating temporary GCP service account credentials
-                    items:
-                      type: string
-                    type: array
-                    x-kubernetes-list-type: set
+                      (String) Description of the environment variable
+                      Description of the environment variable
+                    type: string
+                  moduleId:
+                    description: |-
+                      (String) ID of the module on which the environment variable is defined
+                      ID of the module on which the environment variable is defined
+                    type: string
+                  name:
+                    description: |-
+                      (String) Name of the environment variable
+                      Name of the environment variable
+                    type: string
+                  stackId:
+                    description: |-
+                      (String) ID of the stack on which the environment variable is defined
+                      ID of the stack on which the environment variable is defined
+                    type: string
+                  valueSecretRef:
+                    description: |-
+                      (String, Sensitive) Value of the environment variable. Defaults to an empty string.
+                      Value of the environment variable. Defaults to an empty string.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  valueWoSecretRef:
+                    description: |-
+                      only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                      Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  valueWoVersion:
+                    description: |-
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                    type: string
+                  writeOnly:
+                    description: |-
+                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
+                      Indicates whether the value is secret or not. Defaults to `true`.
+                    type: boolean
                 type: object
               managementPolicies:
                 default:
@@ -443,41 +556,58 @@ spec:
             - forProvider
             type: object
             x-kubernetes-validations:
-            - message: spec.forProvider.tokenScopes is a required parameter
+            - message: spec.forProvider.name is a required parameter
               rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.tokenScopes)
-                || (has(self.initProvider) && has(self.initProvider.tokenScopes))'
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
+                || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: GcpServiceAccountStatus defines the observed state of GcpServiceAccount.
+            description: EnvironmentVariableStatus defines the observed state of EnvironmentVariable.
             properties:
               atProvider:
                 properties:
+                  checksum:
+                    description: |-
+                      256 checksum of the value
+                      SHA-256 checksum of the value
+                    type: string
+                  contextId:
+                    description: |-
+                      (String) ID of the context on which the environment variable is defined
+                      ID of the context on which the environment variable is defined
+                    type: string
+                  description:
+                    description: |-
+                      (String) Description of the environment variable
+                      Description of the environment variable
+                    type: string
                   id:
                     description: (String) The ID of this resource.
                     type: string
                   moduleId:
                     description: |-
-                      (String) ID of the module which uses GCP service account credentials
-                      ID of the module which uses GCP service account credentials
+                      (String) ID of the module on which the environment variable is defined
+                      ID of the module on which the environment variable is defined
                     type: string
-                  serviceAccountEmail:
+                  name:
                     description: |-
-                      (String) Email address of the GCP service account dedicated for this stack
-                      Email address of the GCP service account dedicated for this stack
+                      (String) Name of the environment variable
+                      Name of the environment variable
                     type: string
                   stackId:
                     description: |-
-                      (String) ID of the stack which uses GCP service account credentials
-                      ID of the stack which uses GCP service account credentials
+                      (String) ID of the stack on which the environment variable is defined
+                      ID of the stack on which the environment variable is defined
                     type: string
-                  tokenScopes:
+                  valueWoVersion:
                     description: |-
-                      (Set of String) List of scopes that will be requested when generating temporary GCP service account credentials
-                      List of scopes that will be requested when generating temporary GCP service account credentials
-                    items:
-                      type: string
-                    type: array
-                    x-kubernetes-list-type: set
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                    type: string
+                  writeOnly:
+                    description: |-
+                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
+                      Indicates whether the value is secret or not. Defaults to `true`.
+                    type: boolean
                 type: object
               conditions:
                 description: Conditions of the resource.

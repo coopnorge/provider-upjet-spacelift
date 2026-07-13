@@ -1,4 +1,4 @@
-apiVersion: context.spacelift.upbound.io/v1alpha1
+apiVersion: context.spacelift.crossplane.io/v1alpha1
 kind: Context
 metadata:
   annotations:

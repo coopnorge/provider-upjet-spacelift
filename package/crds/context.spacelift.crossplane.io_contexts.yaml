@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: environmentvariables.environmentvariable.spacelift.upbound.io
+  name: contexts.context.spacelift.crossplane.io
 spec:
-  group: environmentvariable.spacelift.upbound.io
+  group: context.spacelift.crossplane.io
   names:
     categories:
     - crossplane
     - managed
     - spacelift
-    kind: EnvironmentVariable
-    listKind: EnvironmentVariableList
-    plural: environmentvariables
-    singular: environmentvariable
+    kind: Context
+    listKind: ContextList
+    plural: contexts
+    singular: context
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,14 +34,11 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: EnvironmentVariable is the Schema for the EnvironmentVariables
-          API. spacelift_environment_variable defines an environment variable on the
-          context (spacelift_context), stack (spacelift_stack) or a module (spacelift_module),
-          thereby allowing to pass and share various secrets and configuration with
-          Spacelift stacks. For secret variables (write_only), prefer using value_wo
-          and value_wo_version instead of value. value_wo is a write-only attribute
-          that never gets stored in state. Note that the checksum will still be present
-          in state for drift detection.
+        description: Context is the Schema for the Contexts API. spacelift_context
+          represents a Spacelift context - a collection of configuration elements
+          (either environment variables or mounted files) that can be administratively
+          attached to multiple stacks (spacelift_stack) or modules (spacelift_module)
+          using a context attachment (spacelift_context_attachment)`
         properties:
           apiVersion:
             description: |-
@@ -61,7 +58,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: EnvironmentVariableSpec defines the desired state of EnvironmentVariable
+            description: ContextSpec defines the desired state of Context
             properties:
               deletionPolicy:
                 default: Delete
@@ -79,13 +76,108 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  contextId:
+                  afterApply:
                     description: |-
-                      (String) ID of the context on which the environment variable is defined
-                      ID of the context on which the environment variable is defined
+                      apply scripts
+                      List of after-apply scripts
+                    items:
+                      type: string
+                    type: array
+                  afterDestroy:
+                    description: |-
+                      destroy scripts
+                      List of after-destroy scripts
+                    items:
+                      type: string
+                    type: array
+                  afterInit:
+                    description: |-
+                      init scripts
+                      List of after-init scripts
+                    items:
+                      type: string
+                    type: array
+                  afterPerform:
+                    description: |-
+                      perform scripts
+                      List of after-perform scripts
+                    items:
+                      type: string
+                    type: array
+                  afterPlan:
+                    description: |-
+                      plan scripts
+                      List of after-plan scripts
+                    items:
+                      type: string
+                    type: array
+                  afterRun:
+                    description: |-
+                      run scripts
+                      List of after-run scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeApply:
+                    description: |-
+                      apply scripts
+                      List of before-apply scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeDestroy:
+                    description: |-
+                      destroy scripts
+                      List of before-destroy scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeInit:
+                    description: |-
+                      init scripts
+                      List of before-init scripts
+                    items:
+                      type: string
+                    type: array
+                  beforePerform:
+                    description: |-
+                      perform scripts
+                      List of before-perform scripts
+                    items:
+                      type: string
+                    type: array
+                  beforePlan:
+                    description: |-
+                      plan scripts
+                      List of before-plan scripts
+                    items:
+                      type: string
+                    type: array
+                  description:
+                    description: |-
+                      form context description for users
+                      Free-form context description for users
                     type: string
-                  contextIdRef:
-                    description: Reference to a Context in context to populate contextId.
+                  labels:
+                    description: |-
+                      label-name>
+                      The labels of the context. To leverage the `autoattach` magic label, ensure your label follows the naming convention: `autoattach:<your-label-name>`
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  name:
+                    description: |-
+                      should be unique in one account
+                      Name of the context - should be unique in one account
+                    type: string
+                  spaceId:
+                    description: |-
+                      (String) ID (slug) of the space the context is in
+                      ID (slug) of the space the context is in
+                    type: string
+                  spaceIdRef:
+                    description: Reference to a Space in space to populate spaceId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -118,8 +210,8 @@ spec:
                     required:
                     - name
                     type: object
-                  contextIdSelector:
-                    description: Selector for a Context in context to populate contextId.
+                  spaceIdSelector:
+                    description: Selector for a Space in space to populate spaceId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -158,74 +250,6 @@ spec:
                             type: string
                         type: object
                     type: object
-                  description:
-                    description: |-
-                      (String) Description of the environment variable
-                      Description of the environment variable
-                    type: string
-                  moduleId:
-                    description: |-
-                      (String) ID of the module on which the environment variable is defined
-                      ID of the module on which the environment variable is defined
-                    type: string
-                  name:
-                    description: |-
-                      (String) Name of the environment variable
-                      Name of the environment variable
-                    type: string
-                  stackId:
-                    description: |-
-                      (String) ID of the stack on which the environment variable is defined
-                      ID of the stack on which the environment variable is defined
-                    type: string
-                  valueSecretRef:
-                    description: |-
-                      (String, Sensitive) Value of the environment variable. Defaults to an empty string.
-                      Value of the environment variable. Defaults to an empty string.
-                    properties:
-                      key:
-                        description: The key to select.
-                        type: string
-                      name:
-                        description: Name of the secret.
-                        type: string
-                      namespace:
-                        description: Namespace of the secret.
-                        type: string
-                    required:
-                    - key
-                    - name
-                    - namespace
-                    type: object
-                  valueWoSecretRef:
-                    description: |-
-                      only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
-                      Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
-                    properties:
-                      key:
-                        description: The key to select.
-                        type: string
-                      name:
-                        description: Name of the secret.
-                        type: string
-                      namespace:
-                        description: Namespace of the secret.
-                        type: string
-                    required:
-                    - key
-                    - name
-                    - namespace
-                    type: object
-                  valueWoVersion:
-                    description: |-
-                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
-                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
-                    type: string
-                  writeOnly:
-                    description: |-
-                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
-                      Indicates whether the value is secret or not. Defaults to `true`.
-                    type: boolean
                 type: object
               initProvider:
                 description: |-
@@ -240,13 +264,108 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  contextId:
+                  afterApply:
                     description: |-
-                      (String) ID of the context on which the environment variable is defined
-                      ID of the context on which the environment variable is defined
+                      apply scripts
+                      List of after-apply scripts
+                    items:
+                      type: string
+                    type: array
+                  afterDestroy:
+                    description: |-
+                      destroy scripts
+                      List of after-destroy scripts
+                    items:
+                      type: string
+                    type: array
+                  afterInit:
+                    description: |-
+                      init scripts
+                      List of after-init scripts
+                    items:
+                      type: string
+                    type: array
+                  afterPerform:
+                    description: |-
+                      perform scripts
+                      List of after-perform scripts
+                    items:
+                      type: string
+                    type: array
+                  afterPlan:
+                    description: |-
+                      plan scripts
+                      List of after-plan scripts
+                    items:
+                      type: string
+                    type: array
+                  afterRun:
+                    description: |-
+                      run scripts
+                      List of after-run scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeApply:
+                    description: |-
+                      apply scripts
+                      List of before-apply scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeDestroy:
+                    description: |-
+                      destroy scripts
+                      List of before-destroy scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeInit:
+                    description: |-
+                      init scripts
+                      List of before-init scripts
+                    items:
+                      type: string
+                    type: array
+                  beforePerform:
+                    description: |-
+                      perform scripts
+                      List of before-perform scripts
+                    items:
+                      type: string
+                    type: array
+                  beforePlan:
+                    description: |-
+                      plan scripts
+                      List of before-plan scripts
+                    items:
+                      type: string
+                    type: array
+                  description:
+                    description: |-
+                      form context description for users
+                      Free-form context description for users
                     type: string
-                  contextIdRef:
-                    description: Reference to a Context in context to populate contextId.
+                  labels:
+                    description: |-
+                      label-name>
+                      The labels of the context. To leverage the `autoattach` magic label, ensure your label follows the naming convention: `autoattach:<your-label-name>`
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  name:
+                    description: |-
+                      should be unique in one account
+                      Name of the context - should be unique in one account
+                    type: string
+                  spaceId:
+                    description: |-
+                      (String) ID (slug) of the space the context is in
+                      ID (slug) of the space the context is in
+                    type: string
+                  spaceIdRef:
+                    description: Reference to a Space in space to populate spaceId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -279,8 +398,8 @@ spec:
                     required:
                     - name
                     type: object
-                  contextIdSelector:
-                    description: Selector for a Context in context to populate contextId.
+                  spaceIdSelector:
+                    description: Selector for a Space in space to populate spaceId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -319,74 +438,6 @@ spec:
                             type: string
                         type: object
                     type: object
-                  description:
-                    description: |-
-                      (String) Description of the environment variable
-                      Description of the environment variable
-                    type: string
-                  moduleId:
-                    description: |-
-                      (String) ID of the module on which the environment variable is defined
-                      ID of the module on which the environment variable is defined
-                    type: string
-                  name:
-                    description: |-
-                      (String) Name of the environment variable
-                      Name of the environment variable
-                    type: string
-                  stackId:
-                    description: |-
-                      (String) ID of the stack on which the environment variable is defined
-                      ID of the stack on which the environment variable is defined
-                    type: string
-                  valueSecretRef:
-                    description: |-
-                      (String, Sensitive) Value of the environment variable. Defaults to an empty string.
-                      Value of the environment variable. Defaults to an empty string.
-                    properties:
-                      key:
-                        description: The key to select.
-                        type: string
-                      name:
-                        description: Name of the secret.
-                        type: string
-                      namespace:
-                        description: Namespace of the secret.
-                        type: string
-                    required:
-                    - key
-                    - name
-                    - namespace
-                    type: object
-                  valueWoSecretRef:
-                    description: |-
-                      only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
-                      Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
-                    properties:
-                      key:
-                        description: The key to select.
-                        type: string
-                      name:
-                        description: Name of the secret.
-                        type: string
-                      namespace:
-                        description: Namespace of the secret.
-                        type: string
-                    required:
-                    - key
-                    - name
-                    - namespace
-                    type: object
-                  valueWoVersion:
-                    description: |-
-                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
-                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
-                    type: string
-                  writeOnly:
-                    description: |-
-                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
-                      Indicates whether the value is secret or not. Defaults to `true`.
-                    type: boolean
                 type: object
               managementPolicies:
                 default:
@@ -561,53 +612,113 @@ spec:
                 || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
                 || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: EnvironmentVariableStatus defines the observed state of EnvironmentVariable.
+            description: ContextStatus defines the observed state of Context.
             properties:
               atProvider:
                 properties:
-                  checksum:
+                  afterApply:
                     description: |-
-                      256 checksum of the value
-                      SHA-256 checksum of the value
-                    type: string
-                  contextId:
+                      apply scripts
+                      List of after-apply scripts
+                    items:
+                      type: string
+                    type: array
+                  afterDestroy:
                     description: |-
-                      (String) ID of the context on which the environment variable is defined
-                      ID of the context on which the environment variable is defined
-                    type: string
+                      destroy scripts
+                      List of after-destroy scripts
+                    items:
+                      type: string
+                    type: array
+                  afterInit:
+                    description: |-
+                      init scripts
+                      List of after-init scripts
+                    items:
+                      type: string
+                    type: array
+                  afterPerform:
+                    description: |-
+                      perform scripts
+                      List of after-perform scripts
+                    items:
+                      type: string
+                    type: array
+                  afterPlan:
+                    description: |-
+                      plan scripts
+                      List of after-plan scripts
+                    items:
+                      type: string
+                    type: array
+                  afterRun:
+                    description: |-
+                      run scripts
+                      List of after-run scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeApply:
+                    description: |-
+                      apply scripts
+                      List of before-apply scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeDestroy:
+                    description: |-
+                      destroy scripts
+                      List of before-destroy scripts
+                    items:
+                      type: string
+                    type: array
+                  beforeInit:
+                    description: |-
+                      init scripts
+                      List of before-init scripts
+                    items:
+                      type: string
+                    type: array
+                  beforePerform:
+                    description: |-
+                      perform scripts
+                      List of before-perform scripts
+                    items:
+                      type: string
+                    type: array
+                  beforePlan:
+                    description: |-
+                      plan scripts
+                      List of before-plan scripts
+                    items:
+                      type: string
+                    type: array
                   description:
                     description: |-
-                      (String) Description of the environment variable
-                      Description of the environment variable
+                      form context description for users
+                      Free-form context description for users
                     type: string
                   id:
                     description: (String) The ID of this resource.
                     type: string
-                  moduleId:
+                  labels:
                     description: |-
-                      (String) ID of the module on which the environment variable is defined
-                      ID of the module on which the environment variable is defined
-                    type: string
+                      label-name>
+                      The labels of the context. To leverage the `autoattach` magic label, ensure your label follows the naming convention: `autoattach:<your-label-name>`
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
                   name:
                     description: |-
-                      (String) Name of the environment variable
-                      Name of the environment variable
+                      should be unique in one account
+                      Name of the context - should be unique in one account
                     type: string
-                  stackId:
+                  spaceId:
                     description: |-
-                      (String) ID of the stack on which the environment variable is defined
-                      ID of the stack on which the environment variable is defined
+                      (String) ID (slug) of the space the context is in
+                      ID (slug) of the space the context is in
                     type: string
-                  valueWoVersion:
-                    description: |-
-                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
-                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
-                    type: string
-                  writeOnly:
-                    description: |-
-                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
-                      Indicates whether the value is secret or not. Defaults to `true`.
-                    type: boolean
                 type: object
               conditions:
                 description: Conditions of the resource.
