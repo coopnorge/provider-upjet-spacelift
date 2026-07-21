@@ -1,4 +1,4 @@
-apiVersion: environmentvariable.spacelift.upbound.io/v1alpha1
+apiVersion: environmentvariable.spacelift.crossplane.io/v1alpha1
 kind: EnvironmentVariable
 metadata:
   annotations:

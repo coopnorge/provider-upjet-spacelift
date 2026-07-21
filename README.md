@@ -8,7 +8,7 @@ Spacelift API.
 ## Getting Started
 
 Install the provider by using the following command after changing the image tag
-to the [latest release](https://marketplace.upbound.io/providers/coopnorge/provider-upjet-spacelift):
+to the [latest release](https://github.com/coopnorge/provider-upjet-spacelift/releases):
 ```
 crossplane xpkg install provider xpkg.crossplane.io/coopnorge/provider-upjet-spacelift:v0.1.0
 ```

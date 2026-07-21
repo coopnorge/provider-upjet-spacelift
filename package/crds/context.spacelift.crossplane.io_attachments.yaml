@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: contexts.context.spacelift.upbound.io
+  name: attachments.context.spacelift.crossplane.io
 spec:
-  group: context.spacelift.upbound.io
+  group: context.spacelift.crossplane.io
   names:
     categories:
     - crossplane
     - managed
     - spacelift
-    kind: Context
-    listKind: ContextList
-    plural: contexts
-    singular: context
+    kind: Attachment
+    listKind: AttachmentList
+    plural: attachments
+    singular: attachment
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,11 +34,9 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Context is the Schema for the Contexts API. spacelift_context
-          represents a Spacelift context - a collection of configuration elements
-          (either environment variables or mounted files) that can be administratively
-          attached to multiple stacks (spacelift_stack) or modules (spacelift_module)
-          using a context attachment (spacelift_context_attachment)`
+        description: Attachment is the Schema for the Attachments API. spacelift_context_attachment
+          represents a Spacelift attachment of a single context to a single stack
+          or module, with a predefined priority.
         properties:
           apiVersion:
             description: |-
@@ -58,7 +56,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ContextSpec defines the desired state of Context
+            description: AttachmentSpec defines the desired state of Attachment
             properties:
               deletionPolicy:
                 default: Delete
@@ -76,108 +74,13 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  afterApply:
+                  contextId:
                     description: |-
-                      apply scripts
-                      List of after-apply scripts
-                    items:
-                      type: string
-                    type: array
-                  afterDestroy:
-                    description: |-
-                      destroy scripts
-                      List of after-destroy scripts
-                    items:
-                      type: string
-                    type: array
-                  afterInit:
-                    description: |-
-                      init scripts
-                      List of after-init scripts
-                    items:
-                      type: string
-                    type: array
-                  afterPerform:
-                    description: |-
-                      perform scripts
-                      List of after-perform scripts
-                    items:
-                      type: string
-                    type: array
-                  afterPlan:
-                    description: |-
-                      plan scripts
-                      List of after-plan scripts
-                    items:
-                      type: string
-                    type: array
-                  afterRun:
-                    description: |-
-                      run scripts
-                      List of after-run scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeApply:
-                    description: |-
-                      apply scripts
-                      List of before-apply scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeDestroy:
-                    description: |-
-                      destroy scripts
-                      List of before-destroy scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeInit:
-                    description: |-
-                      init scripts
-                      List of before-init scripts
-                    items:
-                      type: string
-                    type: array
-                  beforePerform:
-                    description: |-
-                      perform scripts
-                      List of before-perform scripts
-                    items:
-                      type: string
-                    type: array
-                  beforePlan:
-                    description: |-
-                      plan scripts
-                      List of before-plan scripts
-                    items:
-                      type: string
-                    type: array
-                  description:
-                    description: |-
-                      form context description for users
-                      Free-form context description for users
+                      (String) ID of the context to attach
+                      ID of the context to attach
                     type: string
-                  labels:
-                    description: |-
-                      label-name>
-                      The labels of the context. To leverage the `autoattach` magic label, ensure your label follows the naming convention: `autoattach:<your-label-name>`
-                    items:
-                      type: string
-                    type: array
-                    x-kubernetes-list-type: set
-                  name:
-                    description: |-
-                      should be unique in one account
-                      Name of the context - should be unique in one account
-                    type: string
-                  spaceId:
-                    description: |-
-                      (String) ID (slug) of the space the context is in
-                      ID (slug) of the space the context is in
-                    type: string
-                  spaceIdRef:
-                    description: Reference to a Space in space to populate spaceId.
+                  contextIdRef:
+                    description: Reference to a Context in context to populate contextId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -210,8 +113,97 @@ spec:
                     required:
                     - name
                     type: object
-                  spaceIdSelector:
-                    description: Selector for a Space in space to populate spaceId.
+                  contextIdSelector:
+                    description: Selector for a Context in context to populate contextId.
+                    properties:
+                      matchControllerRef:
+                        description: |-
+                          MatchControllerRef ensures an object with the same controller reference
+                          as the selecting object is selected.
+                        type: boolean
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: MatchLabels ensures an object with matching labels
+                          is selected.
+                        type: object
+                      policy:
+                        description: Policies for selection.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: |-
+                              Resolution specifies whether resolution of this reference is required.
+                              The default is 'Required', which means the reconcile will fail if the
+                              reference cannot be resolved. 'Optional' means this reference will be
+                              a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: |-
+                              Resolve specifies when this reference should be resolved. The default
+                              is 'IfNotPresent', which will attempt to resolve the reference only when
+                              the corresponding field is not present. Use 'Always' to resolve the
+                              reference on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    type: object
+                  moduleId:
+                    description: |-
+                      (String) ID of the module to attach the context to
+                      ID of the module to attach the context to
+                    type: string
+                  priority:
+                    description: |-
+                      (Number) Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to 0.
+                      Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to `0`.
+                    type: number
+                  stackId:
+                    description: |-
+                      (String) ID of the stack to attach the context to
+                      ID of the stack to attach the context to
+                    type: string
+                  stackIdRef:
+                    description: Reference to a Stack in stack to populate stackId.
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                      policy:
+                        description: Policies for referencing.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: |-
+                              Resolution specifies whether resolution of this reference is required.
+                              The default is 'Required', which means the reconcile will fail if the
+                              reference cannot be resolved. 'Optional' means this reference will be
+                              a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: |-
+                              Resolve specifies when this reference should be resolved. The default
+                              is 'IfNotPresent', which will attempt to resolve the reference only when
+                              the corresponding field is not present. Use 'Always' to resolve the
+                              reference on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    required:
+                    - name
+                    type: object
+                  stackIdSelector:
+                    description: Selector for a Stack in stack to populate stackId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -264,108 +256,13 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  afterApply:
+                  contextId:
                     description: |-
-                      apply scripts
-                      List of after-apply scripts
-                    items:
-                      type: string
-                    type: array
-                  afterDestroy:
-                    description: |-
-                      destroy scripts
-                      List of after-destroy scripts
-                    items:
-                      type: string
-                    type: array
-                  afterInit:
-                    description: |-
-                      init scripts
-                      List of after-init scripts
-                    items:
-                      type: string
-                    type: array
-                  afterPerform:
-                    description: |-
-                      perform scripts
-                      List of after-perform scripts
-                    items:
-                      type: string
-                    type: array
-                  afterPlan:
-                    description: |-
-                      plan scripts
-                      List of after-plan scripts
-                    items:
-                      type: string
-                    type: array
-                  afterRun:
-                    description: |-
-                      run scripts
-                      List of after-run scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeApply:
-                    description: |-
-                      apply scripts
-                      List of before-apply scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeDestroy:
-                    description: |-
-                      destroy scripts
-                      List of before-destroy scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeInit:
-                    description: |-
-                      init scripts
-                      List of before-init scripts
-                    items:
-                      type: string
-                    type: array
-                  beforePerform:
-                    description: |-
-                      perform scripts
-                      List of before-perform scripts
-                    items:
-                      type: string
-                    type: array
-                  beforePlan:
-                    description: |-
-                      plan scripts
-                      List of before-plan scripts
-                    items:
-                      type: string
-                    type: array
-                  description:
-                    description: |-
-                      form context description for users
-                      Free-form context description for users
+                      (String) ID of the context to attach
+                      ID of the context to attach
                     type: string
-                  labels:
-                    description: |-
-                      label-name>
-                      The labels of the context. To leverage the `autoattach` magic label, ensure your label follows the naming convention: `autoattach:<your-label-name>`
-                    items:
-                      type: string
-                    type: array
-                    x-kubernetes-list-type: set
-                  name:
-                    description: |-
-                      should be unique in one account
-                      Name of the context - should be unique in one account
-                    type: string
-                  spaceId:
-                    description: |-
-                      (String) ID (slug) of the space the context is in
-                      ID (slug) of the space the context is in
-                    type: string
-                  spaceIdRef:
-                    description: Reference to a Space in space to populate spaceId.
+                  contextIdRef:
+                    description: Reference to a Context in context to populate contextId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -398,8 +295,97 @@ spec:
                     required:
                     - name
                     type: object
-                  spaceIdSelector:
-                    description: Selector for a Space in space to populate spaceId.
+                  contextIdSelector:
+                    description: Selector for a Context in context to populate contextId.
+                    properties:
+                      matchControllerRef:
+                        description: |-
+                          MatchControllerRef ensures an object with the same controller reference
+                          as the selecting object is selected.
+                        type: boolean
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: MatchLabels ensures an object with matching labels
+                          is selected.
+                        type: object
+                      policy:
+                        description: Policies for selection.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: |-
+                              Resolution specifies whether resolution of this reference is required.
+                              The default is 'Required', which means the reconcile will fail if the
+                              reference cannot be resolved. 'Optional' means this reference will be
+                              a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: |-
+                              Resolve specifies when this reference should be resolved. The default
+                              is 'IfNotPresent', which will attempt to resolve the reference only when
+                              the corresponding field is not present. Use 'Always' to resolve the
+                              reference on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    type: object
+                  moduleId:
+                    description: |-
+                      (String) ID of the module to attach the context to
+                      ID of the module to attach the context to
+                    type: string
+                  priority:
+                    description: |-
+                      (Number) Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to 0.
+                      Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to `0`.
+                    type: number
+                  stackId:
+                    description: |-
+                      (String) ID of the stack to attach the context to
+                      ID of the stack to attach the context to
+                    type: string
+                  stackIdRef:
+                    description: Reference to a Stack in stack to populate stackId.
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                      policy:
+                        description: Policies for referencing.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: |-
+                              Resolution specifies whether resolution of this reference is required.
+                              The default is 'Required', which means the reconcile will fail if the
+                              reference cannot be resolved. 'Optional' means this reference will be
+                              a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: |-
+                              Resolve specifies when this reference should be resolved. The default
+                              is 'IfNotPresent', which will attempt to resolve the reference only when
+                              the corresponding field is not present. Use 'Always' to resolve the
+                              reference on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    required:
+                    - name
+                    type: object
+                  stackIdSelector:
+                    description: Selector for a Stack in stack to populate stackId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -606,118 +592,33 @@ spec:
             required:
             - forProvider
             type: object
-            x-kubernetes-validations:
-            - message: spec.forProvider.name is a required parameter
-              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
-                || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: ContextStatus defines the observed state of Context.
+            description: AttachmentStatus defines the observed state of Attachment.
             properties:
               atProvider:
                 properties:
-                  afterApply:
+                  contextId:
                     description: |-
-                      apply scripts
-                      List of after-apply scripts
-                    items:
-                      type: string
-                    type: array
-                  afterDestroy:
-                    description: |-
-                      destroy scripts
-                      List of after-destroy scripts
-                    items:
-                      type: string
-                    type: array
-                  afterInit:
-                    description: |-
-                      init scripts
-                      List of after-init scripts
-                    items:
-                      type: string
-                    type: array
-                  afterPerform:
-                    description: |-
-                      perform scripts
-                      List of after-perform scripts
-                    items:
-                      type: string
-                    type: array
-                  afterPlan:
-                    description: |-
-                      plan scripts
-                      List of after-plan scripts
-                    items:
-                      type: string
-                    type: array
-                  afterRun:
-                    description: |-
-                      run scripts
-                      List of after-run scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeApply:
-                    description: |-
-                      apply scripts
-                      List of before-apply scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeDestroy:
-                    description: |-
-                      destroy scripts
-                      List of before-destroy scripts
-                    items:
-                      type: string
-                    type: array
-                  beforeInit:
-                    description: |-
-                      init scripts
-                      List of before-init scripts
-                    items:
-                      type: string
-                    type: array
-                  beforePerform:
-                    description: |-
-                      perform scripts
-                      List of before-perform scripts
-                    items:
-                      type: string
-                    type: array
-                  beforePlan:
-                    description: |-
-                      plan scripts
-                      List of before-plan scripts
-                    items:
-                      type: string
-                    type: array
-                  description:
-                    description: |-
-                      form context description for users
-                      Free-form context description for users
+                      (String) ID of the context to attach
+                      ID of the context to attach
                     type: string
                   id:
                     description: (String) The ID of this resource.
                     type: string
-                  labels:
+                  moduleId:
                     description: |-
-                      label-name>
-                      The labels of the context. To leverage the `autoattach` magic label, ensure your label follows the naming convention: `autoattach:<your-label-name>`
-                    items:
-                      type: string
-                    type: array
-                    x-kubernetes-list-type: set
-                  name:
-                    description: |-
-                      should be unique in one account
-                      Name of the context - should be unique in one account
+                      (String) ID of the module to attach the context to
+                      ID of the module to attach the context to
                     type: string
-                  spaceId:
+                  priority:
                     description: |-
-                      (String) ID (slug) of the space the context is in
-                      ID (slug) of the space the context is in
+                      (Number) Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to 0.
+                      Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to `0`.
+                    type: number
+                  stackId:
+                    description: |-
+                      (String) ID of the stack to attach the context to
+                      ID of the stack to attach the context to
                     type: string
                 type: object
               conditions:

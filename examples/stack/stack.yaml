@@ -1,10 +1,10 @@
-apiVersion: stack.spacelift.upbound.io/v1alpha1
+apiVersion: stack.spacelift.crossplane.io/v1alpha1
 kind: Stack 
 metadata:
   annotations:
-    meta.upbound.io/example-id: stack/v1alpha1/stack
+    meta.crossplane.io/example-id: stack/v1alpha1/stack
   labels:
-    testing.upbound.io/example-name: example-stack
+    testing.crossplane.io/example-name: example-stack
   name: example-stack
 spec:
   forProvider:

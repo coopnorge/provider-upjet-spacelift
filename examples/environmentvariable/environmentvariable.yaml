@@ -1,10 +1,10 @@
-apiVersion: environmentvariable.spacelift.upbound.io/v1alpha1
+apiVersion: environmentvariable.spacelift.crossplane.io/v1alpha1
 kind: EnvironmentVariable 
 metadata:
   annotations:
-    meta.upbound.io/example-id: environmentvariable/v1alpha1/environmentvariable
+    meta.crossplane.io/example-id: environmentvariable/v1alpha1/environmentvariable
   labels:
-    testing.upbound.io/example-name: exampleenvironmentvariable
+    testing.crossplane.io/example-name: exampleenvironmentvariable
   name: exampleenvironmentvariable
 spec:
   forProvider:

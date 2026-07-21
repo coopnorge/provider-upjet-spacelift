@@ -1,10 +1,10 @@
-apiVersion: module.spacelift.upbound.io/v1alpha1
+apiVersion: module.spacelift.crossplane.io/v1alpha1
 kind: Module
 metadata:
   annotations:
-    meta.upbound.io/example-id: module/v1alpha1/module
+    meta.crossplane.io/example-id: module/v1alpha1/module
   labels:
-    testing.upbound.io/example-name: example-module
+    testing.crossplane.io/example-name: example-module
   name: example-module
 spec:
   forProvider:

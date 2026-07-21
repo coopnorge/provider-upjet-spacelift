@@ -1,10 +1,10 @@
-apiVersion: space.spacelift.upbound.io/v1alpha1
+apiVersion: space.spacelift.crossplane.io/v1alpha1
 kind: Space
 metadata:
   annotations:
-    meta.upbound.io/example-id: space/v1alpha1/space
+    meta.crossplane.io/example-id: space/v1alpha1/space
   labels:
-    testing.upbound.io/example-name: example-space
+    testing.crossplane.io/example-name: example-space
   name: example-space
 spec:
   forProvider:

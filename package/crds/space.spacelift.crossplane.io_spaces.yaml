@@ -4,9 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: spaces.space.spacelift.upbound.io
+  name: spaces.space.spacelift.crossplane.io
 spec:
-  group: space.spacelift.upbound.io
+  group: space.spacelift.crossplane.io
   names:
     categories:
     - crossplane
