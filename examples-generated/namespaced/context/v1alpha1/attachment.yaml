@@ -1,0 +1,18 @@
+apiVersion: context.spacelift.crossplane.io/v1alpha1
+kind: Attachment
+metadata:
+  annotations:
+    meta.upbound.io/example-id: context/v1alpha1/attachment
+  labels:
+    testing.upbound.io/example-name: attachment
+  name: attachment
+  namespace: upbound-system
+spec:
+  forProvider:
+    contextIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    priority: 0
+    stackIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
