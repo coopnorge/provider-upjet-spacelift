@@ -1,4 +1,4 @@
-apiVersion: context.spacelift.crossplane.io/v1alpha1
+apiVersion: context.spacelift.m.crossplane.io/v1alpha1
 kind: Attachment
 metadata:
   annotations:

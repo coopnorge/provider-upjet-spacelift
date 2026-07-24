@@ -4,19 +4,19 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: attachments.context.spacelift.crossplane.io
+  name: environmentvariables.environmentvariable.spacelift.m.crossplane.io
 spec:
-  group: context.spacelift.crossplane.io
+  group: environmentvariable.spacelift.m.crossplane.io
   names:
     categories:
     - crossplane
     - managed
     - spacelift
-    kind: Attachment
-    listKind: AttachmentList
-    plural: attachments
-    singular: attachment
-  scope: Cluster
+    kind: EnvironmentVariable
+    listKind: EnvironmentVariableList
+    plural: environmentvariables
+    singular: environmentvariable
+  scope: Namespaced
   versions:
   - additionalPrinterColumns:
     - jsonPath: .status.conditions[?(@.type=='Synced')].status
@@ -34,9 +34,14 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Attachment is the Schema for the Attachments API. spacelift_context_attachment
-          represents a Spacelift attachment of a single context to a single stack
-          or module, with a predefined priority.
+        description: EnvironmentVariable is the Schema for the EnvironmentVariables
+          API. spacelift_environment_variable defines an environment variable on the
+          context (spacelift_context), stack (spacelift_stack) or a module (spacelift_module),
+          thereby allowing to pass and share various secrets and configuration with
+          Spacelift stacks. For secret variables (write_only), prefer using value_wo
+          and value_wo_version instead of value. value_wo is a write-only attribute
+          that never gets stored in state. Note that the checksum will still be present
+          in state for drift detection.
         properties:
           apiVersion:
             description: |-
@@ -56,34 +61,23 @@ spec:
           metadata:
             type: object
           spec:
-            description: AttachmentSpec defines the desired state of Attachment
+            description: EnvironmentVariableSpec defines the desired state of EnvironmentVariable
             properties:
-              deletionPolicy:
-                default: Delete
-                description: |-
-                  DeletionPolicy specifies what will happen to the underlying external
-                  when this managed resource is deleted - either "Delete" or "Orphan" the
-                  external resource.
-                  This field is planned to be deprecated in favor of the ManagementPolicies
-                  field in a future release. Currently, both could be set independently and
-                  non-default values would be honored if the feature flag is enabled.
-                  See the design doc for more information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
-                enum:
-                - Orphan
-                - Delete
-                type: string
               forProvider:
                 properties:
                   contextId:
                     description: |-
-                      (String) ID of the context to attach
-                      ID of the context to attach
+                      (String) ID of the context on which the environment variable is defined
+                      ID of the context on which the environment variable is defined
                     type: string
                   contextIdRef:
                     description: Reference to a Context in context to populate contextId.
                     properties:
                       name:
                         description: Name of the referenced object.
+                        type: string
+                      namespace:
+                        description: Namespace of the referenced object
                         type: string
                       policy:
                         description: Policies for referencing.
@@ -127,96 +121,10 @@ spec:
                         description: MatchLabels ensures an object with matching labels
                           is selected.
                         type: object
-                      policy:
-                        description: Policies for selection.
-                        properties:
-                          resolution:
-                            default: Required
-                            description: |-
-                              Resolution specifies whether resolution of this reference is required.
-                              The default is 'Required', which means the reconcile will fail if the
-                              reference cannot be resolved. 'Optional' means this reference will be
-                              a no-op if it cannot be resolved.
-                            enum:
-                            - Required
-                            - Optional
-                            type: string
-                          resolve:
-                            description: |-
-                              Resolve specifies when this reference should be resolved. The default
-                              is 'IfNotPresent', which will attempt to resolve the reference only when
-                              the corresponding field is not present. Use 'Always' to resolve the
-                              reference on every reconcile.
-                            enum:
-                            - Always
-                            - IfNotPresent
-                            type: string
-                        type: object
-                    type: object
-                  moduleId:
-                    description: |-
-                      (String) ID of the module to attach the context to
-                      ID of the module to attach the context to
-                    type: string
-                  priority:
-                    description: |-
-                      (Number) Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to 0.
-                      Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to `0`.
-                    type: number
-                  stackId:
-                    description: |-
-                      (String) ID of the stack to attach the context to
-                      ID of the stack to attach the context to
-                    type: string
-                  stackIdRef:
-                    description: Reference to a Stack in stack to populate stackId.
-                    properties:
-                      name:
-                        description: Name of the referenced object.
+                      namespace:
+                        description: Namespace for the selector
                         type: string
                       policy:
-                        description: Policies for referencing.
-                        properties:
-                          resolution:
-                            default: Required
-                            description: |-
-                              Resolution specifies whether resolution of this reference is required.
-                              The default is 'Required', which means the reconcile will fail if the
-                              reference cannot be resolved. 'Optional' means this reference will be
-                              a no-op if it cannot be resolved.
-                            enum:
-                            - Required
-                            - Optional
-                            type: string
-                          resolve:
-                            description: |-
-                              Resolve specifies when this reference should be resolved. The default
-                              is 'IfNotPresent', which will attempt to resolve the reference only when
-                              the corresponding field is not present. Use 'Always' to resolve the
-                              reference on every reconcile.
-                            enum:
-                            - Always
-                            - IfNotPresent
-                            type: string
-                        type: object
-                    required:
-                    - name
-                    type: object
-                  stackIdSelector:
-                    description: Selector for a Stack in stack to populate stackId.
-                    properties:
-                      matchControllerRef:
-                        description: |-
-                          MatchControllerRef ensures an object with the same controller reference
-                          as the selecting object is selected.
-                        type: boolean
-                      matchLabels:
-                        additionalProperties:
-                          type: string
-                        description: MatchLabels ensures an object with matching labels
-                          is selected.
-                        type: object
-                      policy:
                         description: Policies for selection.
                         properties:
                           resolution:
@@ -242,6 +150,64 @@ spec:
                             type: string
                         type: object
                     type: object
+                  description:
+                    description: |-
+                      (String) Description of the environment variable
+                      Description of the environment variable
+                    type: string
+                  moduleId:
+                    description: |-
+                      (String) ID of the module on which the environment variable is defined
+                      ID of the module on which the environment variable is defined
+                    type: string
+                  name:
+                    description: |-
+                      (String) Name of the environment variable
+                      Name of the environment variable
+                    type: string
+                  stackId:
+                    description: |-
+                      (String) ID of the stack on which the environment variable is defined
+                      ID of the stack on which the environment variable is defined
+                    type: string
+                  valueSecretRef:
+                    description: |-
+                      (String, Sensitive) Value of the environment variable. Defaults to an empty string.
+                      Value of the environment variable. Defaults to an empty string.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
+                  valueWoSecretRef:
+                    description: |-
+                      only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                      Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
+                  valueWoVersion:
+                    description: |-
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                    type: string
+                  writeOnly:
+                    description: |-
+                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
+                      Indicates whether the value is secret or not. Defaults to `true`.
+                    type: boolean
                 type: object
               initProvider:
                 description: |-
@@ -258,14 +224,17 @@ spec:
                 properties:
                   contextId:
                     description: |-
-                      (String) ID of the context to attach
-                      ID of the context to attach
+                      (String) ID of the context on which the environment variable is defined
+                      ID of the context on which the environment variable is defined
                     type: string
                   contextIdRef:
                     description: Reference to a Context in context to populate contextId.
                     properties:
                       name:
                         description: Name of the referenced object.
+                        type: string
+                      namespace:
+                        description: Namespace of the referenced object
                         type: string
                       policy:
                         description: Policies for referencing.
@@ -309,96 +278,10 @@ spec:
                         description: MatchLabels ensures an object with matching labels
                           is selected.
                         type: object
-                      policy:
-                        description: Policies for selection.
-                        properties:
-                          resolution:
-                            default: Required
-                            description: |-
-                              Resolution specifies whether resolution of this reference is required.
-                              The default is 'Required', which means the reconcile will fail if the
-                              reference cannot be resolved. 'Optional' means this reference will be
-                              a no-op if it cannot be resolved.
-                            enum:
-                            - Required
-                            - Optional
-                            type: string
-                          resolve:
-                            description: |-
-                              Resolve specifies when this reference should be resolved. The default
-                              is 'IfNotPresent', which will attempt to resolve the reference only when
-                              the corresponding field is not present. Use 'Always' to resolve the
-                              reference on every reconcile.
-                            enum:
-                            - Always
-                            - IfNotPresent
-                            type: string
-                        type: object
-                    type: object
-                  moduleId:
-                    description: |-
-                      (String) ID of the module to attach the context to
-                      ID of the module to attach the context to
-                    type: string
-                  priority:
-                    description: |-
-                      (Number) Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to 0.
-                      Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to `0`.
-                    type: number
-                  stackId:
-                    description: |-
-                      (String) ID of the stack to attach the context to
-                      ID of the stack to attach the context to
-                    type: string
-                  stackIdRef:
-                    description: Reference to a Stack in stack to populate stackId.
-                    properties:
-                      name:
-                        description: Name of the referenced object.
+                      namespace:
+                        description: Namespace for the selector
                         type: string
                       policy:
-                        description: Policies for referencing.
-                        properties:
-                          resolution:
-                            default: Required
-                            description: |-
-                              Resolution specifies whether resolution of this reference is required.
-                              The default is 'Required', which means the reconcile will fail if the
-                              reference cannot be resolved. 'Optional' means this reference will be
-                              a no-op if it cannot be resolved.
-                            enum:
-                            - Required
-                            - Optional
-                            type: string
-                          resolve:
-                            description: |-
-                              Resolve specifies when this reference should be resolved. The default
-                              is 'IfNotPresent', which will attempt to resolve the reference only when
-                              the corresponding field is not present. Use 'Always' to resolve the
-                              reference on every reconcile.
-                            enum:
-                            - Always
-                            - IfNotPresent
-                            type: string
-                        type: object
-                    required:
-                    - name
-                    type: object
-                  stackIdSelector:
-                    description: Selector for a Stack in stack to populate stackId.
-                    properties:
-                      matchControllerRef:
-                        description: |-
-                          MatchControllerRef ensures an object with the same controller reference
-                          as the selecting object is selected.
-                        type: boolean
-                      matchLabels:
-                        additionalProperties:
-                          type: string
-                        description: MatchLabels ensures an object with matching labels
-                          is selected.
-                        type: object
-                      policy:
                         description: Policies for selection.
                         properties:
                           resolution:
@@ -424,6 +307,64 @@ spec:
                             type: string
                         type: object
                     type: object
+                  description:
+                    description: |-
+                      (String) Description of the environment variable
+                      Description of the environment variable
+                    type: string
+                  moduleId:
+                    description: |-
+                      (String) ID of the module on which the environment variable is defined
+                      ID of the module on which the environment variable is defined
+                    type: string
+                  name:
+                    description: |-
+                      (String) Name of the environment variable
+                      Name of the environment variable
+                    type: string
+                  stackId:
+                    description: |-
+                      (String) ID of the stack on which the environment variable is defined
+                      ID of the stack on which the environment variable is defined
+                    type: string
+                  valueSecretRef:
+                    description: |-
+                      (String, Sensitive) Value of the environment variable. Defaults to an empty string.
+                      Value of the environment variable. Defaults to an empty string.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
+                  valueWoSecretRef:
+                    description: |-
+                      only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                      Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
+                  valueWoVersion:
+                    description: |-
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                    type: string
+                  writeOnly:
+                    description: |-
+                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
+                      Indicates whether the value is secret or not. Defaults to `true`.
+                    type: boolean
                 type: object
               managementPolicies:
                 default:
@@ -433,10 +374,6 @@ spec:
                   through a Crossplane feature flag.
                   ManagementPolicies specify the array of actions Crossplane is allowed to
                   take on the managed and external resources.
-                  This field is planned to replace the DeletionPolicy field in a future
-                  release. Currently, both could be set independently and non-default
-                  values would be honored if the feature flag is enabled. If both are
-                  custom, the DeletionPolicy field will be ignored.
                   See the design doc for more information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
                   and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
                 items:
@@ -454,41 +391,21 @@ spec:
                 type: array
               providerConfigRef:
                 default:
+                  kind: ClusterProviderConfig
                   name: default
                 description: |-
                   ProviderConfigReference specifies how the provider that will be used to
                   create, observe, update, and delete this managed resource should be
                   configured.
                 properties:
+                  kind:
+                    description: Kind of the referenced object.
+                    type: string
                   name:
                     description: Name of the referenced object.
                     type: string
-                  policy:
-                    description: Policies for referencing.
-                    properties:
-                      resolution:
-                        default: Required
-                        description: |-
-                          Resolution specifies whether resolution of this reference is required.
-                          The default is 'Required', which means the reconcile will fail if the
-                          reference cannot be resolved. 'Optional' means this reference will be
-                          a no-op if it cannot be resolved.
-                        enum:
-                        - Required
-                        - Optional
-                        type: string
-                      resolve:
-                        description: |-
-                          Resolve specifies when this reference should be resolved. The default
-                          is 'IfNotPresent', which will attempt to resolve the reference only when
-                          the corresponding field is not present. Use 'Always' to resolve the
-                          reference on every reconcile.
-                        enum:
-                        - Always
-                        - IfNotPresent
-                        type: string
-                    type: object
                 required:
+                - kind
                 - name
                 type: object
               writeConnectionSecretToRef:
@@ -501,44 +418,65 @@ spec:
                   name:
                     description: Name of the secret.
                     type: string
-                  namespace:
-                    description: Namespace of the secret.
-                    type: string
                 required:
                 - name
-                - namespace
                 type: object
             required:
             - forProvider
             type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.name is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
+                || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: AttachmentStatus defines the observed state of Attachment.
+            description: EnvironmentVariableStatus defines the observed state of EnvironmentVariable.
             properties:
               atProvider:
                 properties:
+                  checksum:
+                    description: |-
+                      256 checksum of the value
+                      SHA-256 checksum of the value
+                    type: string
                   contextId:
                     description: |-
-                      (String) ID of the context to attach
-                      ID of the context to attach
+                      (String) ID of the context on which the environment variable is defined
+                      ID of the context on which the environment variable is defined
+                    type: string
+                  description:
+                    description: |-
+                      (String) Description of the environment variable
+                      Description of the environment variable
                     type: string
                   id:
                     description: (String) The ID of this resource.
                     type: string
                   moduleId:
                     description: |-
-                      (String) ID of the module to attach the context to
-                      ID of the module to attach the context to
+                      (String) ID of the module on which the environment variable is defined
+                      ID of the module on which the environment variable is defined
                     type: string
-                  priority:
+                  name:
                     description: |-
-                      (Number) Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to 0.
-                      Priority of the context attachment. All the contexts attached to a stack are sorted by priority (lowest first), though values don't need to be unique. This ordering establishes precedence rules between contexts should there be a conflict and multiple contexts define the same value. Defaults to `0`.
-                    type: number
+                      (String) Name of the environment variable
+                      Name of the environment variable
+                    type: string
                   stackId:
                     description: |-
-                      (String) ID of the stack to attach the context to
-                      ID of the stack to attach the context to
+                      (String) ID of the stack on which the environment variable is defined
+                      ID of the stack on which the environment variable is defined
                     type: string
+                  valueWoVersion:
+                    description: |-
+                      (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                      Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
+                    type: string
+                  writeOnly:
+                    description: |-
+                      (Boolean) Indicates whether the value is secret or not. Defaults to true.
+                      Indicates whether the value is secret or not. Defaults to `true`.
+                    type: boolean
                 type: object
               conditions:
                 description: Conditions of the resource.

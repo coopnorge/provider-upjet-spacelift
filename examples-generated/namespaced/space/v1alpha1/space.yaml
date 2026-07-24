@@ -1,4 +1,4 @@
-apiVersion: space.spacelift.crossplane.io/v1alpha1
+apiVersion: space.spacelift.m.crossplane.io/v1alpha1
 kind: Space
 metadata:
   annotations:

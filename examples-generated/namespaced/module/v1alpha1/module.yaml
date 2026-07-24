@@ -1,4 +1,4 @@
-apiVersion: module.spacelift.crossplane.io/v1alpha1
+apiVersion: module.spacelift.m.crossplane.io/v1alpha1
 kind: Module
 metadata:
   annotations:
