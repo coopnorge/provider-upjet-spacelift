@@ -10,19 +10,18 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/crossplane/crossplane-runtime/pkg/certificates"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/certificates"
 
-	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
-	xpcontroller "github.com/crossplane/crossplane-runtime/pkg/controller"
-	"github.com/crossplane/crossplane-runtime/pkg/feature"
-	"github.com/crossplane/crossplane-runtime/pkg/logging"
-	"github.com/crossplane/crossplane-runtime/pkg/ratelimiter"
-	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
-	"github.com/crossplane/crossplane-runtime/pkg/resource"
-	"github.com/crossplane/crossplane-runtime/pkg/statemetrics"
-	tjcontroller "github.com/crossplane/upjet/pkg/controller"
-	"github.com/crossplane/upjet/pkg/terraform"
-	"gopkg.in/alecthomas/kingpin.v2"
+	"github.com/alecthomas/kingpin/v2"
+	xpcontroller "github.com/crossplane/crossplane-runtime/v2/pkg/controller"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/feature"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/logging"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/ratelimiter"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/reconciler/managed"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/resource"
+	"github.com/crossplane/crossplane-runtime/v2/pkg/statemetrics"
+	tjcontroller "github.com/crossplane/upjet/v2/pkg/controller"
+	"github.com/crossplane/upjet/v2/pkg/terraform"
 	kerrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/leaderelection/resourcelock"
@@ -116,16 +115,12 @@ func main() {
 
 	if *enableExternalSecretStores {
 		o.Features.Enable(features.EnableAlphaExternalSecretStores)
-		o.SecretStoreConfigGVK = &v1alpha1.StoreConfigGroupVersionKind
 		log.Info("Alpha feature enabled", "flag", features.EnableAlphaExternalSecretStores)
 
-		o.ESSOptions = &tjcontroller.ESSOptions{}
 		if *essTLSCertsPath != "" {
 			log.Info("ESS TLS certificates path is set. Loading mTLS configuration.")
-			tCfg, err := certificates.LoadMTLSConfig(filepath.Join(*essTLSCertsPath, "ca.crt"), filepath.Join(*essTLSCertsPath, "tls.crt"), filepath.Join(*essTLSCertsPath, "tls.key"), false)
+			_, err := certificates.LoadMTLSConfig(filepath.Join(*essTLSCertsPath, "ca.crt"), filepath.Join(*essTLSCertsPath, "tls.crt"), filepath.Join(*essTLSCertsPath, "tls.key"), false)
 			kingpin.FatalIfError(err, "Cannot load ESS TLS config.")
-
-			o.ESSOptions.TLSConfig = tCfg
 		}
 
 		// Ensure default store config exists.
@@ -136,7 +131,7 @@ func main() {
 			Spec: v1alpha1.StoreConfigSpec{
 				// NOTE(turkenh): We only set required spec and expect optional
 				// ones to properly be initialized with CRD level default values.
-				SecretStoreConfig: xpv1.SecretStoreConfig{
+				SecretStoreConfig: v1alpha1.SecretStoreConfig{
 					DefaultScope: *namespace,
 				},
 			},

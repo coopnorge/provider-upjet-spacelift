@@ -7,12 +7,17 @@ package v1alpha1
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
+	xpv1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
 )
+
+// SecretStoreConfig configures secret store settings.
+type SecretStoreConfig struct {
+	DefaultScope string `json:"defaultScope"`
+}
 
 // A StoreConfigSpec defines the desired state of a ProviderConfig.
 type StoreConfigSpec struct {
-	xpv1.SecretStoreConfig `json:",inline"`
+	SecretStoreConfig `json:",inline"`
 }
 
 // A StoreConfigStatus represents the status of a StoreConfig.
@@ -48,7 +53,7 @@ type StoreConfigList struct {
 // Note(turkenh): To be generated with AngryJet
 
 // GetStoreConfig returns SecretStoreConfig
-func (in *StoreConfig) GetStoreConfig() xpv1.SecretStoreConfig {
+func (in *StoreConfig) GetStoreConfig() SecretStoreConfig {
 	return in.Spec.SecretStoreConfig
 }
 
