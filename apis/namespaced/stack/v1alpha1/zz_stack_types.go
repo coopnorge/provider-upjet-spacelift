@@ -340,6 +340,115 @@ type KubernetesParameters struct {
 	Namespace *string `json:"namespace,omitempty" tf:"namespace,omitempty"`
 }
 
+type LoggingInitParameters struct {
+
+	// concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to true.
+	// Enables the -concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to `true`.
+	Concise *bool `json:"concise,omitempty" tf:"concise,omitempty"`
+}
+
+type LoggingObservation struct {
+
+	// concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to true.
+	// Enables the -concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to `true`.
+	Concise *bool `json:"concise,omitempty" tf:"concise,omitempty"`
+}
+
+type LoggingParameters struct {
+
+	// concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to true.
+	// Enables the -concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to `true`.
+	// +kubebuilder:validation:Optional
+	Concise *bool `json:"concise,omitempty" tf:"concise,omitempty"`
+}
+
+type OpentofuInitParameters struct {
+
+	// (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
+	// Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
+	ExternalStateAccess *bool `json:"externalStateAccess,omitempty" tf:"external_state_access,omitempty"`
+
+	// (Block List, Max: 1) Logging configuration for OpenTofu commands. (see below for nested schema)
+	// Logging configuration for OpenTofu commands.
+	Logging []LoggingInitParameters `json:"logging,omitempty" tf:"logging,omitempty"`
+
+	// (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
+	// Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to `true`.
+	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
+
+	// (String) OpenTofu version to use.
+	// OpenTofu version to use.
+	Version *string `json:"version,omitempty" tf:"version,omitempty"`
+
+	// (String) Defines the tool that will be used to execute the workflow. This can be one of OPENTOFU or CUSTOM. Defaults to OPENTOFU.
+	// Defines the tool that will be used to execute the workflow. This can be one of `OPENTOFU` or `CUSTOM`. Defaults to `OPENTOFU`.
+	WorkflowTool *string `json:"workflowTool,omitempty" tf:"workflow_tool,omitempty"`
+
+	// (String) OpenTofu workspace to select.
+	// OpenTofu workspace to select.
+	Workspace *string `json:"workspace,omitempty" tf:"workspace,omitempty"`
+}
+
+type OpentofuObservation struct {
+
+	// (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
+	// Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
+	ExternalStateAccess *bool `json:"externalStateAccess,omitempty" tf:"external_state_access,omitempty"`
+
+	// (Block List, Max: 1) Logging configuration for OpenTofu commands. (see below for nested schema)
+	// Logging configuration for OpenTofu commands.
+	Logging []LoggingObservation `json:"logging,omitempty" tf:"logging,omitempty"`
+
+	// (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
+	// Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to `true`.
+	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
+
+	// (String) OpenTofu version to use.
+	// OpenTofu version to use.
+	Version *string `json:"version,omitempty" tf:"version,omitempty"`
+
+	// (String) Defines the tool that will be used to execute the workflow. This can be one of OPENTOFU or CUSTOM. Defaults to OPENTOFU.
+	// Defines the tool that will be used to execute the workflow. This can be one of `OPENTOFU` or `CUSTOM`. Defaults to `OPENTOFU`.
+	WorkflowTool *string `json:"workflowTool,omitempty" tf:"workflow_tool,omitempty"`
+
+	// (String) OpenTofu workspace to select.
+	// OpenTofu workspace to select.
+	Workspace *string `json:"workspace,omitempty" tf:"workspace,omitempty"`
+}
+
+type OpentofuParameters struct {
+
+	// (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
+	// Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	ExternalStateAccess *bool `json:"externalStateAccess,omitempty" tf:"external_state_access,omitempty"`
+
+	// (Block List, Max: 1) Logging configuration for OpenTofu commands. (see below for nested schema)
+	// Logging configuration for OpenTofu commands.
+	// +kubebuilder:validation:Optional
+	Logging []LoggingParameters `json:"logging,omitempty" tf:"logging,omitempty"`
+
+	// (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
+	// Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to `true`.
+	// +kubebuilder:validation:Optional
+	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
+
+	// (String) OpenTofu version to use.
+	// OpenTofu version to use.
+	// +kubebuilder:validation:Optional
+	Version *string `json:"version,omitempty" tf:"version,omitempty"`
+
+	// (String) Defines the tool that will be used to execute the workflow. This can be one of OPENTOFU or CUSTOM. Defaults to OPENTOFU.
+	// Defines the tool that will be used to execute the workflow. This can be one of `OPENTOFU` or `CUSTOM`. Defaults to `OPENTOFU`.
+	// +kubebuilder:validation:Optional
+	WorkflowTool *string `json:"workflowTool,omitempty" tf:"workflow_tool,omitempty"`
+
+	// (String) OpenTofu workspace to select.
+	// OpenTofu workspace to select.
+	// +kubebuilder:validation:Optional
+	Workspace *string `json:"workspace,omitempty" tf:"workspace,omitempty"`
+}
+
 type PulumiInitParameters struct {
 
 	// (String) State backend to log into on Run initialize.
@@ -577,6 +686,10 @@ type StackInitParameters struct {
 	// Name of the stack - should be unique in one account
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
+	// specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)
+	// OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack.
+	Opentofu []OpentofuInitParameters `json:"opentofu,omitempty" tf:"opentofu,omitempty"`
+
 	// (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
 	// Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
 	ProjectRoot *string `json:"projectRoot,omitempty" tf:"project_root,omitempty"`
@@ -799,6 +912,10 @@ type StackObservation struct {
 	// should be unique in one account
 	// Name of the stack - should be unique in one account
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)
+	// OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack.
+	Opentofu []OpentofuObservation `json:"opentofu,omitempty" tf:"opentofu,omitempty"`
 
 	// (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
 	// Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
@@ -1047,6 +1164,11 @@ type StackParameters struct {
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
+	// specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)
+	// OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack.
+	// +kubebuilder:validation:Optional
+	Opentofu []OpentofuParameters `json:"opentofu,omitempty" tf:"opentofu,omitempty"`
+
 	// (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
 	// Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
 	// +kubebuilder:validation:Optional
@@ -1164,6 +1286,7 @@ type TerragruntInitParameters struct {
 	// Whether to use `terragrunt run-all` instead of `terragrunt`.
 	UseRunAll *bool `json:"useRunAll,omitempty" tf:"use_run_all,omitempty"`
 
+	// (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
 	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
 
 	// (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
@@ -1200,6 +1323,7 @@ type TerragruntObservation struct {
 	// Whether to use `terragrunt run-all` instead of `terragrunt`.
 	UseRunAll *bool `json:"useRunAll,omitempty" tf:"use_run_all,omitempty"`
 
+	// (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
 	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
 
 	// (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
@@ -1243,6 +1367,7 @@ type TerragruntParameters struct {
 	// +kubebuilder:validation:Optional
 	UseRunAll *bool `json:"useRunAll,omitempty" tf:"use_run_all,omitempty"`
 
+	// (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
 	// +kubebuilder:validation:Optional
 	UseSmartSanitization *bool `json:"useSmartSanitization,omitempty" tf:"use_smart_sanitization,omitempty"`
 
