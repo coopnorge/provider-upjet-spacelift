@@ -178,8 +178,11 @@
             "make generate",
         ],
         "fileFilters": ["**"],
-        "executionMode": "update"
-      }
-    }
-  ]
+        "executionMode": "update",
+        "installTools": {
+          "golang": {},
+        },
+      },
+    },
+  ],
 }
