@@ -412,6 +412,52 @@ spec:
                       should be unique in one account
                       Name of the stack - should be unique in one account
                     type: string
+                  opentofu:
+                    description: |-
+                      specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)
+                      OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack.
+                    items:
+                      properties:
+                        externalStateAccess:
+                          description: |-
+                            (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
+                            Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
+                          type: boolean
+                        logging:
+                          description: |-
+                            (Block List, Max: 1) Logging configuration for OpenTofu commands. (see below for nested schema)
+                            Logging configuration for OpenTofu commands.
+                          items:
+                            properties:
+                              concise:
+                                description: |-
+                                  concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to true.
+                                  Enables the -concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to `true`.
+                                type: boolean
+                            type: object
+                          type: array
+                        useSmartSanitization:
+                          description: |-
+                            (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
+                            Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to `true`.
+                          type: boolean
+                        version:
+                          description: |-
+                            (String) OpenTofu version to use.
+                            OpenTofu version to use.
+                          type: string
+                        workflowTool:
+                          description: |-
+                            (String) Defines the tool that will be used to execute the workflow. This can be one of OPENTOFU or CUSTOM. Defaults to OPENTOFU.
+                            Defines the tool that will be used to execute the workflow. This can be one of `OPENTOFU` or `CUSTOM`. Defaults to `OPENTOFU`.
+                          type: string
+                        workspace:
+                          description: |-
+                            (String) OpenTofu workspace to select.
+                            OpenTofu workspace to select.
+                          type: string
+                      type: object
+                    type: array
                   projectRoot:
                     description: |-
                       (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
@@ -626,6 +672,10 @@ spec:
                             Whether to use `terragrunt run-all` instead of `terragrunt`.
                           type: boolean
                         useSmartSanitization:
+                          description: (Boolean) Indicates whether runs on this will
+                            use OpenTofu's sensitive value system to sanitize the
+                            outputs of state and plans in Spacelift instead of sanitizing
+                            all fields. Defaults to true.
                           type: boolean
                         useStateManagement:
                           description: |-
@@ -990,6 +1040,52 @@ spec:
                       should be unique in one account
                       Name of the stack - should be unique in one account
                     type: string
+                  opentofu:
+                    description: |-
+                      specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)
+                      OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack.
+                    items:
+                      properties:
+                        externalStateAccess:
+                          description: |-
+                            (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
+                            Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
+                          type: boolean
+                        logging:
+                          description: |-
+                            (Block List, Max: 1) Logging configuration for OpenTofu commands. (see below for nested schema)
+                            Logging configuration for OpenTofu commands.
+                          items:
+                            properties:
+                              concise:
+                                description: |-
+                                  concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to true.
+                                  Enables the -concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to `true`.
+                                type: boolean
+                            type: object
+                          type: array
+                        useSmartSanitization:
+                          description: |-
+                            (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
+                            Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to `true`.
+                          type: boolean
+                        version:
+                          description: |-
+                            (String) OpenTofu version to use.
+                            OpenTofu version to use.
+                          type: string
+                        workflowTool:
+                          description: |-
+                            (String) Defines the tool that will be used to execute the workflow. This can be one of OPENTOFU or CUSTOM. Defaults to OPENTOFU.
+                            Defines the tool that will be used to execute the workflow. This can be one of `OPENTOFU` or `CUSTOM`. Defaults to `OPENTOFU`.
+                          type: string
+                        workspace:
+                          description: |-
+                            (String) OpenTofu workspace to select.
+                            OpenTofu workspace to select.
+                          type: string
+                      type: object
+                    type: array
                   projectRoot:
                     description: |-
                       (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
@@ -1204,6 +1300,10 @@ spec:
                             Whether to use `terragrunt run-all` instead of `terragrunt`.
                           type: boolean
                         useSmartSanitization:
+                          description: (Boolean) Indicates whether runs on this will
+                            use OpenTofu's sensitive value system to sanitize the
+                            outputs of state and plans in Spacelift instead of sanitizing
+                            all fields. Defaults to true.
                           type: boolean
                         useStateManagement:
                           description: |-
@@ -1673,6 +1773,52 @@ spec:
                       should be unique in one account
                       Name of the stack - should be unique in one account
                     type: string
+                  opentofu:
+                    description: |-
+                      specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)
+                      OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack.
+                    items:
+                      properties:
+                        externalStateAccess:
+                          description: |-
+                            (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
+                            Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
+                          type: boolean
+                        logging:
+                          description: |-
+                            (Block List, Max: 1) Logging configuration for OpenTofu commands. (see below for nested schema)
+                            Logging configuration for OpenTofu commands.
+                          items:
+                            properties:
+                              concise:
+                                description: |-
+                                  concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to true.
+                                  Enables the -concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to `true`.
+                                type: boolean
+                            type: object
+                          type: array
+                        useSmartSanitization:
+                          description: |-
+                            (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
+                            Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to `true`.
+                          type: boolean
+                        version:
+                          description: |-
+                            (String) OpenTofu version to use.
+                            OpenTofu version to use.
+                          type: string
+                        workflowTool:
+                          description: |-
+                            (String) Defines the tool that will be used to execute the workflow. This can be one of OPENTOFU or CUSTOM. Defaults to OPENTOFU.
+                            Defines the tool that will be used to execute the workflow. This can be one of `OPENTOFU` or `CUSTOM`. Defaults to `OPENTOFU`.
+                          type: string
+                        workspace:
+                          description: |-
+                            (String) OpenTofu workspace to select.
+                            OpenTofu workspace to select.
+                          type: string
+                      type: object
+                    type: array
                   projectRoot:
                     description: |-
                       (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
@@ -1813,6 +1959,10 @@ spec:
                             Whether to use `terragrunt run-all` instead of `terragrunt`.
                           type: boolean
                         useSmartSanitization:
+                          description: (Boolean) Indicates whether runs on this will
+                            use OpenTofu's sensitive value system to sanitize the
+                            outputs of state and plans in Spacelift instead of sanitizing
+                            all fields. Defaults to true.
                           type: boolean
                         useStateManagement:
                           description: |-

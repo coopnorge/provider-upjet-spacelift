@@ -1087,6 +1087,75 @@ resources:
             stack_id: (String) ID of the stack to attach the policy to
         importStatements:
             - terraform import spacelift_policy_attachment.no-weekend-deploys $POLICY_ID/$STACK_ID
+    spacelift_repo:
+        subCategory: ""
+        description: 'spacelift_repo represents a Spacelift repo - a built-in version control system storing infrastructure code directly in Spacelift, without an external provider like GitHub or GitLab. Repos have no branches: a stack always tracks the repo''s latest commit.'
+        name: spacelift_repo
+        title: spacelift_repo Resource - terraform-provider-spacelift
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "description": "Infrastructure code kept inside Spacelift",
+                  "labels": [
+                    "terraform"
+                  ],
+                  "name": "my-repo",
+                  "space_id": "root"
+                }
+        argumentDocs:
+            created_at: (Number) Unix timestamp of when the repo was created
+            description: (String) Free-form repo description for users
+            id: (String) The ID of this resource.
+            labels: (Set of String) Labels describing the repo
+            name: (String) Name of the repo. The repo's ID (slug) is derived from the name when the repo is created, and does not change when the name changes.
+            space_id: (String) ID (slug) of the space the repo is in. A repo cannot be moved between spaces.
+            stacks: (List of String) IDs (slugs) of the stacks using this repo as their source code provider
+            updated_at: (Number) Unix timestamp of when the repo was last updated
+            vcs_checks: '(String) VCS checks configured for the repo. Possible values: INDIVIDUAL, AGGREGATED, ALL. Defaults to INDIVIDUAL.'
+        importStatements:
+            - terraform import spacelift_repo.example $REPO_ID
+    spacelift_repo_file:
+        subCategory: ""
+        description: spacelift_repo_file represents a single file in a Spacelift repo repo.md. Changing the contents, mode or encryption of the file commits a new revision, which triggers a tracked run on every stack the repo is attached to. Changing only the commit metadata does not.
+        name: spacelift_repo_file
+        title: spacelift_repo_file Resource - terraform-provider-spacelift
+        examples:
+            - name: main
+              manifest: |-
+                {
+                  "author_name": "Terraform",
+                  "commit_message": "Sync the VPC module",
+                  "content": "${file(\"${path.module}/src/vpc.tf\")}",
+                  "path": "modules/vpc/main.tf",
+                  "repo_id": "${spacelift_repo.this.id}"
+                }
+              references:
+                repo_id: spacelift_repo.this.id
+            - name: secrets
+              manifest: |-
+                {
+                  "content": "token = \"bacon\"",
+                  "encrypt": true,
+                  "path": "secrets.auto.tfvars",
+                  "repo_id": "${spacelift_repo.this.id}"
+                }
+              references:
+                repo_id: spacelift_repo.this.id
+        argumentDocs:
+            author_email: (String) Author email recorded on the commit
+            author_name: (String) Author name recorded on the commit. Defaults to Terraform.
+            commit_message: (String) Message recorded on the next commit that changes the file. Changing it on its own does not commit. Defaults to Managed by Terraform.
+            content: (String) Contents of the file. Text only - binary files are not supported.
+            encrypt: (Boolean) Encrypt the file at rest. Spacelift never returns the contents of an encrypted file, so Terraform cannot detect changes made to it outside of Terraform. Defaults to false.
+            file_mode: (String) Octal file permissions, for example 0755. Defaults to 0644.
+            id: (String) The ID of this resource.
+            path: (String) Path of the file relative to the repo root, without a leading slash, for example modules/vpc/main.tf
+            repo_id: (String) ID (slug) of the repo the file belongs to
+            revision_sha: (String) SHA of the revision that last changed the file
+            size_bytes: (Number) Size of the file in bytes
+        importStatements:
+            - terraform import spacelift_repo_file.example $REPO_ID/$FILE_PATH
     spacelift_role:
         subCategory: ""
         description: 'spacelift_role represents a Spacelift role - a collection of permissions that can be assigned to IdP groups or API keys to control access to Spacelift resources and operations. Note: you must have admin access to the root Space in order to create or mutate roles.'
@@ -1996,11 +2065,13 @@ resources:
             bitbucket_datacenter: '(Block List, Max: 1) Bitbucket Datacenter VCS settings (see below for nested schema)'
             branch: (String) Git branch to apply changes to
             cloudformation: '(Block List, Max: 1) CloudFormation-specific configuration. Presence means this Stack is a CloudFormation Stack. (see below for nested schema)'
+            concise: (Boolean) Enables the -concise flag for OpenTofu plan/apply/refresh commands. Requires OpenTofu 1.7+. Defaults to true.
             description: (String) Free-form stack description for users
             enable_local_preview: (Boolean) Indicates whether local preview runs can be triggered on this Stack. Defaults to false.
             enable_sensitive_outputs_upload: (Boolean) Indicates whether sensitive outputs created by this stack can be uploaded to Spacelift to be used by Stack Dependency references. Triggered only when corresponding option is enabled on the Worker Pool used by the Stack as well. Defaults to true.
             enable_well_known_secret_masking: (Boolean) Indicates whether well-known secret masking is enabled.
             entry_template_file: (String) Template file cloudformation package will be called on
+            external_state_access: (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
             git_sparse_checkout_paths: (Set of String) Git sparse checkout paths is an optional list of paths to use for sparse checkout. If not set, the entire repository will be checked out.
             github_action_deploy: (Boolean, Deprecated) Use allow_run_promotion instead. Indicates whether GitHub users can promote proposed runs to tracked runs from the Checks API. This is called allow run promotion in the UI. Defaults to true.
             github_enterprise: '(Block List, Max: 1) VCS settings for GitHub custom application (see below for nested schema)'
@@ -2013,10 +2084,12 @@ resources:
             kubernetes: '(Block List, Max: 1) Kubernetes-specific configuration. Presence means this Stack is a Kubernetes Stack. (see below for nested schema)'
             kubernetes_workflow_tool: (String) Defines the tool that will be used to execute the workflow. This can be one of KUBERNETES or CUSTOM. Defaults to KUBERNETES.
             labels: (Set of String)
+            logging: '(Block List, Max: 1) Logging configuration for OpenTofu commands. (see below for nested schema)'
             login_url: (String) State backend to log into on Run initialize.
             manage_state: (Boolean) Determines if Spacelift should manage state for this stack. Defaults to true.
             name: (String) Name of the stack - should be unique in one account
             namespace: (String) The Bitbucket project containing the repository
+            opentofu: '(Block List, Max: 1) OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)'
             playbook: (String) The playbook Ansible should run.
             prefix_resource_names_with_module_name: (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
             project: (String) The name of the Azure DevOps project
@@ -2044,9 +2117,12 @@ resources:
             tool: (String) The IaC tool used by Terragrunt. Valid values are OPEN_TOFU, TERRAFORM_FOSS or MANUALLY_PROVISIONED. Defaults to TERRAFORM_FOSS if not specified.
             url: (String) HTTPS URL of the Git repository
             use_run_all: (Boolean) Whether to use terragrunt run-all instead of terragrunt.
-            use_smart_sanitization: (Boolean) Indicates whether runs on this will use Terraform's sensitive value system to sanitize the outputs of Terraform state and plans in spacelift instead of sanitizing all fields.
+            use_smart_sanitization: (Boolean) Indicates whether runs on this will use OpenTofu's sensitive value system to sanitize the outputs of state and plans in Spacelift instead of sanitizing all fields. Defaults to true.
             use_state_management: (Boolean) Determines if Spacelift should manage state for this Terragrunt stack. Takes precedence over manage_state. Defaults to false.
+            version: (String) OpenTofu version to use.
             worker_pool_id: '(String) ID of the worker pool to use. NOTE: worker_pool_id is required when using a self-hosted instance of Spacelift.'
+            workflow_tool: (String) Defines the tool that will be used to execute the workflow. This can be one of OPENTOFU or CUSTOM. Defaults to OPENTOFU.
+            workspace: (String) OpenTofu workspace to select.
         importStatements:
             - terraform import spacelift_stack.k8s_core $STACK_ID
     spacelift_stack_activator:
