@@ -177,7 +177,6 @@
             "make vendor vendor.check",
             "make generate",
         ],
-        "fileFilters": ["**"],
         "executionMode": "update",
         "installTools": {
           "golang": {},
