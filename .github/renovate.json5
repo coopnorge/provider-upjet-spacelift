@@ -137,7 +137,7 @@
       "matchDatasources": ["go"],
       "enabled": false,
       "matchUpdateTypes": ["major"],
-      "matchPackageNames": ["*", "!k8s.io{/,}**", "!sigs.k8s.io{/,}**"]
+      "matchPackageNames": ["!k8s.io{/,}**", "!sigs.k8s.io{/,}**"]
     },
     {
       // We want a single PR for all minor and patch bumps to non-kubernetes Go
@@ -147,7 +147,7 @@
       "enabled": false,
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "groupName": "all non-major go dependencies",
-      "matchPackageNames": ["*", "!k8s.io{/,}**", "!sigs.k8s.io{/,}**"]
+      "matchPackageNames": ["!k8s.io{/,}**", "!sigs.k8s.io{/,}**"]
     },
     {
       // We want a single PR for all minor and patch bumps of Github Actions
@@ -171,6 +171,7 @@
       // to run after go package updates and Makefile updates (e.g. TERRAFORM_PROVIDER_VERSION)
     {
       "matchFileNames": ["**/Makefile"],
+      "fileFilters": ["**"],
       "postUpgradeTasks": {
         "commands": [
             "make submodules",
