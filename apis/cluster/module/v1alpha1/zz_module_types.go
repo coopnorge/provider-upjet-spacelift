@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type AzureDevopsInitParameters struct {
@@ -294,11 +294,11 @@ type ModuleInitParameters struct {
 
 	// Reference to a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDRef *v1.Reference `json:"spaceIdRef,omitempty" tf:"-"`
+	SpaceIDRef *v2.Reference `json:"spaceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDSelector *v1.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
+	SpaceIDSelector *v2.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// (Set of String) List of the space IDs which should have access to the Module
 	// List of the space IDs which should have access to the Module
@@ -530,11 +530,11 @@ type ModuleParameters struct {
 
 	// Reference to a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDRef *v1.Reference `json:"spaceIdRef,omitempty" tf:"-"`
+	SpaceIDRef *v2.Reference `json:"spaceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDSelector *v1.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
+	SpaceIDSelector *v2.Selector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// (Set of String) List of the space IDs which should have access to the Module
 	// List of the space IDs which should have access to the Module
@@ -594,8 +594,8 @@ type RawGitParameters struct {
 
 // ModuleSpec defines the desired state of Module
 type ModuleSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     ModuleParameters `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   ModuleParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -611,8 +611,8 @@ type ModuleSpec struct {
 
 // ModuleStatus defines the observed state of Module.
 type ModuleStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ModuleObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ModuleObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

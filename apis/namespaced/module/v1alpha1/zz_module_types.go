@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type AzureDevopsInitParameters struct {
@@ -295,11 +294,11 @@ type ModuleInitParameters struct {
 
 	// Reference to a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDRef *v1.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
+	SpaceIDRef *v2.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDSelector *v1.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
+	SpaceIDSelector *v2.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// (Set of String) List of the space IDs which should have access to the Module
 	// List of the space IDs which should have access to the Module
@@ -531,11 +530,11 @@ type ModuleParameters struct {
 
 	// Reference to a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDRef *v1.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
+	SpaceIDRef *v2.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDSelector *v1.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
+	SpaceIDSelector *v2.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// (Set of String) List of the space IDs which should have access to the Module
 	// List of the space IDs which should have access to the Module
@@ -612,8 +611,8 @@ type ModuleSpec struct {
 
 // ModuleStatus defines the observed state of Module.
 type ModuleStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ModuleObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ModuleObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

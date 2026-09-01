@@ -6,44 +6,44 @@
 
 package v1alpha1
 
-import xpv1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+import xpv2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 
 // GetCondition of this Space.
-func (mg *Space) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
+func (mg *Space) GetCondition(ct xpv2.ConditionType) xpv2.Condition {
 	return mg.Status.GetCondition(ct)
 }
 
 // GetManagementPolicies of this Space.
-func (mg *Space) GetManagementPolicies() xpv1.ManagementPolicies {
+func (mg *Space) GetManagementPolicies() xpv2.ManagementPolicies {
 	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this Space.
-func (mg *Space) GetProviderConfigReference() *xpv1.ProviderConfigReference {
+func (mg *Space) GetProviderConfigReference() *xpv2.ProviderConfigReference {
 	return mg.Spec.ProviderConfigReference
 }
 
 // GetWriteConnectionSecretToReference of this Space.
-func (mg *Space) GetWriteConnectionSecretToReference() *xpv1.LocalSecretReference {
+func (mg *Space) GetWriteConnectionSecretToReference() *xpv2.LocalSecretReference {
 	return mg.Spec.WriteConnectionSecretToReference
 }
 
 // SetConditions of this Space.
-func (mg *Space) SetConditions(c ...xpv1.Condition) {
+func (mg *Space) SetConditions(c ...xpv2.Condition) {
 	mg.Status.SetConditions(c...)
 }
 
 // SetManagementPolicies of this Space.
-func (mg *Space) SetManagementPolicies(r xpv1.ManagementPolicies) {
+func (mg *Space) SetManagementPolicies(r xpv2.ManagementPolicies) {
 	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this Space.
-func (mg *Space) SetProviderConfigReference(r *xpv1.ProviderConfigReference) {
+func (mg *Space) SetProviderConfigReference(r *xpv2.ProviderConfigReference) {
 	mg.Spec.ProviderConfigReference = r
 }
 
 // SetWriteConnectionSecretToReference of this Space.
-func (mg *Space) SetWriteConnectionSecretToReference(r *xpv1.LocalSecretReference) {
+func (mg *Space) SetWriteConnectionSecretToReference(r *xpv2.LocalSecretReference) {
 	mg.Spec.WriteConnectionSecretToReference = r
 }
