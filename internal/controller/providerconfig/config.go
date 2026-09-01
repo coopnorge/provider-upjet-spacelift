@@ -38,3 +38,9 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 	return Setup(mgr, o)
 }
+
+// SetupWebhookWithManager is a no-op for ProviderConfig since it does not
+// require a conversion webhook.
+func SetupWebhookWithManager(_ ctrl.Manager) error {
+	return nil
+}
