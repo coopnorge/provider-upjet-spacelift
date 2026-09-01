@@ -45,7 +45,7 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 			},
 		}
 
-		lmg, ok := mg.(resource.LegacyManaged)
+		lmg, ok := mg.(resource.LegacyManaged) //nolint:staticcheck // SA1019: LegacyManaged is required for cluster-scoped resources with untyped ProviderConfigReference
 		if !ok {
 			return ps, errors.New(errNoProviderConfig)
 		}
