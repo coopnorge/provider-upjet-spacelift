@@ -7,7 +7,7 @@ package v1alpha1
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	xpv1 "github.com/crossplane/crossplane/apis/v2/core/v2"
+	xp "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 // SecretStoreConfig configures secret store settings.
@@ -22,7 +22,7 @@ type StoreConfigSpec struct {
 
 // A StoreConfigStatus represents the status of a StoreConfig.
 type StoreConfigStatus struct {
-	xpv1.ConditionedStatus `json:",inline"`
+	xp.ConditionedStatus `json:",inline"`
 }
 
 // +kubebuilder:object:root=true
@@ -58,11 +58,11 @@ func (in *StoreConfig) GetStoreConfig() SecretStoreConfig {
 }
 
 // GetCondition of this StoreConfig.
-func (in *StoreConfig) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
+func (in *StoreConfig) GetCondition(ct xp.ConditionType) xp.Condition {
 	return in.Status.GetCondition(ct)
 }
 
 // SetConditions of this StoreConfig.
-func (in *StoreConfig) SetConditions(c ...xpv1.Condition) {
+func (in *StoreConfig) SetConditions(c ...xp.Condition) {
 	in.Status.SetConditions(c...)
 }
