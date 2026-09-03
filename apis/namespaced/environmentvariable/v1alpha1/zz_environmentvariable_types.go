@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type EnvironmentVariableInitParameters struct {
@@ -23,11 +22,11 @@ type EnvironmentVariableInitParameters struct {
 
 	// Reference to a Context in context to populate contextId.
 	// +kubebuilder:validation:Optional
-	ContextIDRef *v1.NamespacedReference `json:"contextIdRef,omitempty" tf:"-"`
+	ContextIDRef *v2.NamespacedReference `json:"contextIdRef,omitempty" tf:"-"`
 
 	// Selector for a Context in context to populate contextId.
 	// +kubebuilder:validation:Optional
-	ContextIDSelector *v1.NamespacedSelector `json:"contextIdSelector,omitempty" tf:"-"`
+	ContextIDSelector *v2.NamespacedSelector `json:"contextIdSelector,omitempty" tf:"-"`
 
 	// (String) Description of the environment variable
 	// Description of the environment variable
@@ -47,11 +46,11 @@ type EnvironmentVariableInitParameters struct {
 
 	// (String, Sensitive) Value of the environment variable. Defaults to an empty string.
 	// Value of the environment variable. Defaults to an empty string.
-	ValueSecretRef *v1.LocalSecretKeySelector `json:"valueSecretRef,omitempty" tf:"-"`
+	ValueSecretRef *v2.LocalSecretKeySelector `json:"valueSecretRef,omitempty" tf:"-"`
 
 	// only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
 	// Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
-	ValueWoSecretRef *v1.LocalSecretKeySelector `json:"valueWoSecretRef,omitempty" tf:"-"`
+	ValueWoSecretRef *v2.LocalSecretKeySelector `json:"valueWoSecretRef,omitempty" tf:"-"`
 
 	// (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
 	// Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
@@ -110,11 +109,11 @@ type EnvironmentVariableParameters struct {
 
 	// Reference to a Context in context to populate contextId.
 	// +kubebuilder:validation:Optional
-	ContextIDRef *v1.NamespacedReference `json:"contextIdRef,omitempty" tf:"-"`
+	ContextIDRef *v2.NamespacedReference `json:"contextIdRef,omitempty" tf:"-"`
 
 	// Selector for a Context in context to populate contextId.
 	// +kubebuilder:validation:Optional
-	ContextIDSelector *v1.NamespacedSelector `json:"contextIdSelector,omitempty" tf:"-"`
+	ContextIDSelector *v2.NamespacedSelector `json:"contextIdSelector,omitempty" tf:"-"`
 
 	// (String) Description of the environment variable
 	// Description of the environment variable
@@ -139,12 +138,12 @@ type EnvironmentVariableParameters struct {
 	// (String, Sensitive) Value of the environment variable. Defaults to an empty string.
 	// Value of the environment variable. Defaults to an empty string.
 	// +kubebuilder:validation:Optional
-	ValueSecretRef *v1.LocalSecretKeySelector `json:"valueSecretRef,omitempty" tf:"-"`
+	ValueSecretRef *v2.LocalSecretKeySelector `json:"valueSecretRef,omitempty" tf:"-"`
 
 	// only) Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
 	// Value of the environment variable. The value is not stored in the state. Modify value_wo_version to trigger an update.11+.
 	// +kubebuilder:validation:Optional
-	ValueWoSecretRef *v1.LocalSecretKeySelector `json:"valueWoSecretRef,omitempty" tf:"-"`
+	ValueWoSecretRef *v2.LocalSecretKeySelector `json:"valueWoSecretRef,omitempty" tf:"-"`
 
 	// (String) Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
 	// Used together with value_wo to trigger an update to the value of the environment variable. Increment this value when an update to value_wo is required.11+.
@@ -176,8 +175,8 @@ type EnvironmentVariableSpec struct {
 
 // EnvironmentVariableStatus defines the observed state of EnvironmentVariable.
 type EnvironmentVariableStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        EnvironmentVariableObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               EnvironmentVariableObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
