@@ -9,8 +9,8 @@ require (
 	github.com/crossplane/crossplane-tools v0.0.0-20260719180100-659f1dc036c5
 	github.com/crossplane/upjet/v2 v2.3.0
 	github.com/pkg/errors v0.9.1
-	k8s.io/apimachinery v0.36.2
-	k8s.io/client-go v0.36.2
+	k8s.io/apimachinery v0.36.4
+	k8s.io/client-go v0.36.4
 	sigs.k8s.io/controller-runtime v0.24.1
 	sigs.k8s.io/controller-tools v0.21.0
 )
@@ -146,7 +146,7 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.36.2 // indirect
+	k8s.io/api v0.36.4 // indirect
 	k8s.io/apiextensions-apiserver v0.36.2 // indirect
 	k8s.io/code-generator v0.36.2 // indirect
 	k8s.io/component-base v0.36.2 // indirect
