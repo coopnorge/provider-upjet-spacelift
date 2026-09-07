@@ -16,7 +16,6 @@ import (
 	module "github.com/coopnorge/provider-upjet-spacelift/internal/controller/namespaced/module/module"
 	space "github.com/coopnorge/provider-upjet-spacelift/internal/controller/namespaced/space/space"
 	stack "github.com/coopnorge/provider-upjet-spacelift/internal/controller/namespaced/stack/stack"
-	providerconfig "github.com/coopnorge/provider-upjet-spacelift/internal/controller/providerconfig"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
@@ -30,7 +29,6 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		module.Setup,
 		space.Setup,
 		stack.Setup,
-		providerconfig.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
@@ -50,7 +48,6 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 		module.SetupGated,
 		space.SetupGated,
 		stack.SetupGated,
-		providerconfig.SetupGated,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
@@ -69,7 +66,6 @@ func SetupWebhookWithManager(mgr ctrl.Manager) error {
 		module.SetupWebhookWithManager,
 		space.SetupWebhookWithManager,
 		stack.SetupWebhookWithManager,
-		providerconfig.SetupWebhookWithManager,
 	} {
 		if err := setup(mgr); err != nil {
 			return err

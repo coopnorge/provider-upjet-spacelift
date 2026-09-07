@@ -34,7 +34,8 @@ import (
 	"github.com/coopnorge/provider-upjet-spacelift/apis/v1alpha1"
 	"github.com/coopnorge/provider-upjet-spacelift/config"
 	"github.com/coopnorge/provider-upjet-spacelift/internal/clients"
-	"github.com/coopnorge/provider-upjet-spacelift/internal/controller"
+	clustercontroller "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster"
+	namespacedcontroller "github.com/coopnorge/provider-upjet-spacelift/internal/controller/namespaced"
 	"github.com/coopnorge/provider-upjet-spacelift/internal/features"
 )
 
@@ -143,6 +144,7 @@ func main() {
 		log.Info("Beta feature enabled", "flag", features.EnableBetaManagementPolicies)
 	}
 
-	kingpin.FatalIfError(controller.Setup(mgr, o), "Cannot setup Spacelift controllers")
+	kingpin.FatalIfError(clustercontroller.Setup(mgr, o), "Cannot setup cluster-scoped Spacelift controllers")
+	kingpin.FatalIfError(namespacedcontroller.Setup(mgr, o), "Cannot setup namespaced Spacelift controllers")
 	kingpin.FatalIfError(mgr.Start(ctrl.SetupSignalHandler()), "Cannot start controller manager")
 }

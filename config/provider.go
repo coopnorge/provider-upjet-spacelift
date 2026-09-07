@@ -79,12 +79,6 @@ func GetProviderNamespaced() *ujconfig.Provider {
 				"../v1alpha1",
 				"../v1beta1",
 			},
-			Controller: []string{
-				"../providerconfig",
-			},
-			ControllerMap: map[string]string{
-				"../providerconfig": ujconfig.PackageNameConfig,
-			},
 		}),
 		ujconfig.WithDefaultResourceOptions(
 			ExternalNameConfigurations(),
