@@ -8,6 +8,7 @@ require (
 	github.com/crossplane/crossplane-runtime/v2 v2.2.4
 	github.com/crossplane/crossplane-tools v0.0.0-20260719180100-659f1dc036c5
 	github.com/crossplane/upjet/v2 v2.3.0
+	github.com/go-logr/logr v1.4.3
 	github.com/pkg/errors v0.9.1
 	k8s.io/apimachinery v0.36.2
 	k8s.io/client-go v0.36.2
@@ -35,7 +36,6 @@ require (
 	github.com/fsnotify/fsnotify v1.10.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.1 // indirect
 	github.com/getkin/kin-openapi v0.133.0 // indirect
-	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/zapr v1.3.0 // indirect
 	github.com/go-openapi/jsonpointer v0.23.1 // indirect
 	github.com/go-openapi/jsonreference v0.21.5 // indirect
