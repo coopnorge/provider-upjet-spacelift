@@ -13,7 +13,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "spacelift.crossplane.io"
+	Group   = "spacelift.upbound.io"
 	Version = "v1alpha1"
 )
 
