@@ -33,9 +33,9 @@ import (
 	"github.com/coopnorge/provider-upjet-spacelift/apis"
 	"github.com/coopnorge/provider-upjet-spacelift/apis/v1alpha1"
 	"github.com/coopnorge/provider-upjet-spacelift/config"
+	"github.com/coopnorge/provider-upjet-spacelift/internal/clients"
 	clustercontroller "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster"
 	namespacedcontroller "github.com/coopnorge/provider-upjet-spacelift/internal/controller/namespaced"
-	"github.com/coopnorge/provider-upjet-spacelift/internal/clients"
 	"github.com/coopnorge/provider-upjet-spacelift/internal/features"
 )
 
