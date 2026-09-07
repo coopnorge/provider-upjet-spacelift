@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.21.0
-  name: gcpserviceaccounts.gcpserviceaccount.spacelift.crossplane.io
+  name: spaces.space.spacelift.upbound.io
 spec:
-  group: gcpserviceaccount.spacelift.crossplane.io
+  group: space.spacelift.upbound.io
   names:
     categories:
     - crossplane
     - managed
     - spacelift
-    kind: GcpServiceAccount
-    listKind: GcpServiceAccountList
-    plural: gcpserviceaccounts
-    singular: gcpserviceaccount
+    kind: Space
+    listKind: SpaceList
+    plural: spaces
+    singular: space
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,11 +34,12 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: GcpServiceAccount is the Schema for the GcpServiceAccounts API.
-          spacelift_gcp_service_account represents a Google Cloud Platform service
-          account that's linked to a particular Stack or Module. These accounts are
-          created by Spacelift on per-stack basis, and can be added as members to
-          as many organizations and projects as needed.
+        description: 'Space is the Schema for the Spaces API. spacelift_space represents
+          a Spacelift space - a collection of resources such as stacks, modules, policies,
+          etc. Allows for more granular access control. Can have a parent space. Please
+          note: the spacelift_space resource requires root Admin permissions, and
+          can only be used by administrative stacks in the root space, or using an
+          API key or user session that has root space access.'
         properties:
           apiVersion:
             description: |-
@@ -58,7 +59,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: GcpServiceAccountSpec defines the desired state of GcpServiceAccount
+            description: SpaceSpec defines the desired state of Space
             properties:
               deletionPolicy:
                 default: Delete
@@ -76,98 +77,34 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  moduleId:
+                  description:
                     description: |-
-                      (String) ID of the module which uses GCP service account credentials
-                      ID of the module which uses GCP service account credentials
+                      form space description for users
+                      free-form space description for users
                     type: string
-                  stackId:
+                  inheritEntities:
                     description: |-
-                      (String) ID of the stack which uses GCP service account credentials
-                      ID of the stack which uses GCP service account credentials
-                    type: string
-                  stackIdRef:
-                    description: Reference to a Stack in stack to populate stackId.
-                    properties:
-                      name:
-                        description: Name of the referenced object.
-                        type: string
-                      policy:
-                        description: Policies for referencing.
-                        properties:
-                          resolution:
-                            default: Required
-                            description: |-
-                              Resolution specifies whether resolution of this reference is required.
-                              The default is 'Required', which means the reconcile will fail if the
-                              reference cannot be resolved. 'Optional' means this reference will be
-                              a no-op if it cannot be resolved.
-                            enum:
-                            - Required
-                            - Optional
-                            type: string
-                          resolve:
-                            description: |-
-                              Resolve specifies when this reference should be resolved. The default
-                              is 'IfNotPresent', which will attempt to resolve the reference only when
-                              the corresponding field is not present. Use 'Always' to resolve the
-                              reference on every reconcile.
-                            enum:
-                            - Always
-                            - IfNotPresent
-                            type: string
-                        type: object
-                    required:
-                    - name
-                    type: object
-                  stackIdSelector:
-                    description: Selector for a Stack in stack to populate stackId.
-                    properties:
-                      matchControllerRef:
-                        description: |-
-                          MatchControllerRef ensures an object with the same controller reference
-                          as the selecting object is selected.
-                        type: boolean
-                      matchLabels:
-                        additionalProperties:
-                          type: string
-                        description: MatchLabels ensures an object with matching labels
-                          is selected.
-                        type: object
-                      policy:
-                        description: Policies for selection.
-                        properties:
-                          resolution:
-                            default: Required
-                            description: |-
-                              Resolution specifies whether resolution of this reference is required.
-                              The default is 'Required', which means the reconcile will fail if the
-                              reference cannot be resolved. 'Optional' means this reference will be
-                              a no-op if it cannot be resolved.
-                            enum:
-                            - Required
-                            - Optional
-                            type: string
-                          resolve:
-                            description: |-
-                              Resolve specifies when this reference should be resolved. The default
-                              is 'IfNotPresent', which will attempt to resolve the reference only when
-                              the corresponding field is not present. Use 'Always' to resolve the
-                              reference on every reconcile.
-                            enum:
-                            - Always
-                            - IfNotPresent
-                            type: string
-                        type: object
-                    type: object
-                  tokenScopes:
+                      (Boolean) indication whether access to this space inherits read access to entities from the parent space. Defaults to false.
+                      indication whether access to this space inherits read access to entities from the parent space. Defaults to `false`.
+                    type: boolean
+                  labels:
                     description: |-
-                      (Set of String) List of scopes that will be requested when generating temporary GCP service account credentials
-                      List of scopes that will be requested when generating temporary GCP service account credentials
+                      (Set of String) list of labels describing a space
+                      list of labels describing a space
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
+                  name:
+                    description: |-
+                      (String) name of the space
+                      name of the space
+                    type: string
+                  parentSpaceId:
+                    description: |-
+                      (String) immutable ID (slug) of parent space. Defaults to root.
+                      immutable ID (slug) of parent space. Defaults to `root`.
+                    type: string
                 type: object
               initProvider:
                 description: |-
@@ -182,98 +119,34 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  moduleId:
+                  description:
                     description: |-
-                      (String) ID of the module which uses GCP service account credentials
-                      ID of the module which uses GCP service account credentials
+                      form space description for users
+                      free-form space description for users
                     type: string
-                  stackId:
+                  inheritEntities:
                     description: |-
-                      (String) ID of the stack which uses GCP service account credentials
-                      ID of the stack which uses GCP service account credentials
-                    type: string
-                  stackIdRef:
-                    description: Reference to a Stack in stack to populate stackId.
-                    properties:
-                      name:
-                        description: Name of the referenced object.
-                        type: string
-                      policy:
-                        description: Policies for referencing.
-                        properties:
-                          resolution:
-                            default: Required
-                            description: |-
-                              Resolution specifies whether resolution of this reference is required.
-                              The default is 'Required', which means the reconcile will fail if the
-                              reference cannot be resolved. 'Optional' means this reference will be
-                              a no-op if it cannot be resolved.
-                            enum:
-                            - Required
-                            - Optional
-                            type: string
-                          resolve:
-                            description: |-
-                              Resolve specifies when this reference should be resolved. The default
-                              is 'IfNotPresent', which will attempt to resolve the reference only when
-                              the corresponding field is not present. Use 'Always' to resolve the
-                              reference on every reconcile.
-                            enum:
-                            - Always
-                            - IfNotPresent
-                            type: string
-                        type: object
-                    required:
-                    - name
-                    type: object
-                  stackIdSelector:
-                    description: Selector for a Stack in stack to populate stackId.
-                    properties:
-                      matchControllerRef:
-                        description: |-
-                          MatchControllerRef ensures an object with the same controller reference
-                          as the selecting object is selected.
-                        type: boolean
-                      matchLabels:
-                        additionalProperties:
-                          type: string
-                        description: MatchLabels ensures an object with matching labels
-                          is selected.
-                        type: object
-                      policy:
-                        description: Policies for selection.
-                        properties:
-                          resolution:
-                            default: Required
-                            description: |-
-                              Resolution specifies whether resolution of this reference is required.
-                              The default is 'Required', which means the reconcile will fail if the
-                              reference cannot be resolved. 'Optional' means this reference will be
-                              a no-op if it cannot be resolved.
-                            enum:
-                            - Required
-                            - Optional
-                            type: string
-                          resolve:
-                            description: |-
-                              Resolve specifies when this reference should be resolved. The default
-                              is 'IfNotPresent', which will attempt to resolve the reference only when
-                              the corresponding field is not present. Use 'Always' to resolve the
-                              reference on every reconcile.
-                            enum:
-                            - Always
-                            - IfNotPresent
-                            type: string
-                        type: object
-                    type: object
-                  tokenScopes:
+                      (Boolean) indication whether access to this space inherits read access to entities from the parent space. Defaults to false.
+                      indication whether access to this space inherits read access to entities from the parent space. Defaults to `false`.
+                    type: boolean
+                  labels:
                     description: |-
-                      (Set of String) List of scopes that will be requested when generating temporary GCP service account credentials
-                      List of scopes that will be requested when generating temporary GCP service account credentials
+                      (Set of String) list of labels describing a space
+                      list of labels describing a space
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
+                  name:
+                    description: |-
+                      (String) name of the space
+                      name of the space
+                    type: string
+                  parentSpaceId:
+                    description: |-
+                      (String) immutable ID (slug) of parent space. Defaults to root.
+                      immutable ID (slug) of parent space. Defaults to `root`.
+                    type: string
                 type: object
               managementPolicies:
                 default:
@@ -362,41 +235,46 @@ spec:
             - forProvider
             type: object
             x-kubernetes-validations:
-            - message: spec.forProvider.tokenScopes is a required parameter
+            - message: spec.forProvider.name is a required parameter
               rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.tokenScopes)
-                || (has(self.initProvider) && has(self.initProvider.tokenScopes))'
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
+                || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: GcpServiceAccountStatus defines the observed state of GcpServiceAccount.
+            description: SpaceStatus defines the observed state of Space.
             properties:
               atProvider:
                 properties:
+                  description:
+                    description: |-
+                      form space description for users
+                      free-form space description for users
+                    type: string
                   id:
                     description: (String) The ID of this resource.
                     type: string
-                  moduleId:
+                  inheritEntities:
                     description: |-
-                      (String) ID of the module which uses GCP service account credentials
-                      ID of the module which uses GCP service account credentials
-                    type: string
-                  serviceAccountEmail:
+                      (Boolean) indication whether access to this space inherits read access to entities from the parent space. Defaults to false.
+                      indication whether access to this space inherits read access to entities from the parent space. Defaults to `false`.
+                    type: boolean
+                  labels:
                     description: |-
-                      (String) Email address of the GCP service account dedicated for this stack
-                      Email address of the GCP service account dedicated for this stack
-                    type: string
-                  stackId:
-                    description: |-
-                      (String) ID of the stack which uses GCP service account credentials
-                      ID of the stack which uses GCP service account credentials
-                    type: string
-                  tokenScopes:
-                    description: |-
-                      (Set of String) List of scopes that will be requested when generating temporary GCP service account credentials
-                      List of scopes that will be requested when generating temporary GCP service account credentials
+                      (Set of String) list of labels describing a space
+                      list of labels describing a space
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
+                  name:
+                    description: |-
+                      (String) name of the space
+                      name of the space
+                    type: string
+                  parentSpaceId:
+                    description: |-
+                      (String) immutable ID (slug) of parent space. Defaults to root.
+                      immutable ID (slug) of parent space. Defaults to `root`.
+                    type: string
                 type: object
               conditions:
                 description: Conditions of the resource.
