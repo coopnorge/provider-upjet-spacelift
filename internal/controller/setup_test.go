@@ -24,12 +24,13 @@ import (
 	"github.com/coopnorge/provider-upjet-spacelift/apis"
 	"github.com/coopnorge/provider-upjet-spacelift/config"
 	"github.com/coopnorge/provider-upjet-spacelift/internal/clients"
+	clustercontroller "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster"
+	namespacedcontroller "github.com/coopnorge/provider-upjet-spacelift/internal/controller/namespaced"
 )
 
 // TestSetupDoesNotPanic is a generic test that boots the provider's
 // controller the same way the real binary does and asserts it completes
 // without erroring.
-
 func TestSetupDoesNotPanic(t *testing.T) {
 	mgr, err := ctrl.NewManager(&rest.Config{Host: "http://127.0.0.1:1", QPS: 10, Burst: 20}, ctrl.Options{})
 	if err != nil {
@@ -62,7 +63,10 @@ func TestSetupDoesNotPanic(t *testing.T) {
 		SetupFn:        clients.TerraformSetupBuilder("1.7.0", "spacelift-io/terraform-provider-spacelift", "v1.53.5"),
 	}
 
-	if err := Setup(mgr, o); err != nil {
-		t.Fatalf("controller.Setup (main.go boot wiring) failed: %v", err)
+	if err := clustercontroller.Setup(mgr, o); err != nil {
+		t.Fatalf("clustercontroller.Setup (main.go boot wiring) failed: %v", err)
+	}
+	if err := namespacedcontroller.Setup(mgr, o); err != nil {
+		t.Fatalf("namespacedcontroller.Setup (main.go boot wiring) failed: %v", err)
 	}
 }
