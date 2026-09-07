@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type AnsibleInitParameters struct {
@@ -668,7 +667,7 @@ type StackInitParameters struct {
 
 	// (String, Sensitive) State file to upload when creating a new stack
 	// State file to upload when creating a new stack
-	ImportStateSecretRef *v1.LocalSecretKeySelector `json:"importStateSecretRef,omitempty" tf:"-"`
+	ImportStateSecretRef *v2.LocalSecretKeySelector `json:"importStateSecretRef,omitempty" tf:"-"`
 
 	// specific configuration. Presence means this Stack is a Kubernetes Stack. (see below for nested schema)
 	// Kubernetes-specific configuration. Presence means this Stack is a Kubernetes Stack.
@@ -728,11 +727,11 @@ type StackInitParameters struct {
 
 	// Reference to a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDRef *v1.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
+	SpaceIDRef *v2.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDSelector *v1.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
+	SpaceIDSelector *v2.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
 	// Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
@@ -1142,7 +1141,7 @@ type StackParameters struct {
 	// (String, Sensitive) State file to upload when creating a new stack
 	// State file to upload when creating a new stack
 	// +kubebuilder:validation:Optional
-	ImportStateSecretRef *v1.LocalSecretKeySelector `json:"importStateSecretRef,omitempty" tf:"-"`
+	ImportStateSecretRef *v2.LocalSecretKeySelector `json:"importStateSecretRef,omitempty" tf:"-"`
 
 	// specific configuration. Presence means this Stack is a Kubernetes Stack. (see below for nested schema)
 	// Kubernetes-specific configuration. Presence means this Stack is a Kubernetes Stack.
@@ -1216,11 +1215,11 @@ type StackParameters struct {
 
 	// Reference to a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDRef *v1.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
+	SpaceIDRef *v2.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDSelector *v1.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
+	SpaceIDSelector *v2.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
 
 	// (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
 	// Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to `false`.
@@ -1396,8 +1395,8 @@ type StackSpec struct {
 
 // StackStatus defines the observed state of Stack.
 type StackStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        StackObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               StackObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
