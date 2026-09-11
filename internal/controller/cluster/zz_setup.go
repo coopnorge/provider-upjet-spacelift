@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+
 package controller
 
 import (
@@ -9,14 +10,15 @@ import (
 
 	"github.com/crossplane/upjet/v2/pkg/controller"
 
-	attachment "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/context/attachment"
-	context "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/context/context"
 	environmentvariable "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/environmentvariable/environmentvariable"
-	gcpserviceaccount "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/gcpserviceaccount/gcpserviceaccount"
-	module "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/module/module"
-	space "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/space/space"
-	stack "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/stack/stack"
-	providerconfig "github.com/coopnorge/provider-upjet-spacelift/internal/controller/providerconfig"
+gcpserviceaccount "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/gcpserviceaccount/gcpserviceaccount"
+module "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/module/module"
+space "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/space/space"
+stack "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/stack/stack"
+providerconfig "github.com/coopnorge/provider-upjet-spacelift/internal/controller/providerconfig"
+attachment "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/context/attachment"
+context "github.com/coopnorge/provider-upjet-spacelift/internal/controller/cluster/context/context"
+
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
