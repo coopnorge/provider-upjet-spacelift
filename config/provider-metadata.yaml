@@ -839,6 +839,16 @@ resources:
                   "repository": "terraform-super-module",
                   "terraform_provider": "aws"
                 }
+            - name: origin-module
+              manifest: |-
+                {
+                  "branch": "main",
+                  "name": "origin-module",
+                  "origin": [
+                    {}
+                  ],
+                  "repository": "terraform-origin-module"
+                }
             - name: example-module
               manifest: |-
                 {
@@ -864,6 +874,7 @@ resources:
             labels: (Set of String)
             name: (String) The module name will by default be inferred from the repository name if it follows the terraform-provider-name naming convention. However, if the repository doesn't follow this convention, or you want to give it a custom name, you can provide it here.
             namespace: (String) The Bitbucket project containing the repository
+            origin: '(Block List, Max: 1) Use the installed account-level Origin integration. The repository and branch are configured by the corresponding top-level attributes. (see below for nested schema)'
             project: (String) The name of the Azure DevOps project
             project_root: (String) Project root is the optional directory relative to the repository root containing the module source code.
             protect_from_deletion: (Boolean) Protect this module from accidental deletion. If set, attempts to delete this module will fail. Defaults to false.
@@ -874,6 +885,7 @@ resources:
             shared_accounts: (Set of String) List of the accounts (subdomains) which should have access to the Module
             space_id: (String) ID (slug) of the space the module is in
             space_shares: (Set of String) List of the space IDs which should have access to the Module
+            spacelift_repo: '(Block List, Max: 1) Take the source from a Spacelift repo. The block takes no settings: repository is the repo''s ID (slug), and branch must be main - Spacelift Repos have no branches, and the module always tracks the latest commit. The repo must be in the same space as the module, since the module publishes its source as a version. (see below for nested schema)'
             terraform_provider: (String) The module provider will by default be inferred from the repository name if it follows the terraform-provider-name naming convention. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here.
             url: (String) HTTPS URL of the Git repository
             worker_pool_id: '(String) ID of the worker pool to use. NOTE: worker_pool_id is required when using a self-hosted instance of Spacelift.'
@@ -1103,6 +1115,26 @@ resources:
                   "name": "my-repo",
                   "space_id": "root"
                 }
+              dependencies:
+                spacelift_repo_file.main: |-
+                    {
+                      "content": "resource \"random_pet\" \"this\" {}\n",
+                      "path": "main.tf",
+                      "repo_id": "${spacelift_repo.this.id}"
+                    }
+                spacelift_stack.this: |-
+                    {
+                      "branch": "main",
+                      "depends_on": [
+                        "${spacelift_repo_file.main}"
+                      ],
+                      "name": "my-stack",
+                      "repository": "${spacelift_repo.this.id}",
+                      "space_id": "${spacelift_repo.this.space_id}",
+                      "spacelift_repo": [
+                        {}
+                      ]
+                    }
         argumentDocs:
             created_at: (Number) Unix timestamp of when the repo was created
             description: (String) Free-form repo description for users
@@ -1686,6 +1718,30 @@ resources:
                       "space_id": "root",
                       "stack_id": "${spacelift_stack.spacelift-admin.id}"
                     }
+            - name: origin-stack
+              manifest: |-
+                {
+                  "branch": "main",
+                  "name": "Origin Stack",
+                  "origin": [
+                    {}
+                  ],
+                  "repository": "infrastructure"
+                }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster-bitbucket-cloud
               manifest: |-
                 {
@@ -2090,6 +2146,7 @@ resources:
             name: (String) Name of the stack - should be unique in one account
             namespace: (String) The Bitbucket project containing the repository
             opentofu: '(Block List, Max: 1) OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)'
+            origin: '(Block List, Max: 1) Use the installed account-level Origin integration. The repository and branch are configured by the corresponding top-level attributes. (see below for nested schema)'
             playbook: (String) The playbook Ansible should run.
             prefix_resource_names_with_module_name: (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
             project: (String) The name of the Azure DevOps project
@@ -2105,6 +2162,7 @@ resources:
             skip_replan_when_run_all: '(Boolean, Deprecated) When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.'
             slug: (String) Allows setting the custom ID (slug) for the stack
             space_id: (String) ID (slug) of the space the stack is in. Defaults to legacy if it exists, otherwise root.
+            spacelift_repo: '(Block List, Max: 1) Take the source from a Spacelift repo. The block takes no settings: repository is the repo''s ID (slug), and branch must be main - Spacelift Repos have no branches, and the stack always tracks the latest commit. (see below for nested schema)'
             stack_name: (String) CloudFormation stack name
             template_bucket: (String) S3 bucket to save CloudFormation templates to
             terraform_external_state_access: (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
