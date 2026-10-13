@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type GcpServiceAccountInitParameters struct {
@@ -26,11 +26,11 @@ type GcpServiceAccountInitParameters struct {
 
 	// Reference to a Stack in stack to populate stackId.
 	// +kubebuilder:validation:Optional
-	StackIDRef *v1.Reference `json:"stackIdRef,omitempty" tf:"-"`
+	StackIDRef *v2.Reference `json:"stackIdRef,omitempty" tf:"-"`
 
 	// Selector for a Stack in stack to populate stackId.
 	// +kubebuilder:validation:Optional
-	StackIDSelector *v1.Selector `json:"stackIdSelector,omitempty" tf:"-"`
+	StackIDSelector *v2.Selector `json:"stackIdSelector,omitempty" tf:"-"`
 
 	// (Set of String) List of scopes that will be requested when generating temporary GCP service account credentials
 	// List of scopes that will be requested when generating temporary GCP service account credentials
@@ -76,11 +76,11 @@ type GcpServiceAccountParameters struct {
 
 	// Reference to a Stack in stack to populate stackId.
 	// +kubebuilder:validation:Optional
-	StackIDRef *v1.Reference `json:"stackIdRef,omitempty" tf:"-"`
+	StackIDRef *v2.Reference `json:"stackIdRef,omitempty" tf:"-"`
 
 	// Selector for a Stack in stack to populate stackId.
 	// +kubebuilder:validation:Optional
-	StackIDSelector *v1.Selector `json:"stackIdSelector,omitempty" tf:"-"`
+	StackIDSelector *v2.Selector `json:"stackIdSelector,omitempty" tf:"-"`
 
 	// (Set of String) List of scopes that will be requested when generating temporary GCP service account credentials
 	// List of scopes that will be requested when generating temporary GCP service account credentials
@@ -91,8 +91,8 @@ type GcpServiceAccountParameters struct {
 
 // GcpServiceAccountSpec defines the desired state of GcpServiceAccount
 type GcpServiceAccountSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     GcpServiceAccountParameters `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   GcpServiceAccountParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -108,8 +108,8 @@ type GcpServiceAccountSpec struct {
 
 // GcpServiceAccountStatus defines the observed state of GcpServiceAccount.
 type GcpServiceAccountStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        GcpServiceAccountObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               GcpServiceAccountObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

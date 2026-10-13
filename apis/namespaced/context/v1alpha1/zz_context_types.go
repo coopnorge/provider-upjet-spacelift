@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type ContextInitParameters struct {
@@ -80,11 +79,11 @@ type ContextInitParameters struct {
 
 	// Reference to a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDRef *v1.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
+	SpaceIDRef *v2.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDSelector *v1.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
+	SpaceIDSelector *v2.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
 }
 
 type ContextObservation struct {
@@ -235,11 +234,11 @@ type ContextParameters struct {
 
 	// Reference to a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDRef *v1.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
+	SpaceIDRef *v2.NamespacedReference `json:"spaceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Space in space to populate spaceId.
 	// +kubebuilder:validation:Optional
-	SpaceIDSelector *v1.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
+	SpaceIDSelector *v2.NamespacedSelector `json:"spaceIdSelector,omitempty" tf:"-"`
 }
 
 // ContextSpec defines the desired state of Context
@@ -261,8 +260,8 @@ type ContextSpec struct {
 
 // ContextStatus defines the observed state of Context.
 type ContextStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ContextObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ContextObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
