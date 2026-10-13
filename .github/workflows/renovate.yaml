@@ -20,4 +20,5 @@ jobs:
     uses: coopnorge/github-workflow-renovate/.github/workflows/renovate.yaml@v0
     secrets: inherit
     with:
-      log-level: ${{ inputs.log-level }}
+      log-level: ${{ inputs.log-level || 'debug' }}
+      forward-logs-to-datadog: true
