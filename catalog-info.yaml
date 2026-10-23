@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: provider-upjet-spacelift
+  title: "Provider Upjet Spacelift"
+  description: Crossplane provider for Spacelift
+  tags: [crossplane, spacelift]
+  annotations:
+    github.com/project-slug: coopnorge/provider-upjet-spacelift
+spec:
+  type: library
+  owner: cloud-platform
+  lifecycle: production
