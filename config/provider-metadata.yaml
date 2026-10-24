@@ -1,5 +1,109 @@
 name: spacelift-io/spacelift
 resources:
+    spacelift_ai_integration:
+        subCategory: ""
+        description: 'spacelift_ai_integration represents an integration with an AI/LLM provider, used by Spacelift features that call out to a model. The provider is chosen by setting exactly one provider block: anthropic, bedrock, google (the Gemini API) or openai. Changing which block is set replaces the integration, because the API does not allow an existing one to change provider. A fifth block, spacelift, marks an integration that Spacelift provides and shares with every account. Those can only be imported and toggled, so the block takes no arguments and everything except enabled has to be left out of the configuration.'
+        name: spacelift_ai_integration
+        title: spacelift_ai_integration Resource - terraform-provider-spacelift
+        examples:
+            - name: gemini
+              manifest: |-
+                {
+                  "description": "Gemini API integration",
+                  "google": [
+                    {
+                      "api_key_wo": "${var.gemini_api_key}",
+                      "api_key_wo_version": "1"
+                    }
+                  ],
+                  "labels": [
+                    "ai"
+                  ],
+                  "models": [
+                    "gemini-2.5-pro",
+                    "gemini-2.5-flash"
+                  ],
+                  "name": "gemini",
+                  "space_id": "root"
+                }
+              references:
+                google.api_key_wo: var.gemini_api_key
+            - name: claude
+              manifest: |-
+                {
+                  "anthropic": [
+                    {
+                      "api_key_wo": "${var.anthropic_api_key}",
+                      "api_key_wo_version": "1"
+                    }
+                  ],
+                  "name": "claude"
+                }
+              references:
+                anthropic.api_key_wo: var.anthropic_api_key
+            - name: openai_via_gateway
+              manifest: |-
+                {
+                  "name": "openai-via-gateway",
+                  "openai": [
+                    {
+                      "api_key_wo": "${var.gateway_api_key}",
+                      "api_key_wo_version": "1",
+                      "base_url": "https://litellm.example.com"
+                    }
+                  ]
+                }
+              references:
+                openai.api_key_wo: var.gateway_api_key
+            - name: bedrock
+              manifest: |-
+                {
+                  "bedrock": [
+                    {
+                      "integration_id": "${spacelift_aws_integration.this.id}",
+                      "profiles": [
+                        "arn:aws:bedrock:us-east-1:123456789012:inference-profile/global.anthropic.claude-sonnet-4-6"
+                      ],
+                      "region": "us-east-1"
+                    }
+                  ],
+                  "name": "bedrock"
+                }
+              references:
+                bedrock.integration_id: spacelift_aws_integration.this.id
+            - name: shared_anthropic
+              manifest: |-
+                {
+                  "enabled": false,
+                  "spacelift": [
+                    {}
+                  ]
+                }
+        argumentDocs:
+            ai_provider: (String) AI provider backing the integration, derived from the provider block that is set
+            anthropic: '(Block List, Max: 1) Anthropic-specific configuration. Presence means this integration uses the Anthropic API. (see below for nested schema)'
+            api_key: (String, Sensitive, Deprecated) Anthropic API key. Note that once it's created, it will be just an empty string in the state due to security reasons.
+            api_key_wo: (String, Sensitive, Write-only) Anthropic API key. The key is not stored in the state. Modify api_key_wo_version to trigger an update. This field requires Terraform/OpenTofu 1.11+.
+            api_key_wo_version: (String) Used together with api_key_wo to trigger an update to the API key. Increment this value when an update to api_key_wo is required. This field requires Terraform/OpenTofu 1.11+.
+            base_url: (String) Custom base URL for a self-hosted, Anthropic-compatible gateway such as LiteLLM. Leave unset to call the provider directly.
+            bedrock: '(Block List, Max: 1) AWS Bedrock-specific configuration. Presence means this integration calls Bedrock through an AWS integration rather than using an API key. (see below for nested schema)'
+            description: (String) Free-form description of the integration
+            enabled: (Boolean) Whether the integration can be used for LLM calls. Defaults to true.
+            google: '(Block List, Max: 1) Google-specific configuration. Presence means this integration uses the Gemini API. (see below for nested schema)'
+            id: (String) The ID of this resource.
+            integration_id: (String) ID of the AWS integration used to reach Bedrock
+            integration_name: (String) Name of the AWS integration used to reach Bedrock
+            is_spacelift_provided: (Boolean) Whether this is a read-only, Spacelift-managed integration shared with every account
+            labels: (Set of String) Labels to set on the integration
+            models: (List of String) Model identifiers this integration is pinned to, for example gemini-2.5-pro. Leave it out, or set it to an empty list, to pin nothing and let the integration follow the default model list for its provider, which is resolved server side and not recorded here. Terraform owns the pin either way, so one made outside it is reverted on the next apply, the same as labels. Not supported for Bedrock, which takes its models from bedrock.profiles instead.
+            name: (String) Friendly name of the integration. Required, except on a Spacelift-provided integration, whose name belongs to Spacelift and is read back from the API.
+            openai: '(Block List, Max: 1) OpenAI-specific configuration. Presence means this integration uses the OpenAI API. (see below for nested schema)'
+            profiles: (List of String) Bedrock inference profile ARNs to expose. Spacelift validates these against AWS through the attached integration when the integration is saved.
+            region: (String) AWS region the Bedrock requests are routed through, for example us-east-1
+            space_id: (String) ID of the space the integration belongs to
+            spacelift: '(Block List, Max: 1) Marks a read-only integration provided by Spacelift and shared with every account. The block takes no arguments because everything except enabled belongs to Spacelift. These integrations cannot be created or deleted, so the resource has to be imported, and removing it from the configuration only drops it from the state. (see below for nested schema)'
+        importStatements:
+            - terraform import spacelift_ai_integration.gemini $AI_INTEGRATION_ID
     spacelift_api_key:
         subCategory: ""
         description: spacelift_api_key represents a Spacelift API Key - a credential that can be used to authenticate with the Spacelift API from outside of Spacelift, typically for automation purposes. WARNING This resource manages API keys which are sensitive credentials. These keys will be saved to your state file. Ensure that you handle your state file securely.
@@ -47,6 +151,7 @@ resources:
         argumentDocs:
             claim_mappings: (Map of String) Mapping of IdP JWT claim names to Spacelift claim names. Currently only the groups Spacelift claim is supported, so the value should always be groups (e.g. teams = "groups" maps the IdP teams claim to Spacelift groups). When configured, the mapped claims are extracted from the OIDC token at authentication time, enabling dynamic team membership based on the authenticating user's actual IdP groups.
             client_id: (String) OIDC client ID
+            description: (String) Description of the API key
             id: (String) The ID of this resource.
             idp_groups: (Set of String) List of idp groups associated with the API key
             issuer: (String) OIDC issuer URL
@@ -839,6 +944,16 @@ resources:
                   "repository": "terraform-super-module",
                   "terraform_provider": "aws"
                 }
+            - name: origin-module
+              manifest: |-
+                {
+                  "branch": "main",
+                  "name": "origin-module",
+                  "origin": [
+                    {}
+                  ],
+                  "repository": "terraform-origin-module"
+                }
             - name: example-module
               manifest: |-
                 {
@@ -864,6 +979,7 @@ resources:
             labels: (Set of String)
             name: (String) The module name will by default be inferred from the repository name if it follows the terraform-provider-name naming convention. However, if the repository doesn't follow this convention, or you want to give it a custom name, you can provide it here.
             namespace: (String) The Bitbucket project containing the repository
+            origin: '(Block List, Max: 1) Use the installed account-level Origin integration. The repository and branch are configured by the corresponding top-level attributes. (see below for nested schema)'
             project: (String) The name of the Azure DevOps project
             project_root: (String) Project root is the optional directory relative to the repository root containing the module source code.
             protect_from_deletion: (Boolean) Protect this module from accidental deletion. If set, attempts to delete this module will fail. Defaults to false.
@@ -874,6 +990,7 @@ resources:
             shared_accounts: (Set of String) List of the accounts (subdomains) which should have access to the Module
             space_id: (String) ID (slug) of the space the module is in
             space_shares: (Set of String) List of the space IDs which should have access to the Module
+            spacelift_repo: '(Block List, Max: 1) Take the source from a Spacelift repo. The block takes no settings: repository is the repo''s ID (slug), and branch must be main - Spacelift Repos have no branches, and the module always tracks the latest commit. The repo must be in the same space as the module, since the module publishes its source as a version. (see below for nested schema)'
             terraform_provider: (String) The module provider will by default be inferred from the repository name if it follows the terraform-provider-name naming convention. However, if the repository doesn't follow this convention, or you gave the module a custom name, you can provide the provider name here.
             url: (String) HTTPS URL of the Git repository
             worker_pool_id: '(String) ID of the worker pool to use. NOTE: worker_pool_id is required when using a self-hosted instance of Spacelift.'
@@ -1103,6 +1220,26 @@ resources:
                   "name": "my-repo",
                   "space_id": "root"
                 }
+              dependencies:
+                spacelift_repo_file.main: |-
+                    {
+                      "content": "resource \"random_pet\" \"this\" {}\n",
+                      "path": "main.tf",
+                      "repo_id": "${spacelift_repo.this.id}"
+                    }
+                spacelift_stack.this: |-
+                    {
+                      "branch": "main",
+                      "depends_on": [
+                        "${spacelift_repo_file.main}"
+                      ],
+                      "name": "my-stack",
+                      "repository": "${spacelift_repo.this.id}",
+                      "space_id": "${spacelift_repo.this.space_id}",
+                      "spacelift_repo": [
+                        {}
+                      ]
+                    }
         argumentDocs:
             created_at: (Number) Unix timestamp of when the repo was created
             description: (String) Free-form repo description for users
@@ -1686,6 +1823,30 @@ resources:
                       "space_id": "root",
                       "stack_id": "${spacelift_stack.spacelift-admin.id}"
                     }
+            - name: origin-stack
+              manifest: |-
+                {
+                  "branch": "main",
+                  "name": "Origin Stack",
+                  "origin": [
+                    {}
+                  ],
+                  "repository": "infrastructure"
+                }
+              dependencies:
+                spacelift_role.stack_admin: |-
+                    {
+                      "actions": [
+                        "SPACE_ADMIN"
+                      ],
+                      "name": "Stack admin"
+                    }
+                spacelift_role_attachment.spacelift-admin-operator: |-
+                    {
+                      "role_id": "${spacelift_role.stack_admin.id}",
+                      "space_id": "root",
+                      "stack_id": "${spacelift_stack.spacelift-admin.id}"
+                    }
             - name: k8s-cluster-bitbucket-cloud
               manifest: |-
                 {
@@ -2084,14 +2245,21 @@ resources:
             kubernetes: '(Block List, Max: 1) Kubernetes-specific configuration. Presence means this Stack is a Kubernetes Stack. (see below for nested schema)'
             kubernetes_workflow_tool: (String) Defines the tool that will be used to execute the workflow. This can be one of KUBERNETES or CUSTOM. Defaults to KUBERNETES.
             labels: (Set of String)
+            lock: (List of Object) Lock status of the stack. (see below for nested schema)
+            locked: (Boolean)
+            locked_at: (Number)
+            locked_by: (String)
             logging: '(Block List, Max: 1) Logging configuration for OpenTofu commands. (see below for nested schema)'
             login_url: (String) State backend to log into on Run initialize.
             manage_state: (Boolean) Determines if Spacelift should manage state for this stack. Defaults to true.
             name: (String) Name of the stack - should be unique in one account
             namespace: (String) The Bitbucket project containing the repository
+            note: (String)
             opentofu: '(Block List, Max: 1) OpenTofu-specific configuration. Presence means this Stack is a native OpenTofu Stack. (see below for nested schema)'
+            origin: '(Block List, Max: 1) Use the installed account-level Origin integration. The repository and branch are configured by the corresponding top-level attributes. (see below for nested schema)'
             playbook: (String) The playbook Ansible should run.
             prefix_resource_names_with_module_name: (Boolean) Controls whether resource and output names are prefixed with the module path. Has no effect when use_run_all is enabled (always prefixes in that case).
+            prevent_changes_when_locked: '(Boolean) If true, Terraform will fail when the stack is locked and the plan would modify or destroy this resource. Defaults to false. Note: destroy errors are (currently) raised during the apply, not planning.'
             project: (String) The name of the Azure DevOps project
             project_root: (String) Project root is the optional directory relative to the workspace root containing the entrypoint to the Stack.
             protect_from_deletion: (Boolean) Protect this stack from accidental deletion. If set, attempts to delete this stack will fail. Defaults to false.
@@ -2105,6 +2273,7 @@ resources:
             skip_replan_when_run_all: '(Boolean, Deprecated) When using Run All, skip the second planning phase during the apply stage. This is an experimental feature. Runs with Run All disabled reuse the plan by default. Warning: this means any mocked_outputs referenced during planning will be applied as-is — do not enable this together with mocked_outputs unless you fully understand the implications, your apply may execute against mocked values rather than real ones.'
             slug: (String) Allows setting the custom ID (slug) for the stack
             space_id: (String) ID (slug) of the space the stack is in. Defaults to legacy if it exists, otherwise root.
+            spacelift_repo: '(Block List, Max: 1) Take the source from a Spacelift repo. The block takes no settings: repository is the repo''s ID (slug), and branch must be main - Spacelift Repos have no branches, and the stack always tracks the latest commit. (see below for nested schema)'
             stack_name: (String) CloudFormation stack name
             template_bucket: (String) S3 bucket to save CloudFormation templates to
             terraform_external_state_access: (Boolean) Indicates whether you can access the Stack state file from other stacks or outside of Spacelift. Defaults to false.
@@ -2251,7 +2420,8 @@ resources:
               manifest: |-
                 {
                   "depends_on_stack_id": "${spacelift_stack.infra.id}",
-                  "stack_id": "${spacelift_stack.app.id}"
+                  "stack_id": "${spacelift_stack.app.id}",
+                  "trigger_always": true
                 }
               references:
                 depends_on_stack_id: spacelift_stack.infra.id
@@ -2273,6 +2443,7 @@ resources:
             depends_on_stack_id: (String) immutable ID (slug) of stack to depend on.
             id: (String) The ID of this resource.
             stack_id: (String) immutable ID (slug) of stack which has a dependency.
+            trigger_always: (Boolean) Whether the dependent stack should be triggered on every successful run of the stack it depends on, even if none of the dependency outputs have changed. Defaults to false.
         importStatements:
             - terraform import spacelift_stack_dependency.example stack-id/depends-on-stack-id
     spacelift_stack_dependency_reference:
