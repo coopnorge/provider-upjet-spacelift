@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type AttachmentInitParameters struct {
@@ -22,11 +22,11 @@ type AttachmentInitParameters struct {
 
 	// Reference to a Context in context to populate contextId.
 	// +kubebuilder:validation:Optional
-	ContextIDRef *v1.Reference `json:"contextIdRef,omitempty" tf:"-"`
+	ContextIDRef *v2.Reference `json:"contextIdRef,omitempty" tf:"-"`
 
 	// Selector for a Context in context to populate contextId.
 	// +kubebuilder:validation:Optional
-	ContextIDSelector *v1.Selector `json:"contextIdSelector,omitempty" tf:"-"`
+	ContextIDSelector *v2.Selector `json:"contextIdSelector,omitempty" tf:"-"`
 
 	// (String) ID of the module to attach the context to
 	// ID of the module to attach the context to
@@ -43,11 +43,11 @@ type AttachmentInitParameters struct {
 
 	// Reference to a Stack in stack to populate stackId.
 	// +kubebuilder:validation:Optional
-	StackIDRef *v1.Reference `json:"stackIdRef,omitempty" tf:"-"`
+	StackIDRef *v2.Reference `json:"stackIdRef,omitempty" tf:"-"`
 
 	// Selector for a Stack in stack to populate stackId.
 	// +kubebuilder:validation:Optional
-	StackIDSelector *v1.Selector `json:"stackIdSelector,omitempty" tf:"-"`
+	StackIDSelector *v2.Selector `json:"stackIdSelector,omitempty" tf:"-"`
 }
 
 type AttachmentObservation struct {
@@ -82,11 +82,11 @@ type AttachmentParameters struct {
 
 	// Reference to a Context in context to populate contextId.
 	// +kubebuilder:validation:Optional
-	ContextIDRef *v1.Reference `json:"contextIdRef,omitempty" tf:"-"`
+	ContextIDRef *v2.Reference `json:"contextIdRef,omitempty" tf:"-"`
 
 	// Selector for a Context in context to populate contextId.
 	// +kubebuilder:validation:Optional
-	ContextIDSelector *v1.Selector `json:"contextIdSelector,omitempty" tf:"-"`
+	ContextIDSelector *v2.Selector `json:"contextIdSelector,omitempty" tf:"-"`
 
 	// (String) ID of the module to attach the context to
 	// ID of the module to attach the context to
@@ -106,17 +106,17 @@ type AttachmentParameters struct {
 
 	// Reference to a Stack in stack to populate stackId.
 	// +kubebuilder:validation:Optional
-	StackIDRef *v1.Reference `json:"stackIdRef,omitempty" tf:"-"`
+	StackIDRef *v2.Reference `json:"stackIdRef,omitempty" tf:"-"`
 
 	// Selector for a Stack in stack to populate stackId.
 	// +kubebuilder:validation:Optional
-	StackIDSelector *v1.Selector `json:"stackIdSelector,omitempty" tf:"-"`
+	StackIDSelector *v2.Selector `json:"stackIdSelector,omitempty" tf:"-"`
 }
 
 // AttachmentSpec defines the desired state of Attachment
 type AttachmentSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     AttachmentParameters `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   AttachmentParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -132,8 +132,8 @@ type AttachmentSpec struct {
 
 // AttachmentStatus defines the observed state of Attachment.
 type AttachmentStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        AttachmentObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               AttachmentObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
